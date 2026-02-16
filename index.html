@@ -3,131 +3,229 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CRA Job Fair 2026 Dashboard</title>
+  <title>CRA Job Fair 2026 Dashboard - Full Data</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Noto Sans Thai', sans-serif; }
+    .card { @apply bg-white p-6 rounded-2xl shadow-sm border border-gray-100; }
     .loader { border: 4px solid #f3f3f3; border-top: 4px solid #0F2C67; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
-<body class="bg-slate-50 antialiased">
+<body class="bg-slate-50 text-slate-800 antialiased">
 
-  <div id="loading" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
+  <div id="loading" class="fixed inset-0 bg-white/95 z-50 flex flex-col items-center justify-center">
     <div class="loader mb-4"></div>
-    <p class="text-blue-900 font-bold">กำลังเชื่อมต่อฐานข้อมูล CRA 2026...</p>
+    <p class="text-blue-900 font-bold">กำลังประมวลผลข้อมูลครบวงจร CRA 2026...</p>
   </div>
 
-  <div id="app" class="container mx-auto p-4 opacity-0 transition-opacity duration-500">
-    <header class="flex justify-between items-center mb-6 border-b pb-4">
-      <h1 class="text-2xl font-bold text-blue-900">CRA Job Fair & Education 2026</h1>
-      <button onclick="window.print()" class="bg-blue-900 text-white px-4 py-2 rounded-lg text-sm">พิมพ์รายงาน</button>
+  <div id="app" class="container mx-auto px-4 py-8 max-w-7xl opacity-0 transition-opacity duration-500">
+    <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b pb-6">
+      <div>
+        <h1 class="text-3xl font-bold text-blue-900">CRA Job Fair & Education 2026</h1>
+        <p class="text-gray-500">รายงานสรุปผลการดำเนินงานและระดับความพึงพอใจ</p>
+      </div>
+      
+      <div class="flex items-center gap-3 bg-white p-2 rounded-xl border shadow-sm">
+        <span class="text-sm font-bold ml-2">เลือกวันที่:</span>
+        <select id="dateFilter" onchange="renderDashboard()" class="bg-gray-50 border-none text-blue-900 font-bold rounded-lg focus:ring-0">
+          <option value="ALL">ดูทั้งหมด (12-13 ก.พ.)</option>
+          <option value="12.02.69">เฉพาะวันที่ 12 ก.พ. 69</option>
+          <option value="13.02.69">เฉพาะวันที่ 13 ก.พ. 69</option>
+        </select>
+      </div>
     </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-blue-100">
-        <p class="text-gray-500 text-sm">ผู้ตอบแบบประเมินทั้งหมด</p>
-        <p class="text-4xl font-bold text-blue-900" id="totalCount">0</p>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div class="card text-center">
+        <p class="text-gray-500 text-xs uppercase font-bold mb-1">จำนวนผู้ประเมิน</p>
+        <p class="text-4xl font-bold text-blue-900" id="statTotal">0</p>
       </div>
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-orange-100 col-span-2">
-        <p class="text-gray-500 text-sm mb-2">เฉลี่ยความพึงพอใจภาพรวม (เต็ม 5)</p>
-        <div class="flex items-center gap-4">
-            <p class="text-4xl font-bold text-orange-600" id="avgScore">0.00</p>
-            <div class="flex-1 bg-gray-200 h-3 rounded-full overflow-hidden">
-                <div id="scoreBar" class="bg-orange-500 h-full w-0 transition-all duration-1000"></div>
-            </div>
-        </div>
+      <div class="card text-center border-l-4 border-l-blue-900">
+        <p class="text-gray-500 text-xs uppercase font-bold mb-1">ความพึงพอใจรวม (T)</p>
+        <p class="text-4xl font-bold text-blue-900" id="statAvg">0.00</p>
+      </div>
+      <div class="card text-center">
+        <p class="text-gray-500 text-xs uppercase font-bold mb-1">สนใจร่วมปีหน้า (U)</p>
+        <p class="text-4xl font-bold text-green-600" id="statNextYear">0%</p>
+      </div>
+      <div class="card text-center">
+        <p class="text-gray-500 text-xs uppercase font-bold mb-1">ความเหมาะสมสถานที่ (P)</p>
+        <p class="text-4xl font-bold text-orange-600" id="statVenue">0.00</p>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <div class="bg-white p-6 rounded-2xl shadow-sm border h-80"><canvas id="genderChart"></canvas></div>
-      <div class="bg-white p-6 rounded-2xl shadow-sm border h-80"><canvas id="typeChart"></canvas></div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <div class="card"><h3 class="font-bold mb-4 text-sm border-b pb-2">เพศ (B)</h3><div class="h-60"><canvas id="chartGender"></canvas></div></div>
+      <div class="card"><h3 class="font-bold mb-4 text-sm border-b pb-2">ประเภทผู้ร่วมงาน (C)</h3><div class="h-60"><canvas id="chartType"></canvas></div></div>
+      <div class="card"><h3 class="font-bold mb-4 text-sm border-b pb-2">ระดับการศึกษา (E)</h3><div class="h-60"><canvas id="chartDegree"></canvas></div></div>
     </div>
 
-    <div class="bg-white p-6 rounded-2xl shadow-sm border">
-      <h3 class="font-bold text-blue-900 mb-4">10 อันดับสถานประกอบการที่ได้รับความสนใจสูงสุด</h3>
-      <table class="w-full text-left text-sm">
-        <thead><tr class="bg-gray-50 text-gray-600 font-bold"><th class="p-2">อันดับ</th><th>บริษัท</th><th class="text-right p-2">จำนวนผู้สนใจ</th></tr></thead>
-        <tbody id="companyBody"></tbody>
-      </table>
+    <div class="card mb-8">
+      <h3 class="font-bold mb-6 text-blue-900">คะแนนความพึงพอใจแยกตามส่วนงาน (เต็ม 5)</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div id="scoreQ"></div>
+        <div id="scoreR"></div>
+        <div id="scoreS"></div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div class="card">
+        <h3 class="font-bold mb-4">แหล่งรับรู้ข่าวสาร (W)</h3>
+        <div id="sourceTable" class="text-sm"></div>
+      </div>
+      <div class="card">
+        <h3 class="font-bold mb-4 text-center">เดือนที่เหมาะสมในการจัดครั้งหน้า (V)</h3>
+        <div class="h-60"><canvas id="chartMonth"></canvas></div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div class="card">
+        <h3 class="font-bold mb-4 text-blue-900">สถานประกอบการที่ได้รับความสนใจสูงสุด</h3>
+        <div id="companyTable" class="overflow-y-auto max-h-80"></div>
+      </div>
+      <div class="card">
+        <h3 class="font-bold mb-4 text-orange-600">บูธสปอนเซอร์ที่ชื่นชอบ</h3>
+        <div id="sponsorTable" class="overflow-y-auto max-h-80"></div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="card bg-blue-50">
+        <h3 class="font-bold mb-4 text-blue-900">บริษัทที่อยากให้มาปีหน้า (AB, AG)</h3>
+        <div id="wantedList" class="text-sm space-y-2 max-h-60 overflow-y-auto"></div>
+      </div>
+      <div class="card bg-orange-50">
+        <h3 class="font-bold mb-4 text-orange-900">ข้อเสนอแนะเพิ่มเติม (AC, AH)</h3>
+        <div id="suggestList" class="text-sm space-y-2 max-h-60 overflow-y-auto"></div>
+      </div>
     </div>
   </div>
 
   <script>
-    // ** เปลี่ยน URL ตรงนี้เป็นตัวใหม่ที่ได้จากการ Deploy ครั้งล่าสุด **
-    const API_URL = 'https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9Rphi7Ln9vRU2mO7Q6l-QcZ3p2htU_5NLUxIi2khhoa8s/exec?type=json';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9Rphi7Ln9vRU2mO7Q6l-QcZ3p2htU_5NLUxIi2khhoa8s/exec?type=json';
+    let RAW_DATA = [];
+    let charts = {};
 
-    async function loadData() {
+    window.onload = async () => {
       try {
-        const response = await fetch(API_URL);
-        if (!response.ok) throw new Error('Network response was not ok');
-        const data = await response.json();
-        
-        if (data.error) throw new Error(data.error);
-        
-        processDashboard(data);
-        
+        const resp = await fetch(GAS_URL);
+        RAW_DATA = await resp.json();
+        renderDashboard();
         document.getElementById('loading').classList.add('hidden');
         document.getElementById('app').classList.remove('opacity-0');
-      } catch (err) {
-        console.error(err);
-        alert("⚠️ " + err.message + "\n\nคำแนะนำ: ตรวจสอบว่าใน Code.gs ตั้งค่าเป็น 'Anyone' แล้วหรือยัง?");
+      } catch (e) {
+        alert("Error: " + e.message);
       }
+    };
+
+    function renderDashboard() {
+      const filterDate = document.getElementById('dateFilter').value;
+      // กรองข้อมูลตามคอลัมน์ X (Index 23)
+      const data = filterDate === "ALL" ? RAW_DATA : RAW_DATA.filter(r => r[23].includes(filterDate));
+      
+      // Update KPIs
+      document.getElementById('statTotal').innerText = data.length;
+      document.getElementById('statAvg').innerText = calcAvg(data, 19);
+      document.getElementById('statVenue').innerText = calcAvg(data, 15);
+      
+      const nextYear = getCounts(data, 20);
+      const yesPct = ((nextYear.find(x => x[0].includes("สนใจ"))?.[1] || 0) / data.length * 100).toFixed(0);
+      document.getElementById('statNextYear').innerText = yesPct + "%";
+
+      // Render Charts
+      updateChart('chartGender', 'pie', getCounts(data, 1));
+      updateChart('chartType', 'bar', getCounts(data, 2));
+      updateChart('chartDegree', 'doughnut', getCounts(data, 4));
+      updateChart('chartMonth', 'bar', getCounts(data, 21));
+
+      // Render Scores (Q, R, S)
+      renderScoreBar('scoreQ', 'ช่วงนำเสนอหลักสูตร (Q)', calcAvg(data, 16));
+      renderScoreBar('scoreR', 'ช่วงแนะนำบริษัท (R)', calcAvg(data, 17));
+      renderScoreBar('scoreS', 'ช่วงกิจกรรมบนเวที (S)', calcAvg(data, 18));
+
+      // Render Tables
+      renderTable('sourceTable', getCounts(data, 22, true), ['ช่องทาง', 'คน']);
+      
+      // Combine Companies (Y, Z, AD, AE)
+      const compCounts = getCombinedCounts(data, [24, 25, 29, 30]);
+      renderTable('companyTable', compCounts, ['สถานประกอบการ', 'ความสนใจ']);
+
+      // Combine Sponsors (AA, AF)
+      const sponCounts = getCombinedCounts(data, [26, 31]);
+      renderTable('sponsorTable', sponCounts, ['บูธสปอนเซอร์', 'คะแนนโหวต']);
+
+      // Text Lists
+      renderTextList('wantedList', data, [27, 32]);
+      renderTextList('suggestList', data, [28, 33]);
     }
 
-    function processDashboard(data) {
-      document.getElementById('totalCount').innerText = data.length.toLocaleString();
+    function calcAvg(data, idx) {
+      const vals = data.map(r => parseFloat(r[idx])).filter(v => !isNaN(v));
+      return vals.length ? (vals.reduce((a,b)=>a+b, 0)/vals.length).toFixed(2) : "0.00";
+    }
 
-      // 1. คะแนนความพึงพอใจภาพรวม (คอลัมน์ T คือ Index 19)
-      const scores = data.map(r => parseFloat(r[19])).filter(s => !isNaN(s));
-      const avg = scores.length ? (scores.reduce((a,b)=>a+b, 0)/scores.length).toFixed(2) : 0;
-      document.getElementById('avgScore').innerText = avg;
-      document.getElementById('scoreBar').style.width = (avg/5*100) + '%';
-
-      // 2. ข้อมูลแผนภูมิ: เพศ(Index 1), ประเภท(Index 2)
-      createChart('genderChart', 'doughnut', 'เพศ', getCounts(data, 1));
-      createChart('typeChart', 'bar', 'ประเภทผู้เข้าร่วม', getCounts(data, 2));
-
-      // 3. อันดับบริษัท: รวม Y(24), Z(25), AD(29), AE(30)
-      let companies = {};
+    function getCounts(data, idx, isMulti = false) {
+      let c = {};
       data.forEach(r => {
-        [24, 25, 29, 30].forEach(idx => {
-          let name = r[idx]?.trim();
-          if(name && name !== "-" && name !== "") companies[name] = (companies[name] || 0) + 1;
+        let items = isMulti ? (r[idx]||"").split(/,\s*/) : [r[idx]];
+        items.forEach(it => { if(it && it.trim() !== "" && it !== "-") c[it] = (c[it]||0)+1; });
+      });
+      return Object.entries(c).sort((a,b) => b[1]-a[1]);
+    }
+
+    function getCombinedCounts(data, indices) {
+      let c = {};
+      data.forEach(r => {
+        indices.forEach(idx => {
+          let val = r[idx]?.trim();
+          if(val && val !== "" && val !== "-") c[val] = (c[val]||0)+1;
         });
       });
-      const topComps = Object.entries(companies).sort((a,b) => b[1]-a[1]).slice(0, 10);
-      document.getElementById('companyBody').innerHTML = topComps.map((c, i) => `
-        <tr class="border-t">
-          <td class="p-2">${i+1}</td>
-          <td>${c[0]}</td>
-          <td class="text-right p-2 font-bold text-blue-900">${c[1]}</td>
-        </tr>
-      `).join('');
+      return Object.entries(c).sort((a,b) => b[1]-a[1]).slice(0, 15);
     }
 
-    function getCounts(data, idx) {
-      let counts = {};
-      data.forEach(r => { let v = r[idx]?.trim() || "ไม่ระบุ"; counts[v] = (counts[v] || 0) + 1; });
-      return Object.entries(counts).sort((a,b) => b[1]-a[1]);
+    function renderScoreBar(id, label, score) {
+      const pct = (score/5*100).toFixed(0);
+      document.getElementById(id).innerHTML = `
+        <div class="text-sm font-bold mb-1">${label}</div>
+        <div class="flex items-center gap-3">
+          <div class="flex-1 bg-gray-100 h-4 rounded-full overflow-hidden">
+            <div class="bg-blue-600 h-full" style="width:${pct}%"></div>
+          </div>
+          <span class="font-bold text-blue-900">${score}</span>
+        </div>`;
     }
 
-    function createChart(id, type, label, counts) {
-      new Chart(document.getElementById(id), {
+    function renderTable(id, counts, headers) {
+      document.getElementById(id).innerHTML = `
+        <table class="w-full text-left">
+          <thead><tr class="text-gray-400 border-b"><th>${headers[0]}</th><th class="text-right">${headers[1]}</th></tr></thead>
+          <tbody>${counts.map(c => `<tr class="border-b"><td class="py-2">${c[0]}</td><td class="text-right font-bold">${c[1]}</td></tr>`).join('')}</tbody>
+        </table>`;
+    }
+
+    function renderTextList(id, data, indices) {
+      let items = [];
+      data.forEach(r => indices.forEach(idx => { if(r[idx] && r[idx].length > 2) items.push(r[idx]); }));
+      document.getElementById(id).innerHTML = items.length ? items.map(t => `<div class="p-2 bg-white rounded border border-gray-100 shadow-sm">💬 ${t}</div>`).join('') : "ไม่มีข้อมูลเพิ่มเติม";
+    }
+
+    function updateChart(id, type, counts) {
+      if(charts[id]) charts[id].destroy();
+      charts[id] = new Chart(document.getElementById(id), {
         type: type,
         data: {
           labels: counts.map(c => c[0]),
-          datasets: [{ label: label, data: counts.map(c => c[1]), backgroundColor: ['#0F2C67','#E65100','#3b82f6','#10b981','#f59e0b'] }]
+          datasets: [{ data: counts.map(c => c[1]), backgroundColor: ['#0F2C67','#E65100','#3b82f6','#10b981','#f59e0b','#94a3b8'] }]
         },
-        options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        options: { maintainAspectRatio: false, plugins: { legend: { display: type !== 'bar', position: 'bottom' } } }
       });
     }
-
-    loadData();
   </script>
 </body>
 </html>
