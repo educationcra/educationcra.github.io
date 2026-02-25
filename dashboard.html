@@ -500,7 +500,7 @@
       
       let craRespondents = RAW_DATA.filter(r => r[IDX.Type] && r[IDX.Type].includes('นักศึกษา') && r[IDX.IsStudentCRA] && r[IDX.IsStudentCRA].trim() === 'ใช่').length;
       let craRespPct = ((craRespondents / STATS.cra_hours) * 100).toFixed(2);
-      if (document.getElementById('craRespRate')) document.getElementById('craRespRate').innerHTML = `${craRespondents} คน <span class="text-lg text-indigo-400 font-bold ml-1">(ร้อยละ ${craRespPct})</span>`;
+      if (document.getElementById('craRespRate')) document.getElementById('craRespRate').innerHTML = `${craRespondents} คน  <span class="text-lg text-indigo-400 font-bold ml-1">(ร้อยละ ${craRespPct})</span>`;
     }
 
     // --- Helper Functions (Merged & Robust) ---
@@ -555,7 +555,7 @@
              <span class="font-medium text-slate-600 truncate max-w-[80px]">${x[0]}</span>
           </div>
           <div class="flex items-center gap-2">
-             <span class="font-bold text-slate-800">${x[1]} คน</span>
+             <span class="font-bold text-slate-800">${x[1]} คน </span>
              <span class="badge-pct text-[9px] px-1.5 py-0.5 min-w-[50px]">ร้อยละ ${pct}</span>
           </div>
         </div>`;
@@ -571,7 +571,7 @@
              <span>${x[0]}</span>
            </div>
            <div class="badge-container flex items-center gap-2">
-             <span class="text-xs font-bold text-slate-400">${x[1]} คน</span>
+             <span class="text-xs font-bold text-slate-400">${x[1]} คน </span>
              <span class="badge-pct">ร้อยละ ${(x[1]/t*100).toFixed(2)}</span>
            </div>
          </div>`).join(''); 
@@ -732,7 +732,7 @@
       else if(subType === 'lecturer_general') title = "อาจารย์/นักวิชาการ (ทั่วไป)";
       
       document.getElementById('modalTitle').innerText = title;
-      document.getElementById('modalSubtitle').innerText = `${filtered.length.toLocaleString()} คน`;
+      document.getElementById('modalSubtitle').innerText = `${filtered.length.toLocaleString()} คน `;
 
       const content = document.getElementById('modalContent');
       content.innerHTML = '<div class="flex flex-col items-center justify-center py-12"><div class="w-10 h-10 border-4 border-slate-100 border-t-cra-primary animate-spin mb-4"></div><p class="text-slate-400">กำลังประมวลผล...</p></div>';
