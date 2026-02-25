@@ -595,16 +595,22 @@
     }
 
     // ==========================================
-    // HYBRID DRILL-DOWN LOGIC (The Fix)
+    // HYBRID DRILL-DOWN LOGIC (FIXED HERE)
     // ==========================================
     
-    // 1. Master Handler
     function handleUserTypeClick(t) { 
        const m = document.getElementById('subSelectModal'), c = document.getElementById('subSelectContent');
        
        if (t.includes("นักศึกษาระดับปริญญาตรี")) {
-            c.innerHTML = `<div class="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-cra-primary mb-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg></div><h3 class="text-xl font-bold text-slate-800 mb-2">เลือกกลุ่มนักศึกษา</h3><div class="flex flex-col gap-3 mt-6"><button onclick="selectSubType('student_cra', '${t}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-cra-primary transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-cra-primary">นศ. ราชวิทยาลัยจุฬาภรณ์</div></div><svg class="w-5 h-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button><button onclick="selectSubType('student_general', '${t}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-cra-secondary transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-cra-secondary">นศ. ทั่วไป (สถาบันอื่น)</div></div><svg class="w-5 h-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button></div><button onclick="closeSubModal()" class="mt-8 text-sm text-slate-400 underline">ยกเลิก</button>`;
-            m.classList.remove('hidden');
+           c.innerHTML = `
+             <div class="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-cra-primary mb-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg></div>
+             <h3 class="text-xl font-bold text-slate-800 mb-2">เลือกกลุ่มนักศึกษา</h3>
+             <div class="flex flex-col gap-3 mt-6">
+                <button onclick="selectSubType('student_cra', '${t}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-cra-primary transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-cra-primary">นศ. ราชวิทยาลัยจุฬาภรณ์</div></div><svg class="w-5 h-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+                <button onclick="selectSubType('student_general', '${t}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-cra-secondary transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-cra-secondary">นศ. ทั่วไป (สถาบันอื่น)</div></div><svg class="w-5 h-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+             </div>
+             <button onclick="closeSubModal()" class="mt-8 text-sm text-slate-400 underline">ยกเลิก</button>`;
+           m.classList.remove('hidden');
        } 
        else if (t.includes("อาจารย์") || t.includes("นักวิชาการ")) {
            c.innerHTML = `
@@ -618,27 +624,25 @@
            m.classList.remove('hidden');
        }
        else if (t.includes("ปริญญาโท-เอก")) {
-            // Auto route based on data context or show choice if needed. For now simple drill down
             openDetailModal(t, 'master_doc');
        }
        else {
-           openDetailModal(t); // General Drill Down
+           openDetailModal(t); 
        }
     }
     
     function closeSubModal() { document.getElementById('subSelectModal').classList.add('hidden'); }
     function closeModal() { document.getElementById('typeModal').classList.add('hidden'); }
     
+    // --- KEY FIX IS HERE ---
     function selectSubType(s, t) { 
         closeSubModal(); 
-        if (s === 'student_cra') {
-            openStuModal(); // Use the Special Yellow Modal (New Code)
-        } else {
-            openDetailModal(t, s); // Use the Generic Drill Down (Old Code Logic)
-        }
+        // บังคับให้ทุกคน รวมทั้ง 'student_cra' เข้าไปที่หน้าวิเคราะห์ข้อมูลดิบ (Survey)
+        // แทนที่จะไปเปิดรายชื่อรวม (Attendee List)
+        openDetailModal(t, s); 
     }
 
-    // 2. Special Yellow Modal (New Code Logic - Uses STU_DATA)
+    // 2. Special Yellow Modal (ยังคงไว้สำหรับกดจาก Card สีเหลืองหน้าแรก)
     function openStuModal() {
        if(!STU_DATA.length) { alert('กำลังโหลดข้อมูลรายชื่อนักศึกษา...'); return; }
        document.getElementById('stuModal').classList.remove('hidden');
@@ -674,7 +678,7 @@
        document.getElementById('stuModalContent').innerHTML = `<div class="animate-fade-up flex flex-col items-center py-10 text-center"><div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></div><h2 class="text-xl font-bold text-slate-800 mb-1">${name}</h2><p class="text-slate-500 font-mono mb-8">รหัส: ${id}</p><button onclick="renderStuStep3_IDList('${course}', '${year}')" class="bg-cra-primary text-white px-6 py-2 rounded-full font-bold">ตกลง / กลับ</button></div>`;
     }
 
-    // 3. Generic Detail Modal (Old Code Logic - Uses RAW_DATA)
+    // 3. Main Detail Modal (Uses RAW_DATA for Survey)
     function openDetailModal(type, subType = null) {
       document.getElementById('typeModal').classList.remove('hidden');
       
@@ -682,15 +686,19 @@
       let filtered = RAW_DATA.filter(r => r[IDX.Type] && r[IDX.Type].trim() === type && (FILTER_DATE === 'All' || (r[IDX.Date] && r[IDX.Date].includes(FILTER_DATE))));
       
       // Refine Filter based on SubType
-      if (subType === 'student_general') filtered = filtered.filter(r => !r[IDX.IsStudentCRA] || r[IDX.IsStudentCRA].trim() !== "ใช่");
+      if (subType === 'student_cra') filtered = filtered.filter(r => r[IDX.IsStudentCRA] && r[IDX.IsStudentCRA].trim() === "ใช่");
+      else if (subType === 'student_general') filtered = filtered.filter(r => !r[IDX.IsStudentCRA] || r[IDX.IsStudentCRA].trim() !== "ใช่");
       else if (subType === 'lecturer_cra') filtered = filtered.filter(r => r[IDX.Position] && r[IDX.Position].trim() === "ใช่");
       else if (subType === 'lecturer_general') filtered = filtered.filter(r => !r[IDX.Position] || r[IDX.Position].trim() !== "ใช่");
+      else if (subType === 'master') filtered = filtered.filter(r => r[IDX.Degree] && r[IDX.Degree].includes("โท"));
+      else if (subType === 'doctoral') filtered = filtered.filter(r => r[IDX.Degree] && r[IDX.Degree].includes("เอก"));
       
       // Set Titles
       let title = type;
-      if(subType === 'student_general') title = "นักศึกษาทั่วไป (สถาบันอื่น)";
-      if(subType === 'lecturer_cra') title = "อาจารย์/นักวิชาการ (CRA)";
-      if(subType === 'lecturer_general') title = "อาจารย์/นักวิชาการ (ทั่วไป)";
+      if(subType === 'student_cra') title = "นศ. ราชวิทยาลัยจุฬาภรณ์ (จากแบบสอบถาม)";
+      else if(subType === 'student_general') title = "นักศึกษาทั่วไป (สถาบันอื่น)";
+      else if(subType === 'lecturer_cra') title = "อาจารย์/นักวิชาการ (CRA)";
+      else if(subType === 'lecturer_general') title = "อาจารย์/นักวิชาการ (ทั่วไป)";
       
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalSubtitle').innerText = `${filtered.length.toLocaleString()} คน`;
@@ -698,11 +706,17 @@
       const content = document.getElementById('modalContent');
       content.innerHTML = '<div class="flex flex-col items-center justify-center py-12"><div class="w-10 h-10 border-4 border-slate-100 border-t-cra-primary animate-spin mb-4"></div><p class="text-slate-400">กำลังประมวลผล...</p></div>';
 
-      // Use Timeout to allow UI to update before heavy processing
       setTimeout(() => {
           let html = '<div id="dynamicSexContainer"></div><hr class="my-6 border-slate-100">';
           
-          if (subType === 'student_general') {
+          if (subType === 'student_cra') {
+              g_craData = filtered;
+              html += '<div id="craDrillDownContainer"></div>'; 
+              content.innerHTML = html; 
+              updateSexStats(g_craData); 
+              renderCRA_Level1_Courses(); // ใช้ข้อมูลจาก RAW_DATA
+          }
+          else if (subType === 'student_general') {
               g_genData = filtered; 
               html += '<div id="genDrillDownContainer"></div>'; 
               content.innerHTML = html; 
@@ -729,23 +743,58 @@
                content.innerHTML = html;
           }
           else {
-              // Default view
               html = buildStatBlock("เพศ", getCounts(filtered, IDX.Sex), filtered.length);
               content.innerHTML = html;
           }
       }, 50);
     }
 
-    // --- Drill Down Logic for General Students (from Old Code) ---
+    // --- Drill Down Helper Functions ---
     function updateSexStats(dataSource) { const container = document.getElementById('dynamicSexContainer'); if (container) { const counts = getCounts(dataSource, IDX.Sex); container.innerHTML = buildStatBlock("เพศ", counts, dataSource.length); } }
 
+    // CRA Drill Down (Uses Survey Data)
+    function renderCRA_Level1_Courses() {
+      updateSexStats(g_craData);
+      const counts = getCounts(g_craData, IDX.CourseCRA);
+      document.getElementById('modalSubtitle').innerText = `${g_craData.length.toLocaleString()} คน`;
+      document.getElementById('craDrillDownContainer').innerHTML = renderDrillDownList('เลือกหลักสูตร', counts, 'renderCRA_Level2_Years');
+    }
+    function renderCRA_Level2_Years(course) {
+      g_currentCourse = course;
+      const filtered = g_craData.filter(r => r[IDX.CourseCRA] === course);
+      updateSexStats(filtered);
+      const counts = getCounts(filtered, IDX.YearCRA);
+      document.getElementById('modalTitle').innerHTML = `<span class="text-xl font-bold text-slate-700">นศ. CRA (Survey)</span>`;
+      document.getElementById('modalSubtitle').innerHTML = `<div class="flex flex-col items-start gap-2 mt-2 animate-fade-up"><div class="text-xl font-bold text-cra-primary leading-tight">หลักสูตร: ${course}</div><span class="inline-flex items-center bg-cra-primary text-white text-sm px-4 py-1.5 rounded-full shadow-sm font-medium">รวมทั้งหมด ${filtered.length.toLocaleString()} คน</span></div>`;
+      document.getElementById('craDrillDownContainer').innerHTML = renderDrillDownList(`จำแนกตามชั้นปี`, counts, 'renderCRA_Level3_Students', 'renderCRA_Level1_Courses');
+    }
+    function renderCRA_Level3_Students(year) {
+      g_currentYear = year;
+      const filtered = g_craData.filter(r => r[IDX.CourseCRA] === g_currentCourse && r[IDX.YearCRA] === year);
+      updateSexStats(filtered);
+      const ids = filtered.map(r => r[IDX.StudentID]).sort(); // Shows Student IDs from Survey
+      document.getElementById('modalTitle').innerHTML = `<span class="text-lg font-bold text-slate-700">${g_currentCourse}</span>`;
+      document.getElementById('modalSubtitle').innerHTML = `<div class="flex flex-col items-start gap-2 mt-2 animate-fade-up"><div class="text-lg font-bold text-slate-600">ชั้นปี: <span class="text-cra-primary">${year}</span></div><span class="inline-flex items-center bg-cra-primary text-white text-sm px-4 py-1.5 rounded-full shadow-sm font-medium">รวมทั้งหมด ${filtered.length.toLocaleString()} คน</span></div>`;
+      
+      // Use generic drill down leaf for list
+      let backBtn = `<button onclick="renderCRA_Level2_Years('${g_currentCourse}')" class="mb-4 flex items-center gap-1 text-slate-500 hover:text-cra-primary text-sm font-bold transition">← ย้อนกลับ</button>`;
+      document.getElementById('craDrillDownContainer').innerHTML = `
+        <div class="animate-fade-up relative">
+            <div class="flex justify-between items-start mb-4">${backBtn}</div>
+            <h4 class="font-bold text-slate-800 text-lg mb-4">รายชื่อรหัสนักศึกษา (Survey)</h4>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                ${ids.map(id => `<div class="bg-white border border-slate-200 text-center py-2 rounded-lg font-mono text-sm text-slate-600">${id || '-'}</div>`).join('')}
+            </div>
+        </div>`;
+    }
+
+    // General Student Drill Down
     function renderGen_Level1_Institutes() {
       updateSexStats(g_genData);
       const counts = getCounts(g_genData, IDX.InstituteGen);
       document.getElementById('modalSubtitle').innerText = `${g_genData.length.toLocaleString()} คน`;
       document.getElementById('genDrillDownContainer').innerHTML = renderDrillDownList('เลือกสถาบันการศึกษา', counts, 'renderGen_Level2_Majors');
     }
-
     function renderGen_Level2_Majors(inst) {
       g_currentGenInst = inst;
       const filtered = g_genData.filter(r => r[IDX.InstituteGen] === inst);
@@ -755,7 +804,6 @@
       document.getElementById('modalSubtitle').innerHTML = `<div class="flex flex-col items-start gap-2 mt-2 animate-fade-up"><div class="text-xl font-bold text-cra-secondary leading-tight">สถาบัน: ${inst}</div><span class="inline-flex items-center bg-cra-secondary text-white text-sm px-4 py-1.5 rounded-full shadow-sm font-medium">รวมทั้งหมด ${filtered.length.toLocaleString()} คน</span></div>`;
       document.getElementById('genDrillDownContainer').innerHTML = renderDrillDownList(`เลือกคณะ/สาขา`, counts, 'renderGen_Level3_Years', 'renderGen_Level1_Institutes');
     }
-
     function renderGen_Level3_Years(major) {
       g_currentGenMajor = major;
       const filtered = g_genData.filter(r => r[IDX.InstituteGen] === g_currentGenInst && r[IDX.MajorGen] === major);
