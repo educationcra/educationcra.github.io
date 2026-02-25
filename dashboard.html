@@ -599,20 +599,27 @@ const API_URL ="https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9R
     }
 
     // Helper Functions
-    function handleUserTypeClick(t) { 
-        const m = document.getElementById('subSelectModal'), c = document.getElementById('subSelectContent');
+   function handleUserTypeClick(t) { 
+        const m = document.getElementById('subSelectModal');
+        const c = document.getElementById('subSelectContent');
+        
+        // แก้ไข: เปลี่ยน type.includes เป็น t.includes ทั้งหมด
         if (t.includes("นักศึกษาระดับปริญญาตรี")) {
             c.innerHTML = `<div class="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-cra-primary mb-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg></div><h3 class="text-xl font-bold text-slate-800 mb-2">เลือกกลุ่มนักศึกษา</h3><div class="flex flex-col gap-3 mt-6"><button onclick="selectSubType('student_cra', '${t}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-cra-primary transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-cra-primary">นศ. ราชวิทยาลัยจุฬาภรณ์</div></div><svg class="w-5 h-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button><button onclick="selectSubType('student_general', '${t}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-cra-secondary transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-cra-secondary">นศ. ทั่วไป (สถาบันอื่น)</div></div><svg class="w-5 h-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button></div><button onclick="closeSubModal()" class="mt-8 text-sm text-slate-400 underline">ยกเลิก</button>`;
             m.classList.remove('hidden');
-      } else if (type.includes("ปริญญาโท-เอก")) {
-        content.innerHTML = `<div class="mx-auto w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mb-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg></div><h3 class="text-xl font-bold text-slate-800 mb-2">เลือกระดับการศึกษา</h3><div class="flex flex-col gap-3 mt-6"><button onclick="selectSubType('master', '${type}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-500 transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-emerald-600">ปริญญาโท</div><div class="text-xs text-slate-400">Master's Degree</div></div><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button><button onclick="selectSubType('doctoral', '${type}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-500 transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-emerald-600">ปริญญาเอก</div><div class="text-xs text-slate-400">Doctoral Degree</div></div><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button></div><button onclick="closeSubModal()" class="mt-8 text-sm text-slate-400 underline">ยกเลิก</button>`;
-        modal.classList.remove('hidden');
-      } else if (type.includes("อาจารย์") || type.includes("นักวิชาการ")) {
-        content.innerHTML = `<div class="mx-auto w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 mb-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div><h3 class="text-xl font-bold text-slate-800 mb-2">เลือกประเภทบุคลากร</h3><div class="flex flex-col gap-3 mt-6"><button onclick="selectSubType('lecturer_cra', '${type}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-purple-600 transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-purple-600">อาจารย์/นักวิชาการ CRA</div><div class="text-xs text-slate-400">ราชวิทยาลัยจุฬาภรณ์</div></div><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button><button onclick="selectSubType('lecturer_general', '${type}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-purple-400 transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-purple-400">บุคคลภายนอก/ทั่วไป</div><div class="text-xs text-slate-400">สถาบันอื่น</div></div><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button></div><button onclick="closeSubModal()" class="mt-8 text-sm text-slate-400 underline">ยกเลิก</button>`;
-        modal.classList.remove('hidden');
-      } else {
-        openDetailModal(type);
-      }
+        } 
+        else if (t.includes("ปริญญาโท-เอก")) { // แก้ type -> t
+            c.innerHTML = `<div class="mx-auto w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mb-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg></div><h3 class="text-xl font-bold text-slate-800 mb-2">เลือกระดับการศึกษา</h3><div class="flex flex-col gap-3 mt-6"><button onclick="selectSubType('master', '${t}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-500 transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-emerald-600">ปริญญาโท</div><div class="text-xs text-slate-400">Master's Degree</div></div><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button><button onclick="selectSubType('doctoral', '${t}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-500 transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-emerald-600">ปริญญาเอก</div><div class="text-xs text-slate-400">Doctoral Degree</div></div><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button></div><button onclick="closeSubModal()" class="mt-8 text-sm text-slate-400 underline">ยกเลิก</button>`;
+            m.classList.remove('hidden');
+        } 
+        else if (t.includes("อาจารย์") || t.includes("นักวิชาการ")) { // แก้ type -> t
+            c.innerHTML = `<div class="mx-auto w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 mb-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div><h3 class="text-xl font-bold text-slate-800 mb-2">เลือกประเภทบุคลากร</h3><div class="flex flex-col gap-3 mt-6"><button onclick="selectSubType('lecturer_cra', '${t}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-purple-600 transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-purple-600">อาจารย์/นักวิชาการ CRA</div><div class="text-xs text-slate-400">ราชวิทยาลัยจุฬาภรณ์</div></div><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button><button onclick="selectSubType('lecturer_general', '${t}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-purple-400 transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-purple-400">บุคคลภายนอก/ทั่วไป</div><div class="text-xs text-slate-400">สถาบันอื่น</div></div><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button></div><button onclick="closeSubModal()" class="mt-8 text-sm text-slate-400 underline">ยกเลิก</button>`;
+            m.classList.remove('hidden');
+        } 
+        else {
+            openDetailModal(t); // แก้ type -> t
+        }
+    }
      // ==========================================
     // [NEW] Smart Grouping & Split Layout Logic
     // ==========================================
@@ -707,7 +714,52 @@ const API_URL ="https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9R
     function getCounts(d, i, m = false) { let c = {}; d.forEach(r => { let v = r[i]; if (!v) return; let its = m ? v.split(',').map(s => s.trim()) : [v.trim()]; its.forEach(x => { if (x) c[x] = (c[x] || 0) + 1; }); }); return Object.entries(c).sort((a, b) => b[1] - a[1]); }
     function countFreq(a) { let c = {}; a.forEach(x => c[x] = (c[x] || 0) + 1); return Object.entries(c).sort((a, b) => b[1] - a[1]); }
     function renderUserTypePills(i, d, t) { const c = document.getElementById(i); if(!c) return; c.innerHTML = d.map(x => `<div onclick="handleUserTypeClick('${x[0]}')" class="user-pill group"><span>${x[0]}</span><div class="badge-container"><span class="badge-num">${x[1]} คน</span><span class="badge-pct">ร้อยละ ${(x[1]/t*100).toFixed(2)}</span></div></div>`).join(''); }
-    function renderTopList(i, d, t) { const e = document.getElementById(i); if(!e) return; e.innerHTML = d.map((x, j) => `<tr><td class="text-center">#${j+1}</td><td><div class="px-3 py-2 rounded-lg border text-xs leading-tight">${x[0]}</div></td><td class="text-right font-bold">${x[1]}</td><td class="text-right"><span class="badge-pct">${(x[1]/t*100).toFixed(2)}</span></td></tr>`).join(''); }
+    function renderTopList(id, data, total) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (!data.length) { el.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-slate-400 text-sm">ยังไม่มีข้อมูล</td></tr>'; return; }
+
+        el.innerHTML = data.map((d, i) => {
+            let pct = total > 0 ? (d[1] / total * 100).toFixed(2) : "0.00";
+            let rankContent = '', cardStyle = '';
+            
+            // แยก Logic อันดับ 1, 2, 3 ให้ชัดเจน
+            if (i === 0) { 
+                // อันดับ 1: สีทอง
+                rankContent = `<div class="w-7 h-7 mx-auto flex items-center justify-center bg-yellow-100 text-yellow-600 rounded-full shadow-sm border border-yellow-200"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div>`; 
+                cardStyle = 'bg-yellow-50 border-yellow-200 text-yellow-900 font-bold shadow-sm'; 
+            }
+            else if (i === 1) { 
+                // อันดับ 2: สีเงิน (เทา)
+                rankContent = `<div class="w-7 h-7 mx-auto flex items-center justify-center bg-slate-200 text-slate-600 rounded-full shadow-sm border border-slate-300"><span class="font-bold text-xs">2</span></div>`; 
+                cardStyle = 'bg-slate-100 border-slate-200 text-slate-700 font-bold'; 
+            }
+            else if (i === 2) { 
+                // อันดับ 3: สีทองแดง (ส้ม)
+                rankContent = `<div class="w-7 h-7 mx-auto flex items-center justify-center bg-orange-100 text-orange-700 rounded-full shadow-sm border border-orange-200"><span class="font-bold text-xs">3</span></div>`; 
+                cardStyle = 'bg-orange-50 border-orange-100 text-orange-900 font-bold'; 
+            }
+            else { 
+                // อันดับอื่นๆ
+                rankContent = `<span class="text-slate-400 font-bold text-xs">#${i + 1}</span>`; 
+                cardStyle = 'bg-white border-slate-100 text-slate-600'; 
+            }
+
+            return `
+            <tr class="group transition-colors hover:bg-slate-50">
+                <td class="text-center align-middle w-12 py-2">${rankContent}</td>
+                <td class="align-middle py-2">
+                    <div class="${cardStyle} px-3 py-2 rounded-lg border w-full text-xs sm:text-sm whitespace-normal break-words leading-tight">
+                        ${d[0]}
+                    </div>
+                </td>
+                <td class="text-right font-bold text-slate-700 text-xs w-16 align-middle py-2 pr-2">${d[1]}</td>
+                <td class="text-right w-24 align-middle py-2 pl-2">
+                    <span class="badge-pct">${pct}</span>
+                </td>
+            </tr>`;
+        }).join('');
+    }
     function renderCleanDoughnut(i, l, d, t) { 
         if (charts[i]) charts[i].destroy(); const tot = d.reduce((s, x) => s + x[1], 0); if(document.getElementById(t)) document.getElementById(t).innerText = tot;
         charts[i] = new Chart(document.getElementById(i).getContext('2d'), { type: 'doughnut', data: { labels: d.map(x => x[0]), datasets: [{ data: d.map(x => x[1]), backgroundColor: ['#0F2C67', '#E65100', '#F59E0B', '#3B82F6', '#10B981'], borderWidth: 0 }] }, options: { plugins: { legend: { display: false } }, cutout: '75%' } });
