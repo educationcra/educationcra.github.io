@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CRA Job Fair & Education 2026 - Dashboard</title>
@@ -141,14 +140,11 @@
         </div>
       </div>
 
-<div onclick="openStuModal()" class="card p-8 relative overflow-hidden bg-white border-l-[6px] border-l-yellow-400 shadow-sm cursor-pointer hover:shadow-lg transition-all group">
-         
+      <div onclick="openStuModal()" class="card p-8 relative overflow-hidden bg-white border-l-[6px] border-l-yellow-400 shadow-sm cursor-pointer hover:shadow-lg transition-all group">
          <div class="absolute top-4 right-4 text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity z-20 bg-yellow-50 p-1.5 rounded-full">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
          </div>
-
          <div class="absolute right-0 top-0 bg-yellow-50 w-64 h-64 rounded-bl-full opacity-40 -z-0"></div>
-         
          <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
              <div class="flex items-center gap-6">
                  <div class="bg-yellow-100 p-4 rounded-2xl text-yellow-700 group-hover:scale-110 transition-transform duration-300">
@@ -159,9 +155,7 @@
                      <div class="flex items-baseline gap-3 mt-1">
                          <span class="text-6xl font-black text-slate-800 tracking-tighter">362</span>
                          <span class="text-xl font-bold text-slate-400">คน</span>
-                         <span id="craAttendeePctBadge" class="ml-4 bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full border border-yellow-200">
-                           ...
-                         </span>
+                         <span id="craAttendeePctBadge" class="ml-4 bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full border border-yellow-200">...</span>
                      </div>
                      <p class="text-[11px] text-slate-500 mt-2 flex items-center gap-1">
                        <svg class="w-3 h-3 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -169,13 +163,13 @@
                      </p>
                  </div>
              </div>
-
              <div class="w-full md:w-auto bg-slate-50 p-6 rounded-2xl border border-slate-100 text-center md:text-right group-hover:bg-yellow-50/50 group-hover:border-yellow-200 transition-all">
                  <p class="text-xs text-slate-500 font-bold uppercase mb-1 tracking-wider">สัดส่วนการตอบแบบสอบถาม</p>
                  <div class="text-3xl font-black text-indigo-600" id="craRespRate">กำลังคำนวณ...</div>
              </div>
          </div>
       </div>
+    </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
       <div class="card p-8 relative overflow-hidden group">
@@ -350,11 +344,10 @@
     </div>
   </div>
 
-   <div id="stuModal" class="fixed inset-0 z-[150] hidden transition-opacity duration-300">
+  <div id="stuModal" class="fixed inset-0 z-[150] hidden transition-opacity duration-300">
     <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeStuModal()"></div>
     <div class="absolute inset-0 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden animate-fade-up">
-            
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-yellow-50">
                 <div class="flex items-center gap-3">
                     <div class="bg-white p-2 rounded-full shadow-sm text-yellow-600">
@@ -369,20 +362,21 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
-
             <div id="stuModalContent" class="p-6 overflow-y-auto custom-scroll flex-1 bg-slate-50/50">
-                </div>
+            </div>
         </div>
     </div>
 </div>
-<script>
+
+  <script>
     let RAW_DATA = [];
     let STU_DATA = [];
     let FILTER_DATE = 'All';
     let g_gradData = [];
     let g_currentGradDegree = '';
-    let charts = {}; // เพิ่มตัวแปรเก็บ chart เพื่อป้องกัน Error เวลาทำลาย chart เก่า
+    let charts = {}; // ตัวแปรเก็บ chart
     
+    // Index Mapping
     const IDX = {
       Timestamp: 0, Sex: 1, Type: 2, IsStudentCRA: 3, Degree: 4, Institute: 5, Position: 6,
       StudentID: 7, YearCRA: 8, CourseCRA: 9,
@@ -393,29 +387,34 @@
       D12_Comp1: 24, D12_Comp2: 25, D12_Spon: 26, D12_NextReq: 27, D12_Sugg: 28,
       D13_Comp1: 29, D13_Comp2: 30, D13_Spon: 31, D13_NextReq: 32, D13_Sugg: 33
     };
-    
+
     const STU_IDX = { Name: 0, ID: 1, Course: 2, Year: 3 };
 
     let g_craData = []; let g_currentCourse = ''; let g_currentYear = '';
     let g_genData = []; let g_currentGenInst = ''; let g_currentGenMajor = '';
-  
-const API_URL ="https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9Rphi7Ln9vRU2mO7Q6l-QcZ3p2htU_5NLUxIi2khhoa8s/exec";
-    window.onload = async () => {
-      fetch(`${API_URL}?action=datajob`)
-    .then(res => res.json())
-    .then(data => {
-      RAW_DATA = data;
-      initDashboard();
-    });
 
-  // เปลี่ยนวิธีดึงข้อมูลนักศึกษา
-  fetch(`${API_URL}?action=datastu`)
-    .then(res => res.json())
-    .then(data => {
-      STU_DATA = data;
-      console.log("Student Data Loaded:", STU_DATA.length);
-    });
-};
+    // URL ของ API (Apps Script)
+    const API_URL = "https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9Rphi7Ln9vRU2mO7Q6l-QcZ3p2htU_5NLUxIi2khhoa8s/exec";
+
+    window.onload = async () => {
+      // 1. ดึงข้อมูล Dashboard
+      fetch(`${API_URL}?action=datajob`)
+        .then(res => res.json())
+        .then(data => {
+          RAW_DATA = data;
+          initDashboard();
+        })
+        .catch(err => console.error("Load Data Error:", err));
+
+      // 2. ดึงข้อมูลนักศึกษา
+      fetch(`${API_URL}?action=datastu`)
+        .then(res => res.json())
+        .then(data => {
+          STU_DATA = data;
+          console.log("Student Data Loaded:", STU_DATA.length);
+        })
+        .catch(err => console.warn("Load Student Data Error:", err));
+    };
 
     function initDashboard() {
       document.getElementById('loading').classList.add('opacity-0', 'pointer-events-none');
@@ -437,7 +436,6 @@ const API_URL ="https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9R
 
       animateValue("kpiTotal", parseInt(document.getElementById('kpiTotal').innerText.replace(/,/g, '') || 0), total, 500);
 
-      // คำนวณ KPI คะแนนความพึงพอใจ
       let sumSat = 0, cntSat = 0;
       displayData.forEach(r => {
         let v = parseFloat(r[IDX.Sat_Overall]);
@@ -445,28 +443,22 @@ const API_URL ="https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9R
       });
 
       let avgVal = cntSat ? (sumSat / cntSat) : 0;
-      const kpiSatEl = document.getElementById('kpiSatScore');
-      if (kpiSatEl) {
-        kpiSatEl.classList.remove('tracking-tighter');
-        kpiSatEl.classList.add('flex', 'items-baseline', 'gap-3');
-        kpiSatEl.innerHTML = `
+      if (document.getElementById('kpiSatScore')) {
+        document.getElementById('kpiSatScore').innerHTML = `
           <span class="tracking-tighter">${avgVal.toFixed(2)}</span> 
-          <span class="text-xl text-slate-400 font-bold tracking-normal whitespace-nowrap">(ร้อยละ ${(avgVal/5*100).toFixed(2)})</span>`;
+          <span class="text-xl text-slate-400 font-bold ml-2">(ร้อยละ ${(avgVal/5*100).toFixed(2)})</span>`;
       }
 
-      // อัปเดต Badges วันที่
       const dateTxt = FILTER_DATE === 'All' ? 'รวมทั้ง 2 วัน' : `วันที่ ${FILTER_DATE} ก.พ.`;
       ['dateBadgeComp', 'dateBadgeBooth', 'dateBadgeSex', 'dateBadgeUserType', 'dateBadgeSource', 'dateBadgeSatKPI', 'dateBadgeSatDetail', 'dateBadgeNextTrend', 'dateBadgeNextReq', 'dateBadgeSugg', 'dateBadgeAware'].forEach(id => {
         if (document.getElementById(id)) document.getElementById(id).innerText = dateTxt;
       });
 
-      // เรนเดอร์กราฟและตาราง
       renderCleanDoughnut('chartGender', 'legendGender', getCounts(displayData, IDX.Sex), 'totalGender');
       renderCleanDoughnut('chartNext', 'legendNext', getCounts(displayData, IDX.NextJoin), 'totalNextVal');
       renderUserTypePills('userTypePillContainer', getCounts(displayData, IDX.Type), total);
       renderTopList('tableAwareness', getCounts(displayData, IDX.Source, true), total);
 
-      // ประมวลผลข้อมูลบริษัทและบูธ
       let companies = [], booths = [];
       const clean = (t) => { if (!t) return null; let s = t.toString().trim(); if (s.length < 2 || ['-', '_', '.', 'ไม่มี', 'ไม่ระบุ'].includes(s)) return null; return s; }
 
@@ -488,11 +480,9 @@ const API_URL ="https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9R
       renderTopList('tableCompany', countFreq(companies), total);
       renderTopList('tableBooth', countFreq(booths), total);
 
-      // ✅ [FIXED] เรียกฟังก์ชันแบ่งคอลัมน์ (ซ่อมจุดที่ทำให้เครื่องค้าง)
       renderSplitCard(displayData, IDX.D12_NextReq, IDX.D13_NextReq, 'nextReqBox', 'countNextReq', 'dateBadgeNextReq', 'blue');
       renderSplitCard(displayData, IDX.D12_Sugg, IDX.D13_Sugg, 'suggestionBox', 'countSugg', 'dateBadgeSugg', 'orange');
 
-      // เรนเดอร์ความพึงพอใจรายด้าน
       const satMetrics = [
         { idx: IDX.Sat_Time, label: 'ความเหมาะสมของช่วงเวลา' },
         { idx: IDX.Sat_Place, label: 'ความเหมาะสมของสถานที่' },
@@ -523,7 +513,6 @@ const API_URL ="https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9R
         }).join('');
       }
 
-      // ส่วนคำนวณสัดส่วนนักศึกษา
       const STATS = { cra_hours: 362, unique: 818 };
       let craVsTotalPct = ((STATS.cra_hours / STATS.unique) * 100).toFixed(2);
       if(document.getElementById('craAttendeePctBadge')) document.getElementById('craAttendeePctBadge').innerText = `ร้อยละ ${craVsTotalPct} ของผู้เข้าร่วมจริง`;
@@ -533,38 +522,56 @@ const API_URL ="https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9R
       if (document.getElementById('craRespRate')) document.getElementById('craRespRate').innerHTML = `${craRespondents} คน <span class="text-lg text-indigo-400 font-bold ml-1">(ร้อยละ ${craRespPct})</span>`;
     }
 
-    // ✅ [NEW] ฟังก์ชันแบ่งคอลัมน์ซ้ายขวา (เพิ่มกลับมาให้)
+    // ==========================================
+    // LOGIC: Split Card (Suggestion)
+    // ==========================================
     const renderSplitCard = (data, idx12, idx13, containerId, countId, dateBadgeId, theme) => {
-        let map12 = new Map(), map13 = new Map(), totalCount = 0;
+        let m12 = new Map(), m13 = new Map(), tot = 0;
         data.forEach(r => {
-            const cleanT = (t) => { if(!t) return null; let s = t.trim(); return (s.length > 1 && s !== '-' && s !== '.') ? s : null; };
-            let t12 = cleanT(r[idx12]); if (t12 && (FILTER_DATE === 'All' || FILTER_DATE === '12')) { map12.set(t12, (map12.get(t12) || 0) + 1); totalCount++; }
-            let t13 = cleanT(r[idx13]); if (t13 && (FILTER_DATE === 'All' || FILTER_DATE === '13')) { map13.set(t13, (map13.get(t13) || 0) + 1); totalCount++; }
+            const cln = (t) => { if(!t) return null; let s = t.trim(); return (s.length > 1 && s !== '-' && s !== '.') ? s : null; };
+            let t12 = cln(r[idx12]); if(t12 && (FILTER_DATE === 'All' || FILTER_DATE === '12')) { m12.set(t12, (m12.get(t12) || 0) + 1); tot++; }
+            let t13 = cln(r[idx13]); if(t13 && (FILTER_DATE === 'All' || FILTER_DATE === '13')) { m13.set(t13, (m13.get(t13) || 0) + 1); tot++; }
         });
-        if(document.getElementById(countId)) document.getElementById(countId).innerText = `${totalCount} ข้อความ`;
-        const createBubble = (txt, count) => {
-            let bg = theme === 'blue' ? 'bg-blue-600' : 'bg-orange-500';
-            return `<div class="bg-white border border-slate-100 p-3 rounded-xl shadow-sm flex justify-between items-start gap-3 mb-3 animate-fade-up"><p class="text-sm text-slate-700 font-medium flex-1">"${txt}"</p>${count > 1 ? `<div class="${bg} text-white text-[10px] font-bold px-2 py-1 rounded-lg">x${count}</div>` : ''}</div>`;
-        };
+        if(document.getElementById(countId)) document.getElementById(countId).innerText = `${tot} ข้อความ`;
         const box = document.getElementById(containerId);
-        const getSorted = (m) => Array.from(m.entries()).map(([t, c]) => ({ t, c })).sort((a, b) => b.c - a.c);
-        const list12 = getSorted(map12), list13 = getSorted(map13);
+        
+        const createBbl = (txt, cnt) => {
+             let bg = theme === 'blue' ? 'bg-blue-600' : 'bg-orange-500';
+             return `<div class="bg-white border border-slate-100 p-3 rounded-xl shadow-sm mb-2 text-sm text-slate-700 flex justify-between items-start gap-2 animate-fade-up"><span class="flex-1">"${txt}"</span>${cnt > 1 ? `<span class="${bg} text-white text-[10px] font-bold px-2 py-0.5 rounded-lg shrink-0">x${cnt}</span>` : ''}</div>`;
+        };
 
-        if (totalCount === 0) { box.innerHTML = `<div class="h-full flex items-center justify-center text-slate-300">ไม่มีข้อมูล</div>`; } 
+        const l12 = Array.from(m12.entries()).sort((a,b)=>b[1]-a[1]);
+        const l13 = Array.from(m13.entries()).sort((a,b)=>b[1]-a[1]);
+
+        if (tot === 0) { box.innerHTML = `<div class="h-full flex items-center justify-center text-slate-300">ไม่มีข้อมูล</div>`; } 
         else if (FILTER_DATE === 'All') {
-            box.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-8 h-full divide-x divide-slate-100">
-                <div class="flex flex-col h-full pr-4"><div class="flex items-center gap-2 mb-4 pb-2 border-b sticky top-0 bg-slate-50/50 backdrop-blur-sm z-10"><span class="w-2 h-2 rounded-full ${theme==='blue'?'bg-blue-500':'bg-orange-400'}"></span><h4 class="font-bold text-slate-700 text-xs">12 ก.พ. (${list12.length})</h4></div><div class="flex-1">${list12.map(i => createBubble(i.t, i.c)).join('')}</div></div>
-                <div class="flex flex-col h-full pl-4"><div class="flex items-center gap-2 mb-4 pb-2 border-b sticky top-0 bg-slate-50/50 backdrop-blur-sm z-10"><span class="w-2 h-2 rounded-full ${theme==='blue'?'bg-indigo-500':'bg-orange-600'}"></span><h4 class="font-bold text-slate-700 text-xs">13 ก.พ. (${list13.length})</h4></div><div class="flex-1">${list13.map(i => createBubble(i.t, i.c)).join('')}</div></div>
+            box.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full divide-x divide-slate-100">
+                <div class="border-r border-slate-100 pr-2 flex flex-col h-full">
+                    <div class="flex items-center gap-2 mb-2 pb-2 border-b sticky top-0 bg-slate-50/80 backdrop-blur z-10">
+                        <span class="w-2 h-2 rounded-full ${theme==='blue'?'bg-blue-500':'bg-orange-400'}"></span>
+                        <h4 class="font-bold text-slate-700 text-xs">12 ก.พ. (${l12.length})</h4>
+                    </div>
+                    <div class="flex-1 overflow-y-auto custom-scroll pr-1">${l12.map(i => createBbl(i[0], i[1])).join('')}</div>
+                </div>
+                <div class="pl-2 flex flex-col h-full">
+                    <div class="flex items-center gap-2 mb-2 pb-2 border-b sticky top-0 bg-slate-50/80 backdrop-blur z-10">
+                        <span class="w-2 h-2 rounded-full ${theme==='blue'?'bg-indigo-500':'bg-orange-600'}"></span>
+                        <h4 class="font-bold text-slate-700 text-xs">13 ก.พ. (${l13.length})</h4>
+                    </div>
+                    <div class="flex-1 overflow-y-auto custom-scroll pr-1">${l13.map(i => createBbl(i[0], i[1])).join('')}</div>
+                </div>
             </div>`;
         } else {
-            const activeList = FILTER_DATE === '12' ? list12 : list13;
-            box.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4 content-start">${activeList.map(i => createBubble(i.t, i.c)).join('')}</div>`;
+            const list = FILTER_DATE === '12' ? l12 : l13;
+            box.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 content-start">${list.map(i => createBbl(i[0], i[1])).join('')}</div>`;
         }
     };
 
-    // ✅ [NEW] ฟังก์ชันดูรายชื่อนักศึกษา (ซ่อมจุดที่ทำให้ข้อมูลไม่ขึ้น)
+    // ==========================================
+    // LOGIC: Student Drill-down (Modal) - Restored
+    // ==========================================
     function openStuModal() {
-        if(!STU_DATA.length) { alert('กำลังโหลดข้อมูลรายชื่อนักศึกษา...'); return; }
+        if(!STU_DATA || STU_DATA.length === 0) { alert('กำลังโหลดข้อมูลรายชื่อนักศึกษา...'); return; }
         document.getElementById('stuModal').classList.remove('hidden');
         renderStuStep1_Course();
     }
@@ -598,27 +605,311 @@ const API_URL ="https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9R
         document.getElementById('stuModalContent').innerHTML = `<div class="animate-fade-up flex flex-col items-center py-10 text-center"><div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></div><h2 class="text-xl font-bold text-slate-800 mb-1">${name}</h2><p class="text-slate-500 font-mono mb-8">รหัส: ${id}</p><button onclick="renderStuStep3_IDList('${course}', '${year}')" class="bg-cra-primary text-white px-6 py-2 rounded-full font-bold">ตกลง / กลับ</button></div>`;
     }
 
-    // Helper Functions
-    function handleUserTypeClick(t) { 
-        const m = document.getElementById('subSelectModal'), c = document.getElementById('subSelectContent');
-        if (t.includes("นักศึกษาระดับปริญญาตรี")) {
-            c.innerHTML = `<div class="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-cra-primary mb-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg></div><h3 class="text-xl font-bold text-slate-800 mb-2">เลือกกลุ่มนักศึกษา</h3><div class="flex flex-col gap-3 mt-6"><button onclick="selectSubType('student_cra', '${t}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-cra-primary transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-cra-primary">นศ. ราชวิทยาลัยจุฬาภรณ์</div></div><svg class="w-5 h-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button><button onclick="selectSubType('student_general', '${t}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-cra-secondary transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-cra-secondary">นศ. ทั่วไป (สถาบันอื่น)</div></div><svg class="w-5 h-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button></div><button onclick="closeSubModal()" class="mt-8 text-sm text-slate-400 underline">ยกเลิก</button>`;
-            m.classList.remove('hidden');
-        } else openDetailModal(t);
+    // ==========================================
+    // LOGIC: Type Drill-down (Restored Functionality)
+    // ==========================================
+    function handleUserTypeClick(type) {
+      const modal = document.getElementById('subSelectModal');
+      const content = document.getElementById('subSelectContent');
+      if (type.includes("นักศึกษาระดับปริญญาตรี")) {
+        content.innerHTML = `<div class="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-cra-primary mb-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg></div><h3 class="text-xl font-bold text-slate-800 mb-2">เลือกกลุ่มนักศึกษา</h3><div class="flex flex-col gap-3 mt-6"><button onclick="selectSubType('student_cra', '${type}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-cra-primary transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-cra-primary">นักศึกษาราชวิทยาลัยจุฬาภรณ์</div><div class="text-xs text-slate-400">ระดับปริญญาตรี</div></div><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button><button onclick="selectSubType('student_general', '${type}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-cra-secondary transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-cra-secondary">นักศึกษาทั่วไป (สถาบันอื่น)</div><div class="text-xs text-slate-400">ระดับปริญญาตรี</div></div><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button></div><button onclick="closeSubModal()" class="mt-8 text-sm text-slate-400 underline">ยกเลิก</button>`;
+        modal.classList.remove('hidden');
+      } else if (type.includes("ปริญญาโท-เอก")) {
+        content.innerHTML = `<div class="mx-auto w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mb-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg></div><h3 class="text-xl font-bold text-slate-800 mb-2">เลือกระดับการศึกษา</h3><div class="flex flex-col gap-3 mt-6"><button onclick="selectSubType('master', '${type}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-500 transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-emerald-600">ปริญญาโท</div><div class="text-xs text-slate-400">Master's Degree</div></div><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button><button onclick="selectSubType('doctoral', '${type}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-500 transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-emerald-600">ปริญญาเอก</div><div class="text-xs text-slate-400">Doctoral Degree</div></div><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button></div><button onclick="closeSubModal()" class="mt-8 text-sm text-slate-400 underline">ยกเลิก</button>`;
+        modal.classList.remove('hidden');
+      } else if (type.includes("อาจารย์") || type.includes("นักวิชาการ")) {
+        content.innerHTML = `<div class="mx-auto w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 mb-4"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div><h3 class="text-xl font-bold text-slate-800 mb-2">เลือกประเภทบุคลากร</h3><div class="flex flex-col gap-3 mt-6"><button onclick="selectSubType('lecturer_cra', '${type}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-purple-600 transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-purple-600">อาจารย์/นักวิชาการ CRA</div><div class="text-xs text-slate-400">ราชวิทยาลัยจุฬาภรณ์</div></div><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button><button onclick="selectSubType('lecturer_general', '${type}')" class="group p-4 bg-white border border-slate-200 rounded-xl hover:border-purple-400 transition-all flex items-center justify-between text-left"><div><div class="font-bold text-slate-800 group-hover:text-purple-400">บุคคลภายนอก/ทั่วไป</div><div class="text-xs text-slate-400">สถาบันอื่น</div></div><svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button></div><button onclick="closeSubModal()" class="mt-8 text-sm text-slate-400 underline">ยกเลิก</button>`;
+        modal.classList.remove('hidden');
+      } else {
+        openDetailModal(type);
+      }
     }
+
     function closeSubModal() { document.getElementById('subSelectModal').classList.add('hidden'); }
-    function selectSubType(s, t) { closeSubModal(); openDetailModal(t, s); }
-    function closeModal() { document.getElementById('typeModal').classList.add('hidden'); }
-    function getCounts(d, i, m = false) { let c = {}; d.forEach(r => { let v = r[i]; if (!v) return; let its = m ? v.split(',').map(s => s.trim()) : [v.trim()]; its.forEach(x => { if (x) c[x] = (c[x] || 0) + 1; }); }); return Object.entries(c).sort((a, b) => b[1] - a[1]); }
-    function countFreq(a) { let c = {}; a.forEach(x => c[x] = (c[x] || 0) + 1); return Object.entries(c).sort((a, b) => b[1] - a[1]); }
-    function renderUserTypePills(i, d, t) { const c = document.getElementById(i); if(!c) return; c.innerHTML = d.map(x => `<div onclick="handleUserTypeClick('${x[0]}')" class="user-pill group"><span>${x[0]}</span><div class="badge-container"><span class="badge-num">${x[1]} คน</span><span class="badge-pct">ร้อยละ ${(x[1]/t*100).toFixed(2)}</span></div></div>`).join(''); }
-    function renderTopList(i, d, t) { const e = document.getElementById(i); if(!e) return; e.innerHTML = d.map((x, j) => `<tr><td class="text-center">#${j+1}</td><td><div class="px-3 py-2 rounded-lg border text-xs leading-tight">${x[0]}</div></td><td class="text-right font-bold">${x[1]}</td><td class="text-right"><span class="badge-pct">${(x[1]/t*100).toFixed(2)}</span></td></tr>`).join(''); }
-    function renderCleanDoughnut(i, l, d, t) { 
-        if (charts[i]) charts[i].destroy(); const tot = d.reduce((s, x) => s + x[1], 0); if(document.getElementById(t)) document.getElementById(t).innerText = tot;
-        charts[i] = new Chart(document.getElementById(i).getContext('2d'), { type: 'doughnut', data: { labels: d.map(x => x[0]), datasets: [{ data: d.map(x => x[1]), backgroundColor: ['#0F2C67', '#E65100', '#F59E0B', '#3B82F6', '#10B981'], borderWidth: 0 }] }, options: { plugins: { legend: { display: false } }, cutout: '75%' } });
-        document.getElementById(l).innerHTML = d.map((x, idx) => `<div class="flex justify-between text-[10px] mb-1"><span>${x[0]}</span><span class="font-bold">${x[1]}คน</span></div>`).join('');
+    function selectSubType(subType, typeName) { closeSubModal(); openDetailModal(typeName, subType); }
+
+    function openDetailModal(type, subType = null) {
+      document.getElementById('typeModal').classList.remove('hidden');
+      let title = type;
+      if (subType === 'student_cra') title = "นักศึกษาราชวิทยาลัยจุฬาภรณ์ (ป.ตรี)";
+      else if (subType === 'student_general') title = "นักศึกษาทั่วไป (สถาบันอื่น)";
+      else if (subType === 'lecturer_cra') title = "อาจารย์/นักวิชาการ (CRA)";
+      else if (subType === 'lecturer_general') title = "อาจารย์/นักวิชาการ (ทั่วไป)";
+      else if (subType === 'master') title = "นักศึกษาระดับปริญญาโท";
+      else if (subType === 'doctoral') title = "นักศึกษาระดับปริญญาเอก";
+
+      document.getElementById('modalTitle').innerText = title;
+      const content = document.getElementById('modalContent');
+      content.innerHTML = '<div class="flex flex-col items-center justify-center py-12"><div class="w-10 h-10 border-4 border-slate-100 border-t-cra-primary animate-spin mb-4"></div><p class="text-slate-400">กำลังประมวลผล...</p></div>';
+
+      let filtered = RAW_DATA.filter(r => r[IDX.Type] && r[IDX.Type].trim() === type && (FILTER_DATE === 'All' || (r[IDX.Date] && r[IDX.Date].includes(FILTER_DATE))));
+      if (subType === 'student_cra') filtered = filtered.filter(r => r[IDX.IsStudentCRA] && r[IDX.IsStudentCRA].trim() === "ใช่");
+      else if (subType === 'student_general') filtered = filtered.filter(r => !r[IDX.IsStudentCRA] || r[IDX.IsStudentCRA].trim() !== "ใช่");
+      else if (subType === 'lecturer_cra') filtered = filtered.filter(r => r[IDX.Position] && r[IDX.Position].trim() === "ใช่");
+      else if (subType === 'lecturer_general') filtered = filtered.filter(r => !r[IDX.Position] || r[IDX.Position].trim() !== "ใช่");
+      else if (subType === 'master') filtered = filtered.filter(r => r[IDX.Degree] && r[IDX.Degree].includes("โท"));
+      else if (subType === 'doctoral') filtered = filtered.filter(r => r[IDX.Degree] && r[IDX.Degree].includes("เอก"));
+
+      document.getElementById('modalSubtitle').innerText = `${filtered.length.toLocaleString()} คน`;
+      let html = '<div id="dynamicSexContainer"></div><hr class="my-6 border-slate-100">';
+
+      if (subType === 'student_cra') { g_craData = filtered; html += '<div id="craDrillDownContainer"></div>'; content.innerHTML = html; updateSexStats(g_craData); renderCRA_Level1_Courses(); return; }
+      else if (subType === 'student_general') { g_genData = filtered; html += '<div id="genDrillDownContainer"></div>'; content.innerHTML = html; updateSexStats(g_genData); renderGen_Level1_Institutes(); return; }
+      else if (subType === 'lecturer_cra') html = buildStatBlock("เพศ", getCounts(filtered, IDX.Sex), filtered.length) + '<hr class="my-6 border-slate-100">' + buildStatBlock("สังกัด", getCounts(filtered, IDX.Affiliation), filtered.length);
+      else if (subType === 'lecturer_general') html = buildStatBlock("เพศ", getCounts(filtered, IDX.Sex), filtered.length);
+      else if (subType === 'master' || subType === 'doctoral') html = buildStatBlock("เพศ", getCounts(filtered, IDX.Sex), filtered.length) + '<hr class="my-6 border-slate-100">' + buildStatBlock("สถาบัน", getCounts(filtered, IDX.Institute), filtered.length);
+      else if (type.includes("ศิษย์เก่า")) html = buildStatBlock("เพศ", getCounts(filtered, IDX.Sex), filtered.length) + '<hr class="my-6 border-slate-100">' + buildStatBlock("รุ่น/ปีที่จบ", getCounts(filtered, IDX.YearCRA), filtered.length) + buildStatBlock("หลักสูตรที่จบ", getCounts(filtered, IDX.CourseCRA), filtered.length) + buildStatBlock("รหัสนักศึกษา", getCounts(filtered, IDX.StudentID), filtered.length);
+      else if (type.includes("บุคลากร") && !type.includes("อาจารย์")) html = buildStatBlock("เพศ", getCounts(filtered, IDX.Sex), filtered.length) + '<hr class="my-6 border-slate-100">' + buildStatBlock("สังกัด", getCounts(filtered, IDX.Affiliation), filtered.length);
+      else html = buildStatBlock("เพศ", getCounts(filtered, IDX.Sex), filtered.length);
+      content.innerHTML = html;
     }
-    function animateValue(i, s, e, d) { if (s === e) return; let o = document.getElementById(i); if(!o) return; let r = e - s, c = s, inc = e > s ? 1 : -1, st = Math.abs(Math.floor(d / r)); let t = setInterval(() => { c += inc; o.innerText = c.toLocaleString(); if (c == e) clearInterval(t); }, Math.max(st, 10)); o.innerText = e.toLocaleString(); }
+
+    function updateSexStats(dataSource) { const container = document.getElementById('dynamicSexContainer'); if (container) { const counts = getCounts(dataSource, IDX.Sex); container.innerHTML = buildStatBlock("เพศ", counts, dataSource.length); } }
+    
+    function renderCRA_Level1_Courses() {
+      updateSexStats(g_craData);
+      const counts = getCounts(g_craData, IDX.CourseCRA);
+      document.getElementById('modalSubtitle').innerText = `${g_craData.length.toLocaleString()} คน`;
+      document.getElementById('craDrillDownContainer').innerHTML = renderDrillDownList('เลือกหลักสูตร', counts, 'renderCRA_Level2_Years');
+    }
+
+    function renderCRA_Level2_Years(course) {
+      g_currentCourse = course;
+      const filtered = g_craData.filter(r => r[IDX.CourseCRA] === course);
+      updateSexStats(filtered);
+      const counts = getCounts(filtered, IDX.YearCRA);
+      document.getElementById('modalTitle').innerHTML = `<span class="text-xl font-bold text-slate-700">นักศึกษาราชวิทยาลัยจุฬาภรณ์ (ป.ตรี)</span>`;
+      document.getElementById('modalSubtitle').innerHTML = `
+        <div class="flex flex-col items-start gap-2 mt-2 animate-fade-up">
+          <div class="text-xl font-bold text-cra-primary leading-tight">หลักสูตร: ${course}</div>
+          <span class="inline-flex items-center bg-cra-primary text-white text-sm px-4 py-1.5 rounded-full shadow-sm font-medium">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            รวมทั้งหมด ${filtered.length.toLocaleString()} คน
+          </span>
+        </div>`;
+      document.getElementById('craDrillDownContainer').innerHTML = renderDrillDownList(`จำแนกตามชั้นปี`, counts, 'renderCRA_Level3_Students', 'renderCRA_Level1_Courses');
+    }
+
+    function renderCRA_Level3_Students(year) {
+      g_currentYear = year;
+      const filtered = g_craData.filter(r => r[IDX.CourseCRA] === g_currentCourse && r[IDX.YearCRA] === year);
+      updateSexStats(filtered);
+      const ids = filtered.map(r => r[IDX.StudentID]).sort();
+      document.getElementById('modalTitle').innerHTML = `<span class="text-lg font-bold text-slate-700">${g_currentCourse}</span>`;
+      document.getElementById('modalSubtitle').innerHTML = `
+        <div class="flex flex-col items-start gap-2 mt-2 animate-fade-up">
+          <div class="text-lg font-bold text-slate-600">ชั้นปี: <span class="text-cra-primary">${year}</span></div>
+          <span class="inline-flex items-center bg-cra-primary text-white text-sm px-4 py-1.5 rounded-full shadow-sm font-medium">รวมทั้งหมด ${filtered.length.toLocaleString()} คน</span>
+        </div>`;
+      document.getElementById('craDrillDownContainer').innerHTML = renderDrillDownLeaf(g_currentCourse, g_currentYear, 'รายชื่อรหัสนักศึกษา', ids, 'renderCRA_Level2_Years', g_currentCourse);
+    }
+
+    function renderGen_Level1_Institutes() {
+      updateSexStats(g_genData);
+      const counts = getCounts(g_genData, IDX.InstituteGen);
+      document.getElementById('modalSubtitle').innerText = `${g_genData.length.toLocaleString()} คน`;
+      document.getElementById('genDrillDownContainer').innerHTML = renderDrillDownList('เลือกสถาบันการศึกษา', counts, 'renderGen_Level2_Majors');
+    }
+
+    function renderGen_Level2_Majors(inst) {
+      g_currentGenInst = inst;
+      const filtered = g_genData.filter(r => r[IDX.InstituteGen] === inst);
+      updateSexStats(filtered);
+      const counts = getCounts(filtered, IDX.MajorGen);
+      document.getElementById('modalTitle').innerHTML = `<span class="text-xl font-bold text-slate-700">นักศึกษาทั่วไป (สถาบันอื่น)</span>`;
+      document.getElementById('modalSubtitle').innerHTML = `
+        <div class="flex flex-col items-start gap-2 mt-2 animate-fade-up">
+          <div class="text-xl font-bold text-cra-secondary leading-tight">สถาบัน: ${inst}</div>
+          <span class="inline-flex items-center bg-cra-secondary text-white text-sm px-4 py-1.5 rounded-full shadow-sm font-medium">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            รวมทั้งหมด ${filtered.length.toLocaleString()} คน
+          </span>
+        </div>`;
+      document.getElementById('genDrillDownContainer').innerHTML = renderDrillDownList(`เลือกคณะ/สาขา`, counts, 'renderGen_Level3_Years', 'renderGen_Level1_Institutes');
+    }
+
+    function renderGen_Level3_Years(major) {
+      g_currentGenMajor = major;
+      const filtered = g_genData.filter(r => r[IDX.InstituteGen] === g_currentGenInst && r[IDX.MajorGen] === major);
+      updateSexStats(filtered);
+      const counts = getCounts(filtered, IDX.YearGen);
+      document.getElementById('modalTitle').innerHTML = `<span class="text-lg font-bold text-slate-700">${g_currentGenInst}</span>`;
+      document.getElementById('modalSubtitle').innerHTML = `
+        <div class="flex flex-col items-start gap-2 mt-2 animate-fade-up">
+          <div class="text-lg font-bold text-cra-secondary leading-tight">สาขา: ${major}</div>
+          <span class="inline-flex items-center bg-cra-secondary text-white text-sm px-4 py-1.5 rounded-full shadow-sm font-medium">รวมทั้งหมด ${filtered.length.toLocaleString()} คน</span>
+        </div>`;
+      let html = `<div class="animate-fade-up"><button onclick="renderGen_Level2_Majors('${g_currentGenInst}')" class="mb-4 flex items-center gap-1 text-slate-500 hover:text-cra-primary text-sm font-bold transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg> ย้อนกลับ</button>${buildStatBlock("จำแนกตามชั้นปี", counts, filtered.length)}</div>`;
+      document.getElementById('genDrillDownContainer').innerHTML = html;
+    }
+
+    function renderDrillDownList(title, items, nextFn, backFn, backArg, isNoRank = false) {
+      let backBtn = backFn ? `<button onclick="${backFn}('${backArg || ''}')" class="mb-4 flex items-center gap-1 text-slate-500 hover:text-cra-primary text-sm font-bold transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg> ย้อนกลับ</button>` : '';
+      const listTotal = items.reduce((sum, current) => sum + current[1], 0);
+      const enableRank = !isNoRank && items.length > 5;
+      return `
+        <div class="animate-fade-up relative">
+          <div class="flex justify-between items-start mb-4">${backBtn}</div>
+          <h4 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-cra-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7"/></svg>${title}
+          </h4>
+          <div class="grid gap-2">
+            ${items.map((c, idx) => {
+              let pct = listTotal > 0 ? ((c[1] / listTotal) * 100).toFixed(2) : "0.00";
+              let rankIcon = '', cardStyle = '';
+              if (enableRank && idx === 0) { rankIcon = medalSVG('#EAB308', 'w-5 h-5'); cardStyle = 'bg-yellow-50 border-yellow-100 text-yellow-900'; }
+              else if (enableRank && idx === 1) { rankIcon = medalSVG('#94A3B8', 'w-5 h-5'); cardStyle = 'bg-slate-50 border-slate-100 text-slate-700'; }
+              else if (enableRank && idx === 2) { rankIcon = medalSVG('#D97706', 'w-5 h-5'); cardStyle = 'bg-orange-50 border-orange-100 text-orange-900'; }
+              else { rankIcon = enableRank ? `<span class="text-slate-400 font-bold text-xs">#${idx + 1}</span>` : ''; cardStyle = 'bg-white border-slate-200 text-slate-700'; }
+              return `
+                <button onclick="${nextFn}('${c[0].replace(/'/g, "\\'")}')" class="w-full text-left flex justify-between items-center p-3.5 ${cardStyle} border rounded-xl hover:shadow-md transition-all group">
+                  <div class="flex items-center gap-3 flex-1 min-w-0">
+                    ${rankIcon ? `<div class="flex-shrink-0 w-6 flex justify-center">${rankIcon}</div>` : ''}
+                    <span class="font-semibold text-base truncate pr-2 leading-snug">${c[0]}</span>
+                  </div>
+                  <div class="text-right flex flex-col items-end shrink-0 pl-3">
+                    <span class="font-bold text-cra-primary text-base">${c[1]} <span class="text-xs text-slate-400 font-normal">คน</span></span>
+                    <span class="badge-pct" style="min-width: 70px;">ร้อยละ ${pct}</span>
+                  </div>
+                  <svg class="w-5 h-5 ml-3 text-slate-300 group-hover:text-cra-primary shrink-0 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>`;
+            }).join('')}
+          </div>
+        </div>`;
+    }
+
+    function renderDrillDownLeaf(headerTitle, headerSubtitle, listLabel, items, backFn, backArg) {
+      let backBtn = `<button onclick="${backFn}('${backArg}')" class="mb-4 flex items-center gap-1 text-slate-500 hover:text-cra-primary text-sm font-bold transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg> ย้อนกลับ</button>`;
+      
+      if (items.length === 0) {
+          return `<div class="animate-fade-up">${backBtn}<div class="text-center text-slate-400 py-8">ไม่พบข้อมูล</div></div>`;
+      }
+
+      return `
+        <div class="animate-fade-up">
+          ${backBtn}
+          <h4 class="font-bold text-slate-800 text-sm mb-4 flex items-center gap-2">
+            <svg class="w-4 h-4 text-cra-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0c0 .883-.392 1.625-1 2.125a4.992 4.992 0 00-4 4.875m4-7a4.992 4.992 0 014 4.875M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            ${listLabel}
+          </h4>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            ${items.map(id => `
+              <div class="bg-white border border-slate-200 p-2.5 rounded-lg text-center text-sm font-bold text-slate-600 hover:border-cra-primary hover:text-cra-primary hover:bg-blue-50 transition select-all">
+                ${id}
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+    }
+
+    function buildStatBlock(t, d, tot) {
+      if (!d.length) return '';
+      const isNoRank = t.includes("เพศ") || t.includes("ระดับการศึกษา");
+      const enableRank = !isNoRank && d.length > 5;
+      return `
+        <div class="mb-8">
+          <h4 class="font-bold text-slate-700 text-sm mb-3 flex items-center gap-2">
+            <svg class="w-4 h-4 text-cra-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>${t}
+          </h4>
+          <div class="space-y-2">
+            ${d.map((i, idx) => {
+              let pct = tot > 0 ? ((i[1] / tot) * 100).toFixed(2) : "0.00";
+              let rankIcon = '', cardStyle = '';
+              if (enableRank) {
+                if (idx === 0) { rankIcon = medalSVG('#EAB308', 'w-5 h-5'); cardStyle = 'bg-yellow-50 border-yellow-100 text-yellow-900'; }
+                else if (idx === 1) { rankIcon = medalSVG('#94A3B8', 'w-5 h-5'); cardStyle = 'bg-slate-50 border-slate-100 text-slate-700'; }
+                else if (idx === 2) { rankIcon = medalSVG('#D97706', 'w-5 h-5'); cardStyle = 'bg-orange-50 border-orange-100 text-orange-900'; }
+                else cardStyle = 'bg-white border-slate-100 text-slate-700';
+              } else cardStyle = 'bg-white border-slate-100 text-slate-700';
+              return `
+                <div class="flex justify-between items-center p-3.5 ${cardStyle} border rounded-xl transition group">
+                  <div class="flex items-center gap-3 flex-1 min-w-0">
+                    ${rankIcon ? `<div class="flex-shrink-0 w-6 flex justify-center">${rankIcon}</div>` : ''}
+                    <span class="font-semibold text-base truncate pr-2 leading-snug">${i[0]}</span>
+                  </div>
+                  <div class="text-right flex flex-col items-end shrink-0 pl-3">
+                    <span class="font-bold text-cra-primary text-base">${i[1]} <span class="text-xs text-slate-400 font-normal">คน</span></span>
+                    <span class="badge-pct" style="min-width: 70px;">ร้อยละ ${pct}</span>
+                  </div>
+                </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+    }
+
+    function closeModal() { document.getElementById('typeModal').classList.add('hidden'); }
+    function closeSubModal() { document.getElementById('subSelectModal').classList.add('hidden'); }
+    function getCounts(data, idx, multi = false) { let c = {}; data.forEach(r => { let v = r[idx]; if (!v) return; let items = multi ? v.split(',').map(s => s.trim()) : [v.trim()]; items.forEach(i => { if (i) c[i] = (c[i] || 0) + 1; }); }); return Object.entries(c).sort((a, b) => b[1] - a[1]); }
+    function countFreq(arr) { let c = {}; arr.forEach(x => c[x] = (c[x] || 0) + 1); return Object.entries(c).sort((a, b) => b[1] - a[1]); }
+
+    function renderUserTypePills(containerId, data, total) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      if (data.length === 0) { container.innerHTML = '<div class="text-center text-gray-400 py-4">ไม่มีข้อมูล</div>'; return; }
+      container.innerHTML = data.map(d => {
+        let pct = total > 0 ? ((d[1] / total) * 100).toFixed(2) : "0.00";
+        return `<div onclick="handleUserTypeClick('${d[0]}')" class="user-pill group">
+          <div class="flex items-center gap-3 overflow-hidden">
+            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-cra-primary shrink-0 group-hover:bg-blue-100 transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            </div>
+            <span class="text-sm font-semibold text-slate-600 group-hover:text-cra-primary transition truncate pr-2">${d[0]}</span>
+          </div>
+          <div class="badge-container flex items-center shrink-0">
+            <span class="badge-num">${d[1]} คน</span>
+            <span class="badge-pct">ร้อยละ ${pct}</span>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function medalSVG(color, size = 'w-6 h-6') { return `<svg class="${size} mx-auto" fill="${color}" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>`; }
+
+    function renderPillList(id, list, theme) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (list.length === 0) { el.innerHTML = '<div class="text-center text-slate-300 py-12 flex flex-col items-center"><svg class="w-10 h-10 mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>ไม่มีข้อความ</div>'; return; }
+      const c = theme === 'blue' ? { card: 'bg-white border-slate-100 hover:border-blue-300', badge: 'bg-blue-50 text-blue-600 border-blue-100', count: 'bg-blue-600' } : { card: 'bg-white border-slate-100 hover:border-orange-300', badge: 'bg-orange-50 text-orange-600 border-orange-100', count: 'bg-orange-500' };
+      el.innerHTML = list.map(i => `<div class="${c.card} border p-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-200 flex justify-between items-start gap-3"><div class="flex-1"><div class="flex items-center gap-2 mb-1"><span class="${c.badge} border px-2 py-0.5 rounded text-[10px] font-bold tracking-wide">${i.d} ก.พ.</span></div><p class="text-sm text-slate-700 leading-relaxed font-medium">"${i.t}"</p></div>${i.c > 1 ? `<div class="${c.count} text-white text-[10px] px-2 py-1 rounded-lg font-bold shadow-sm min-w-[24px] text-center mt-1">x${i.c}</div>` : ''}</div>`).join('');
+    }
+
+    Chart.defaults.font.family = '"Noto Sans Thai", sans-serif';
+    Chart.defaults.color = '#64748B';
+    let charts = {};
+
+    function renderCleanDoughnut(chartId, legendId, data, totalId) {
+      if (charts[chartId]) charts[chartId].destroy();
+      const total = data.reduce((sum, d) => sum + d[1], 0);
+      if (totalId && document.getElementById(totalId)) document.getElementById(totalId).innerHTML = total.toLocaleString();
+      const colors = ['#0F2C67', '#E65100', '#F59E0B', '#3B82F6', '#10B981'];
+      charts[chartId] = new Chart(document.getElementById(chartId).getContext('2d'), {
+        type: 'doughnut',
+        data: { labels: data.map(d => d[0]), datasets: [{ data: data.map(d => d[1]), backgroundColor: colors, borderWidth: 0 }] },
+        options: { maintainAspectRatio: false, cutout: '75%', plugins: { legend: { display: false } } }
+      });
+      document.getElementById(legendId).innerHTML = data.map((d, index) => {
+        let pct = total > 0 ? ((d[1] / total) * 100).toFixed(2) : "0.00";
+        return `<div class="flex items-center justify-between p-2 rounded-xl bg-slate-50/50"><div class="flex items-center gap-2 overflow-hidden"><div class="w-2 h-2 rounded-full shrink-0" style="background-color: ${colors[index % colors.length]}"></div><span class="text-[10px] font-bold text-slate-600 truncate">${d[0]}</span></div><div class="text-right shrink-0 ml-2"><span class="text-[10px] font-black text-slate-800">${d[1]} คน</span><span class="badge-pct !min-w-[40px] !py-0.5 !text-[9px] ml-1">ร้อยละ ${pct}</span></div></div>`;
+      }).join('');
+    }
+
+    function renderTopList(id, data, total) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (data.length === 0) { el.innerHTML = '<tr><td colspan="4" class="text-center py-10 text-slate-400 bg-slate-50/50 rounded-lg">ยังไม่มีข้อมูล</td></tr>'; return; }
+      el.innerHTML = data.map((d, i) => {
+        let pct = total > 0 ? ((d[1] / total) * 100).toFixed(2) : "0.00";
+        let rankContent = '', cardStyle = '';
+        if (i === 0) { rankContent = `<div class="w-7 h-7 mx-auto flex items-center justify-center bg-yellow-100 text-yellow-600 rounded-full shadow-sm"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div>`; cardStyle = 'bg-yellow-50 border-yellow-100 text-yellow-900 font-bold'; }
+        else if (i === 1) { rankContent = `<div class="w-7 h-7 mx-auto flex items-center justify-center bg-slate-100 text-slate-500 rounded-full shadow-sm"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div>`; cardStyle = 'bg-slate-50 border-slate-100 text-slate-700 font-bold'; }
+        else if (i === 2) { rankContent = `<div class="w-7 h-7 mx-auto flex items-center justify-center bg-orange-100 text-orange-600 rounded-full shadow-sm"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div>`; cardStyle = 'bg-orange-50 border-orange-100 text-orange-900 font-bold'; }
+        else { rankContent = `<span class="text-slate-400 font-bold text-xs">#${i + 1}</span>`; cardStyle = 'bg-white border-transparent text-slate-600'; }
+        return `<tr><td class="text-center align-middle">${rankContent}</td><td class="align-middle"><div class="${cardStyle} px-3 py-2 rounded-lg border w-full text-xs sm:text-sm whitespace-normal break-words leading-tight">${d[0]}</div></td><td class="text-right font-bold text-slate-700 whitespace-nowrap px-1">${d[1]} <span class="hidden sm:inline text-[10px] text-slate-400 font-normal">คน</span></td><td class="text-right px-1"><span class="badge-pct">${pct}</span></td></tr>`;
+      }).join('');
+    }
+
+    function animateValue(id, start, end, duration) { if (start === end) return; let obj = document.getElementById(id); let range = end - start; let current = start; let increment = end > start ? 1 : -1; let stepTime = Math.abs(Math.floor(duration / range)); let timer = setInterval(function () { current += increment; obj.innerHTML = current.toLocaleString(); if (current == end) clearInterval(timer); }, Math.max(stepTime, 10)); obj.innerHTML = end.toLocaleString(); }
+    
   </script>
 </body>
 
