@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CRA Job Fair & Education 2026 - Dashboard</title>
@@ -141,14 +140,11 @@
         </div>
       </div>
 
-<div onclick="openStuModal()" class="card p-8 relative overflow-hidden bg-white border-l-[6px] border-l-yellow-400 shadow-sm cursor-pointer hover:shadow-lg transition-all group">
-         
+      <div onclick="openStuModal()" class="card p-8 relative overflow-hidden bg-white border-l-[6px] border-l-yellow-400 shadow-sm cursor-pointer hover:shadow-lg transition-all group">
          <div class="absolute top-4 right-4 text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity z-20 bg-yellow-50 p-1.5 rounded-full">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
          </div>
-
          <div class="absolute right-0 top-0 bg-yellow-50 w-64 h-64 rounded-bl-full opacity-40 -z-0"></div>
-         
          <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
              <div class="flex items-center gap-6">
                  <div class="bg-yellow-100 p-4 rounded-2xl text-yellow-700 group-hover:scale-110 transition-transform duration-300">
@@ -159,9 +155,7 @@
                      <div class="flex items-baseline gap-3 mt-1">
                          <span class="text-6xl font-black text-slate-800 tracking-tighter">362</span>
                          <span class="text-xl font-bold text-slate-400">คน</span>
-                         <span id="craAttendeePctBadge" class="ml-4 bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full border border-yellow-200">
-                           ...
-                         </span>
+                         <span id="craAttendeePctBadge" class="ml-4 bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full border border-yellow-200">...</span>
                      </div>
                      <p class="text-[11px] text-slate-500 mt-2 flex items-center gap-1">
                        <svg class="w-3 h-3 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -169,13 +163,13 @@
                      </p>
                  </div>
              </div>
-
              <div class="w-full md:w-auto bg-slate-50 p-6 rounded-2xl border border-slate-100 text-center md:text-right group-hover:bg-yellow-50/50 group-hover:border-yellow-200 transition-all">
                  <p class="text-xs text-slate-500 font-bold uppercase mb-1 tracking-wider">สัดส่วนการตอบแบบสอบถาม</p>
                  <div class="text-3xl font-black text-indigo-600" id="craRespRate">กำลังคำนวณ...</div>
              </div>
          </div>
       </div>
+    </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
       <div class="card p-8 relative overflow-hidden group">
@@ -193,7 +187,7 @@
         <div class="relative z-10 flex justify-between items-end">
           <div><p class="text-slate-500 text-sm font-semibold mb-2 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-cra-secondary"></span> ความพึงพอใจเฉลี่ย</p><h2 class="text-6xl font-bold text-cra-secondary tracking-tighter" id="kpiSatScore">0.00</h2></div>
           <div class="text-right">
-            <div class="flex justify-end mb-2"><span id="dateBadgeSatKPI" class="text-[10px] bg-white/80 text-orange-600 px-2 py-0.5 rounded-md font-bold shadow-sm">All</span></div>
+            <div class="flex justify-end mb-2"><span id="dateBadgeSatKPI" class="text-[10px] bg-white/80 text-orange-600 px-2 py-0.5 rounded-md font-bold shadow-sm border border-orange-100 backdrop-blur-sm">All</span></div>
             <div class="flex gap-1 justify-end text-yellow-400 mb-1"><svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></div>
             <div class="text-slate-400 text-sm">คะแนนเต็ม 5.00</div>
           </div>
@@ -291,7 +285,6 @@
     </div>
 
     <div class="flex flex-col gap-8 mb-12">
-      
       <div class="card p-0 h-[600px] flex flex-col overflow-hidden border border-slate-200 shadow-sm">
         <div class="p-6 border-b border-slate-100 bg-gradient-to-r from-blue-50/80 to-white flex justify-between items-center">
           <h3 class="font-bold text-lg text-cra-primary flex items-center gap-2">
@@ -323,7 +316,6 @@
         </div>
         <div id="suggestionBox" class="flex-1 overflow-y-auto custom-scroll p-6 bg-slate-50/30"></div>
       </div>
-
     </div>
   </div>
 
@@ -350,11 +342,10 @@
     </div>
   </div>
 
-   <div id="stuModal" class="fixed inset-0 z-[150] hidden transition-opacity duration-300">
+  <div id="stuModal" class="fixed inset-0 z-[150] hidden transition-opacity duration-300">
     <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeStuModal()"></div>
     <div class="absolute inset-0 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden animate-fade-up">
-            
             <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-yellow-50">
                 <div class="flex items-center gap-3">
                     <div class="bg-white p-2 rounded-full shadow-sm text-yellow-600">
@@ -369,19 +360,19 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
-
             <div id="stuModalContent" class="p-6 overflow-y-auto custom-scroll flex-1 bg-slate-50/50">
-                </div>
+            </div>
         </div>
     </div>
 </div>
-<script>
+
+  <script>
     let RAW_DATA = [];
     let STU_DATA = [];
     let FILTER_DATE = 'All';
     let g_gradData = [];
     let g_currentGradDegree = '';
-    let charts = {}; // เพิ่มตัวแปรเก็บ chart เพื่อป้องกัน Error เวลาทำลาย chart เก่า
+    let charts = {};
     
     const IDX = {
       Timestamp: 0, Sex: 1, Type: 2, IsStudentCRA: 3, Degree: 4, Institute: 5, Position: 6,
@@ -393,29 +384,34 @@
       D12_Comp1: 24, D12_Comp2: 25, D12_Spon: 26, D12_NextReq: 27, D12_Sugg: 28,
       D13_Comp1: 29, D13_Comp2: 30, D13_Spon: 31, D13_NextReq: 32, D13_Sugg: 33
     };
-    
+
     const STU_IDX = { Name: 0, ID: 1, Course: 2, Year: 3 };
 
     let g_craData = []; let g_currentCourse = ''; let g_currentYear = '';
     let g_genData = []; let g_currentGenInst = ''; let g_currentGenMajor = '';
-  
-const API_URL ="https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9Rphi7Ln9vRU2mO7Q6l-QcZ3p2htU_5NLUxIi2khhoa8s/exec";
-    window.onload = async () => {
-      fetch(`${API_URL}?action=datajob`)
-    .then(res => res.json())
-    .then(data => {
-      RAW_DATA = data;
-      initDashboard();
-    });
 
-  // เปลี่ยนวิธีดึงข้อมูลนักศึกษา
-  fetch(`${API_URL}?action=datastu`)
-    .then(res => res.json())
-    .then(data => {
-      STU_DATA = data;
-      console.log("Student Data Loaded:", STU_DATA.length);
-    });
-};
+    // URL ของ Web App (Deploy แบบ Anyone)
+    const API_URL = "https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9Rphi7Ln9vRU2mO7Q6l-QcZ3p2htU_5NLUxIi2khhoa8s/exec";
+
+    window.onload = async () => {
+      // 1. ดึงข้อมูล Dashboard
+      fetch(`${API_URL}?action=datajob`)
+        .then(res => res.json())
+        .then(data => {
+          RAW_DATA = data;
+          initDashboard();
+        })
+        .catch(err => console.error("Load Data Error:", err));
+
+      // 2. ดึงข้อมูลนักศึกษา
+      fetch(`${API_URL}?action=datastu`)
+        .then(res => res.json())
+        .then(data => {
+          STU_DATA = data;
+          console.log("Student Data Loaded:", STU_DATA.length);
+        })
+        .catch(err => console.warn("Load Student Data Error:", err));
+    };
 
     function initDashboard() {
       document.getElementById('loading').classList.add('opacity-0', 'pointer-events-none');
@@ -533,38 +529,56 @@ const API_URL ="https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9R
       if (document.getElementById('craRespRate')) document.getElementById('craRespRate').innerHTML = `${craRespondents} คน <span class="text-lg text-indigo-400 font-bold ml-1">(ร้อยละ ${craRespPct})</span>`;
     }
 
-    // ✅ [NEW] ฟังก์ชันแบ่งคอลัมน์ซ้ายขวา (เพิ่มกลับมาให้)
+    // ==========================================
+    // LOGIC: Split Card (Suggestion)
+    // ==========================================
     const renderSplitCard = (data, idx12, idx13, containerId, countId, dateBadgeId, theme) => {
-        let map12 = new Map(), map13 = new Map(), totalCount = 0;
+        let m12 = new Map(), m13 = new Map(), tot = 0;
         data.forEach(r => {
-            const cleanT = (t) => { if(!t) return null; let s = t.trim(); return (s.length > 1 && s !== '-' && s !== '.') ? s : null; };
-            let t12 = cleanT(r[idx12]); if (t12 && (FILTER_DATE === 'All' || FILTER_DATE === '12')) { map12.set(t12, (map12.get(t12) || 0) + 1); totalCount++; }
-            let t13 = cleanT(r[idx13]); if (t13 && (FILTER_DATE === 'All' || FILTER_DATE === '13')) { map13.set(t13, (map13.get(t13) || 0) + 1); totalCount++; }
+            const cln = (t) => { if(!t) return null; let s = t.trim(); return (s.length > 1 && s !== '-' && s !== '.') ? s : null; };
+            let t12 = cln(r[idx12]); if(t12 && (FILTER_DATE === 'All' || FILTER_DATE === '12')) { m12.set(t12, (m12.get(t12) || 0) + 1); tot++; }
+            let t13 = cln(r[idx13]); if(t13 && (FILTER_DATE === 'All' || FILTER_DATE === '13')) { m13.set(t13, (m13.get(t13) || 0) + 1); tot++; }
         });
-        if(document.getElementById(countId)) document.getElementById(countId).innerText = `${totalCount} ข้อความ`;
-        const createBubble = (txt, count) => {
-            let bg = theme === 'blue' ? 'bg-blue-600' : 'bg-orange-500';
-            return `<div class="bg-white border border-slate-100 p-3 rounded-xl shadow-sm flex justify-between items-start gap-3 mb-3 animate-fade-up"><p class="text-sm text-slate-700 font-medium flex-1">"${txt}"</p>${count > 1 ? `<div class="${bg} text-white text-[10px] font-bold px-2 py-1 rounded-lg">x${count}</div>` : ''}</div>`;
-        };
+        if(document.getElementById(countId)) document.getElementById(countId).innerText = `${tot} ข้อความ`;
         const box = document.getElementById(containerId);
-        const getSorted = (m) => Array.from(m.entries()).map(([t, c]) => ({ t, c })).sort((a, b) => b.c - a.c);
-        const list12 = getSorted(map12), list13 = getSorted(map13);
+        
+        const createBbl = (txt, cnt) => {
+             let bg = theme === 'blue' ? 'bg-blue-600' : 'bg-orange-500';
+             return `<div class="bg-white border border-slate-100 p-3 rounded-xl shadow-sm mb-2 text-sm text-slate-700 flex justify-between items-start gap-2 animate-fade-up"><span class="flex-1">"${txt}"</span>${cnt > 1 ? `<span class="${bg} text-white text-[10px] font-bold px-2 py-0.5 rounded-lg shrink-0">x${cnt}</span>` : ''}</div>`;
+        };
 
-        if (totalCount === 0) { box.innerHTML = `<div class="h-full flex items-center justify-center text-slate-300">ไม่มีข้อมูล</div>`; } 
+        const l12 = Array.from(m12.entries()).sort((a,b)=>b[1]-a[1]);
+        const l13 = Array.from(m13.entries()).sort((a,b)=>b[1]-a[1]);
+
+        if (tot === 0) { box.innerHTML = `<div class="h-full flex items-center justify-center text-slate-300">ไม่มีข้อมูล</div>`; } 
         else if (FILTER_DATE === 'All') {
-            box.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-8 h-full divide-x divide-slate-100">
-                <div class="flex flex-col h-full pr-4"><div class="flex items-center gap-2 mb-4 pb-2 border-b sticky top-0 bg-slate-50/50 backdrop-blur-sm z-10"><span class="w-2 h-2 rounded-full ${theme==='blue'?'bg-blue-500':'bg-orange-400'}"></span><h4 class="font-bold text-slate-700 text-xs">12 ก.พ. (${list12.length})</h4></div><div class="flex-1">${list12.map(i => createBubble(i.t, i.c)).join('')}</div></div>
-                <div class="flex flex-col h-full pl-4"><div class="flex items-center gap-2 mb-4 pb-2 border-b sticky top-0 bg-slate-50/50 backdrop-blur-sm z-10"><span class="w-2 h-2 rounded-full ${theme==='blue'?'bg-indigo-500':'bg-orange-600'}"></span><h4 class="font-bold text-slate-700 text-xs">13 ก.พ. (${list13.length})</h4></div><div class="flex-1">${list13.map(i => createBubble(i.t, i.c)).join('')}</div></div>
+            box.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full divide-x divide-slate-100">
+                <div class="border-r border-slate-100 pr-2 flex flex-col h-full">
+                    <div class="flex items-center gap-2 mb-2 pb-2 border-b sticky top-0 bg-slate-50/80 backdrop-blur z-10">
+                        <span class="w-2 h-2 rounded-full ${theme==='blue'?'bg-blue-500':'bg-orange-400'}"></span>
+                        <h4 class="font-bold text-slate-700 text-xs">12 ก.พ. (${l12.length})</h4>
+                    </div>
+                    <div class="flex-1 overflow-y-auto custom-scroll pr-1">${l12.map(i => createBbl(i[0], i[1])).join('')}</div>
+                </div>
+                <div class="pl-2 flex flex-col h-full">
+                    <div class="flex items-center gap-2 mb-2 pb-2 border-b sticky top-0 bg-slate-50/80 backdrop-blur z-10">
+                        <span class="w-2 h-2 rounded-full ${theme==='blue'?'bg-indigo-500':'bg-orange-600'}"></span>
+                        <h4 class="font-bold text-slate-700 text-xs">13 ก.พ. (${l13.length})</h4>
+                    </div>
+                    <div class="flex-1 overflow-y-auto custom-scroll pr-1">${l13.map(i => createBbl(i[0], i[1])).join('')}</div>
+                </div>
             </div>`;
         } else {
-            const activeList = FILTER_DATE === '12' ? list12 : list13;
-            box.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4 content-start">${activeList.map(i => createBubble(i.t, i.c)).join('')}</div>`;
+            const list = FILTER_DATE === '12' ? l12 : l13;
+            box.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 content-start">${list.map(i => createBbl(i[0], i[1])).join('')}</div>`;
         }
     };
 
-    // ✅ [NEW] ฟังก์ชันดูรายชื่อนักศึกษา (ซ่อมจุดที่ทำให้ข้อมูลไม่ขึ้น)
+    // ==========================================
+    // LOGIC: Student Drill-down (Modal)
+    // ==========================================
     function openStuModal() {
-        if(!STU_DATA.length) { alert('กำลังโหลดข้อมูลรายชื่อนักศึกษา...'); return; }
+        if(!STU_DATA || STU_DATA.length === 0) { alert('กำลังโหลดข้อมูลรายชื่อนักศึกษา...'); return; }
         document.getElementById('stuModal').classList.remove('hidden');
         renderStuStep1_Course();
     }
@@ -598,7 +612,6 @@ const API_URL ="https://script.google.com/macros/s/AKfycbylyonLUKe_jJjbrtTASPg9R
         document.getElementById('stuModalContent').innerHTML = `<div class="animate-fade-up flex flex-col items-center py-10 text-center"><div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></div><h2 class="text-xl font-bold text-slate-800 mb-1">${name}</h2><p class="text-slate-500 font-mono mb-8">รหัส: ${id}</p><button onclick="renderStuStep3_IDList('${course}', '${year}')" class="bg-cra-primary text-white px-6 py-2 rounded-full font-bold">ตกลง / กลับ</button></div>`;
     }
 
-  
     // ==========================================
     // LOGIC: Type Drill-down (Restored Functionality)
     // ==========================================
