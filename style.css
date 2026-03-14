@@ -1,0 +1,141 @@
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>
+  :root {
+    --cra-blue: #1d2b53;
+    --cra-orange: #ea580c;
+    --cra-bg: #f5f7fb;
+    --cra-card-bg: #ffffff;
+    --cra-text-main: #334155;
+    --cra-text-muted: #64748b;
+  }
+
+  body {
+    font-family: 'Noto Sans Thai', sans-serif;
+    background-color: var(--cra-bg);
+    color: var(--cra-text-main);
+    padding-bottom: 50px;
+  }
+
+  .cra-card {
+    background: var(--cra-card-bg);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0,0,0,0.02);
+    padding: 24px;
+    transition: all 0.3s ease;
+  }
+
+  /* หน้า Index เมนู */
+  .menu-card { text-align: center; cursor: pointer; text-decoration: none; display: block; height: 100%; }
+  .menu-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06); }
+  .menu-icon-box { width: 64px; height: 64px; background: rgba(234, 88, 12, 0.1); color: var(--cra-orange); border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 16px auto; }
+  .menu-card.blue .menu-icon-box { background: rgba(29, 43, 83, 0.1); color: var(--cra-blue); }
+  .menu-card.green .menu-icon-box { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+  
+  .pr-value-large { font-size: 3rem; font-weight: 700; color: var(--cra-blue); line-height: 1; }
+
+  /* กราฟโดนัท & Legend */
+  .chart-container { position: relative; height: 220px; width: 100%; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; }
+  .chart-center-text { position: absolute; text-align: center; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+  .chart-center-text .label { font-size: 0.8rem; color: var(--cra-text-muted); }
+  .chart-center-text .value { font-size: 1.5rem; font-weight: 700; color: var(--cra-blue); line-height: 1; }
+  
+  .chart-legend-container { max-height: 250px; overflow-y: auto; padding-right: 10px; }
+  .chart-legend-container::-webkit-scrollbar { width: 6px; }
+  .chart-legend-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+  .chart-legend-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+  /* ตารางจัดอันดับ (List) */
+  .summary-list-container { max-height: 350px; overflow-y: auto; padding-right: 10px; }
+  .summary-list-container::-webkit-scrollbar { width: 6px; }
+  .summary-list-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+  .summary-list-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+  .summary-list-header { font-size: 0.85rem; color: var(--cra-text-muted); font-weight: 600; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; margin-bottom: 10px; }
+  .summary-list-row { padding: 12px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; color: #475569; }
+  .summary-list-row:last-child { border-bottom: none; }
+  .percent-badge { background-color: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 500; min-width: 60px; text-align: center; }
+  
+  .rank-circle { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; }
+  .rank-1 { background-color: #fef08a; color: #ca8a04; }
+  .rank-2 { background-color: #f1f5f9; color: #64748b; }
+  .rank-3 { background-color: #ffedd5; color: #ea580c; }
+  .rank-text { color: var(--cra-text-muted); font-weight: 500; font-size: 0.9rem; }
+  .card-header-badge { background-color: #f1f5f9; color: #475569; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
+
+  /* ตารางข้อมูลหลัก */
+  .table-responsive { border-radius: 12px; }
+  .cra-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+  .cra-table th { background-color: #f8fafc; color: var(--cra-text-muted); font-weight: 600; font-size: 0.85rem; padding: 16px; border-bottom: 2px solid #e2e8f0; border-top: 1px solid #e2e8f0; white-space: nowrap; }
+  .cra-table td { padding: 18px 16px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; color: #475569; }
+  .cra-table tbody tr:nth-of-type(odd) { background-color: #ffffff; }
+  .cra-table tbody tr:nth-of-type(even) { background-color: #fafbfc; }
+  .cra-table tbody tr:hover td { background-color: #f1f5f9; }
+  
+  .badge-category { background: #e0e7ff; color: #4338ca; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 500; }
+
+  /* ตัวกรอง */
+  .filter-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 16px; font-size: 0.9rem; color: var(--cra-text-main); outline: none; min-width: 200px; }
+  .filter-box:focus { border-color: var(--cra-blue); box-shadow: 0 0 0 3px rgba(29, 43, 83, 0.1); }
+  .dataTables_filter, .dataTables_length { display: none !important; }
+  .dataTables_info { color: var(--cra-text-muted); font-size: 0.85rem; padding-top: 20px; }
+  .pagination { margin-top: 20px; }
+  .page-item.active .page-link { background-color: var(--cra-blue); border-color: var(--cra-blue); }
+  
+  .top-nav { display: flex; align-items: center; margin-bottom: 24px; }
+  .btn-back { color: var(--cra-text-muted); text-decoration: none; font-weight: 500; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+  .btn-back:hover { color: var(--cra-blue); }
+  .nav-divider { margin: 0 12px; color: #cbd5e1; }
+  /* -------------------
+     Loading Screen
+     ------------------- */
+  #loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--cra-bg);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+  }
+  .loader-logo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--cra-blue);
+    margin-bottom: 24px;
+    letter-spacing: 1px;
+  }
+  .progress-container {
+    width: 300px;
+    height: 8px;
+    background-color: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--cra-orange);
+    border-radius: 10px;
+    transition: width 0.3s ease; /* ทำให้หลอดวิ่งสมูท */
+  }
+  .progress-text {
+    font-size: 1rem;
+    color: var(--cra-text-muted);
+    font-weight: 500;
+  }
+  /* คลาสสำหรับซ่อนหน้าจอโหลดตอนเสร็จแล้ว */
+  .loader-hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+</style>
