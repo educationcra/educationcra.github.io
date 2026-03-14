@@ -87,9 +87,13 @@
       .cra-table tbody tr:hover td { background-color: #f1f5f9; }
       
       .dataTables_filter, .dataTables_length { display: none !important; }
-      .dataTables_info { color: var(--cra-text-muted); font-size: 0.85rem; padding-top: 20px; }
-      .pagination { margin-top: 20px; }
-      .page-item.active .page-link { background-color: var(--cra-green); border-color: var(--cra-green); }
+      .dataTables_info { color: var(--cra-text-muted); text-align: center;
+          margin-bottom: 10px;
+          font-size: 0.8rem; }
+      .pagination { flex-wrap: wrap; /* อนุญาตให้ปุ่มพับลงมาได้ถ้าที่แคบไป */
+          justify-content: center;
+          gap: 2px;}
+      .page-item.active .page-link { background-color: var(--cra-green); border-color: var(--cra-green);padding: 6px 10px; }
 
       #loader-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s; }
       .loader-logo { font-size: 1.5rem; font-weight: 800; color: var(--cra-green); margin-bottom: 20px; text-align: center;}
@@ -396,8 +400,11 @@
             [...monthsForFilter].sort().forEach(m => { let displayMonth = m.substring(3); $('#filterMonth').append(new Option("เดือน: " + displayMonth, m)); });
             
             $('#dataTable tbody').html(tbody);
-            $('#dataTable').DataTable({ "dom": 't<"d-flex flex-column flex-md-row justify-content-between mt-4"ip>', "pageLength": 10, "language": { "emptyTable": "ไม่พบข้อมูล", "info": "แสดง _START_ ถึง _END_ จาก _TOTAL_ รายการ", "paginate": { "next": "ถัดไป", "previous": "ก่อนหน้า" } } });
-            
+           $.fn.DataTable.ext.pager.numbers_length = 5;
+            $('#dataTable').DataTable({ 
+              "dom": 't<"d-flex flex-column flex-md-row justify-content-between align-items-center mt-4"ip>',
+              "pageLength": 10, "language": { "emptyTable": "ไม่พบข้อมูล", "info": "แสดงรายการ _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ", "paginate": { "next": "<b>&gt;</b>", "previous": "<b>&lt;</b>" } }
+            });
             $('#filterQuarter, #filterMonth, #filterChannel, #filterProgram').on('change', function() { updateDashboardWidgets(); }); 
             $('#customSearch').on('keyup', function() { updateDashboardWidgets(); });
 
