@@ -96,6 +96,42 @@
       .progress-container { width: 250px; height: 8px; background-color: #e2e8f0; border-radius: 10px; overflow: hidden; margin-bottom: 15px;}
       .progress-bar-fill { height: 100%; background-color: var(--cra-green); width: 0%; transition: width 0.3s; }
       .loader-hidden { opacity: 0; pointer-events: none; }
+      /* 🎯 โค้ดปรับแก้ตารางบนมือถือ (Mobile Table Fix) */
+      
+      /* 1. บังคับไม่ให้ข้อความในป้ายเม็ดยา โดนตัดขึ้นบรรทัดใหม่ */
+      .badge-category, .badge {
+        white-space: nowrap !important;
+        display: inline-block;
+      }
+
+      /* 2. จัดช่องไฟตารางให้สวยงาม และจัดให้อยู่กึ่งกลางแนวตั้ง */
+      .cra-table th, .cra-table td {
+        vertical-align: middle;
+        padding: 16px 20px; /* เพิ่มพื้นที่ช่องไฟให้หายใจสะดวก */
+      }
+
+      /* 3. บังคับไม่ให้คอลัมน์ทั่วไปบีบตัวจนน่าเกลียด (ให้สไลด์นิ้วเลื่อนแทน) */
+      .cra-table th, .cra-table td:not(.text-wrap) {
+        white-space: nowrap;
+      }
+
+      /* 4. ป้องกันคอลัมน์ "หัวข้อข่าว" โดนบีบจนเล็กเกินไป */
+      .cra-table td.text-wrap {
+        min-width: 280px; /* บังคับความกว้างขั้นต่ำ */
+        white-space: normal; /* คอลัมน์นี้ยอมให้ตัดขึ้นบรรทัดใหม่ได้ */
+        line-height: 1.5;
+      }
+      
+      /* 5. ปรับช่องค้นหาบนมือถือให้เต็มจอ */
+      @media (max-width: 768px) {
+        .input-group, .filter-box {
+          width: 100% !important;
+          margin-bottom: 5px;
+        }
+        .justify-content-md-end {
+          justify-content: flex-start !important;
+        }
+      }
     </style>
   </head>
   <body>
