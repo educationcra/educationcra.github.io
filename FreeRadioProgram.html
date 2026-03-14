@@ -96,41 +96,41 @@
       .progress-container { width: 250px; height: 8px; background-color: #e2e8f0; border-radius: 10px; overflow: hidden; margin-bottom: 15px;}
       .progress-bar-fill { height: 100%; background-color: var(--cra-green); width: 0%; transition: width 0.3s; }
       .loader-hidden { opacity: 0; pointer-events: none; }
-      /* 🎯 โค้ดปรับแก้ตารางบนมือถือ (Mobile Table Fix) */
+     /* 🎯 โค้ดปรับแก้ตารางฉบับสมบูรณ์ (จัดสัดส่วนอัตโนมัติ ฉลาดขึ้น) */
       
-      /* 1. บังคับไม่ให้ข้อความในป้ายเม็ดยา โดนตัดขึ้นบรรทัดใหม่ */
+      /* 1. รีเซ็ตให้ตารางทั้งหมดจัดสรรพื้นที่ตามเนื้อหา (ยอมตัดคำ/พับบรรทัดได้) */
+      .cra-table th, .cra-table td {
+        vertical-align: middle;
+        padding: 14px 16px; /* ช่องไฟกำลังสวย ไม่ถ่างเกินไป */
+        white-space: normal !important; /* ปลดล็อกให้คอลัมน์ทั่วไปพับบรรทัดได้ */
+      }
+
+      /* 2. เฉพาะ "ป้ายเม็ดยา" (สถานี, ช่อง) ห้ามตัดคำและห้ามแหว่งเด็ดขาด */
       .badge-category, .badge {
         white-space: nowrap !important;
         display: inline-block;
       }
 
-      /* 2. จัดช่องไฟตารางให้สวยงาม และจัดให้อยู่กึ่งกลางแนวตั้ง */
-      .cra-table th, .cra-table td {
-        vertical-align: middle;
-        padding: 16px 20px; /* เพิ่มพื้นที่ช่องไฟให้หายใจสะดวก */
+      /* 3. คอลัมน์ที่ "ห้ามแหว่ง" (วันที่ และ ยอดเงิน PR Value) */
+      .cra-table td:nth-child(2), /* ดึงคอลัมน์วันที่ */
+      .cra-table td.text-end /* ดึงคอลัมน์ยอด PR Value (เราใส่คลาส text-end ไว้) */ {
+        white-space: nowrap !important;
       }
 
-      /* 3. บังคับไม่ให้คอลัมน์ทั่วไปบีบตัวจนน่าเกลียด (ให้สไลด์นิ้วเลื่อนแทน) */
-      .cra-table th, .cra-table td:not(.text-wrap) {
-        white-space: nowrap;
-      }
-
-      /* 4. ป้องกันคอลัมน์ "หัวข้อข่าว" โดนบีบจนเล็กเกินไป */
+      /* 4. คอลัมน์ "หัวข้อข่าว" ให้พื้นที่ขั้นต่ำไว้ จะได้ไม่อึดอัด */
       .cra-table td.text-wrap {
-        min-width: 280px; /* บังคับความกว้างขั้นต่ำ */
-        white-space: normal; /* คอลัมน์นี้ยอมให้ตัดขึ้นบรรทัดใหม่ได้ */
+        min-width: 220px; 
         line-height: 1.5;
       }
-      
-      /* 5. ปรับช่องค้นหาบนมือถือให้เต็มจอ */
-      @media (max-width: 768px) {
-        .input-group, .filter-box {
-          width: 100% !important;
-          margin-bottom: 5px;
+
+      /* 5. ปรับหน้าตามือถือให้กะทัดรัดขึ้น */
+      @media (max-width: 768px) {  
+        /* บนมือถือ ลดช่องไฟและขนาดตัวอักษรลงนิดหน่อยเพื่อให้เห็นข้อมูลเยอะขึ้น */
+        .cra-table th, .cra-table td { 
+          padding: 10px 12px; 
+          font-size: 0.85rem; 
         }
-        .justify-content-md-end {
-          justify-content: flex-start !important;
-        }
+        .pr-value { font-size: 1rem; } /* ปรับขนาดยอดเงินบนมือถือไม่ให้ใหญ่ล้น */
       }
     </style>
   </head>
