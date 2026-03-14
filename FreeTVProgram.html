@@ -424,10 +424,48 @@
             [...monthsForFilter].sort().forEach(m => { let displayMonth = m.substring(3); $('#filterMonth').append(new Option("เดือน: " + displayMonth, m)); });
             
             $('#dataTable tbody').html(tbody);
+            // 🎯 บังคับให้แสดงตัวเลขแค่ 5 ช่อง (เช่น < 1 2 3 ... 90 >)
             $.fn.DataTable.ext.pager.numbers_length = 5;
-            $('#dataTable').DataTable({ 
-              "dom": 't<"d-flex flex-column flex-md-row justify-content-between align-items-center mt-4"ip>',
-              "pageLength": 10, "language": { "emptyTable": "ไม่พบข้อมูล", "info": "แสดงรายการ _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ", "paginate": { "next": "<b>&gt;</b>", "previous": "<b>&lt;</b>" } }
+
+            // 🎯 สร้างตารางพร้อมเตรียมพื้นที่ว่าง (jump-to-page) ไว้ใส่กล่องพิมพ์เลข
+            let table = $('#dataTable').DataTable({ 
+              "dom": 't<"d-flex flex-column flex-md-row justify-content-between align-items-center mt-4"i<"d-flex flex-column flex-md-row align-items-center gap-2"p<"jump-to-page">>>',
+              "pageLength": 10, 
+              "language": { 
+                "emptyTable": "ไม่พบข้อมูล", 
+                "info": "แสดงรายการ _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ", 
+                "paginate": { 
+                  "next": "<b>&gt;</b>", 
+                  "previous": "<b>&lt;</b>" 
+                } 
+              } 
+            });
+
+            // 🎯 สร้างหน้าตาของ "กล่องพิมพ์ตัวเลข"
+            let jumpHtml = `
+              <div class="d-flex align-items-center justify-content-center mt-2 mt-md-0 ms-md-2">
+                <span class="text-muted me-2" style="font-size: 0.8rem;">หน้า:</span>
+                <input type="number" id="jumpInput" class="form-control text-center shadow-sm px-1" style="width: 55px; height: 32px; border-radius: 8px; font-size: 0.85rem; border: 1px solid #cbd5e1;" min="1">
+              </div>
+            `;
+            $("div.jump-to-page").html(jumpHtml); // นำกล่องไปแปะข้างๆ ปุ่มเปลี่ยนหน้า
+
+            // 🎯 ระบบทำงาน: เมื่อพิมพ์ตัวเลขเสร็จ (แล้วกด Enter หรือกดคลิกที่อื่น)
+            $('#jumpInput').on('change', function() {
+              let targetPage = parseInt($(this).val(), 10); // ดึงเลขที่ผู้ใช้พิมพ์
+              let maxPage = table.page.info().pages; // เช็คว่ามีหน้าสูงสุดกี่หน้า
+              
+              if (targetPage >= 1 && targetPage <= maxPage) {
+                table.page(targetPage - 1).draw('page'); // สั่งเปลี่ยนหน้าทันที!
+              } else {
+                $(this).val(table.page.info().page + 1); // ถ้าพิมพ์มั่ว (เช่น หน้า 999) ให้เด้งกลับหน้าปัจจุบัน
+              }
+            });
+
+            // 🎯 ระบบทำงาน: อัปเดตเลขในกล่องอัตโนมัติ เวลาเรากดปุ่ม < หรือ >
+            table.on('draw', function() {
+              let info = table.page.info();
+              $('#jumpInput').val(info.page + 1).attr('max', info.pages);
             });
             $('#filterQuarter, #filterMonth, #filterStation, #filterProgram').on('change', function() { updateDashboardWidgets(); }); 
             $('#customSearch').on('keyup', function() { updateDashboardWidgets(); });
