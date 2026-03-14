@@ -2,16 +2,15 @@
 <html>
   <head>
     <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRA News Dashboard 2026</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-
-    <link rel="stylesheet" href="style.css">
     
     <style>
       body { 
@@ -26,69 +25,28 @@
         min-height: 100vh;
       }
       
-      .fade-in-up {
-        animation: fadeInUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
-        opacity: 0;
-        transform: translateY(20px);
-      }
+      .fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; opacity: 0; transform: translateY(20px); }
       @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
-      .main-title {
-        font-size: 3.8rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #1e3a8a 0%, #4338ca 50%, #8b5cf6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        letter-spacing: -1.5px;
-        display: inline-block;
-        margin-bottom: 0.2rem;
-      }
-      .main-title::after {
-        content: '.'; color: #ea580c; -webkit-text-fill-color: #ea580c;
-      }
-      .main-subtitle {
-        font-size: 1.15rem; color: #475569; font-weight: 500; max-width: 700px; margin: 0 auto; line-height: 1.6;
-      }
+      .main-title { font-size: 3.8rem; font-weight: 800; background: linear-gradient(135deg, #1e3a8a 0%, #4338ca 50%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1.5px; display: inline-block; margin-bottom: 0.2rem; }
+      .main-title::after { content: '.'; color: #ea580c; -webkit-text-fill-color: #ea580c; }
+      .main-subtitle { font-size: 1.15rem; color: #475569; font-weight: 500; max-width: 700px; margin: 0 auto; line-height: 1.6; }
       
-      /* 🎯 หดการ์ดให้เตี้ยลง */
       .hero-card {
-        background: rgba(255, 255, 255, 0.65);
-        backdrop-filter: blur(25px);
-        -webkit-backdrop-filter: blur(25px);
-        border-radius: 30px;
-        padding: 1.8rem 4rem; /* ลด Padding บนล่าง */
+        background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+        border-radius: 30px; padding: 2rem 4rem; 
         box-shadow: 0 20px 40px rgba(47, 60, 90, 0.05), inset 0 0 0 1px rgba(255,255,255,0.8);
-        margin-bottom: 2rem; /* ดึงการ์ดล่างขึ้นมา */
-        position: relative;
-        overflow: visible;
+        margin-bottom: 2rem; position: relative; overflow: visible;
       }
-
       .total-label { font-size: 1.15rem; color: #64748b; margin-bottom: 0.2rem; font-weight: 600; letter-spacing: 0.5px;}
-      
-      .total-value { 
-        font-size: 5rem; font-weight: 800; line-height: 1; margin-bottom: 0.5rem; 
-        background: linear-gradient(135deg, #0f172a, #3b82f6);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        letter-spacing: -2px; 
-      }
-      
+      .total-value { font-size: 5rem; font-weight: 800; line-height: 1; margin-bottom: 0.5rem; background: linear-gradient(135deg, #0f172a, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -2px; }
       .total-unit { font-size: 1.5rem; font-weight: 500; color: #64748b; margin-left: 12px; }
+      .badge-premium { background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important; color: #ffffff !important; border: none; font-size: 1rem; font-weight: 500; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.25); padding: 10px 25px !important; letter-spacing: 0.5px; }
 
-      .badge-premium {
-        background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important; 
-        color: #ffffff !important; 
-        border: none; font-size: 1rem; font-weight: 500; 
-        box-shadow: 0 10px 20px rgba(99, 102, 241, 0.25);
-        padding: 10px 25px !important; letter-spacing: 0.5px;
-      }
-
-      /* 🎯 ปรับ Lottie ให้เข้ากับการ์ดที่เตี้ยลง */
       .lottie-container { position: relative; width: 100%; display: flex; justify-content: flex-end; align-items: center; }
       .lottie-glow { position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; }
       lottie-player { position: relative; z-index: 1; transform: scale(1.05) translateX(10px); margin: -1rem 0; }
 
-      /* การ์ดเมนูย่อย */
       .nav-card { background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 28px; padding: 2.5rem 2rem; text-align: center; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid rgba(255,255,255,0.7); text-decoration: none; display: flex; flex-direction: column; height: 100%; box-shadow: 0 10px 30px rgba(47, 60, 90, 0.04); position: relative; }
       .nav-card:hover { transform: translateY(-12px); box-shadow: 0 25px 45px rgba(99, 102, 241, 0.1); border-color: rgba(255,255,255,1); background: rgba(255, 255, 255, 0.95); }
       .nav-icon { width: 80px; height: 80px; border-radius: 22px; margin: 0 auto 1.2rem; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; transition: transform 0.4s ease; }
@@ -96,21 +54,37 @@
       .card-social .nav-icon { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
       .card-tv .nav-icon { background: rgba(234, 88, 12, 0.1); color: #ea580c; }
       .card-radio .nav-icon { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-
       .nav-title { font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem; }
       .pr-label { font-size: 0.85rem; color: #94a3b8; font-weight: 600; margin-bottom: 0.2rem; }
       .pr-value { font-size: 2.2rem; font-weight: 800; line-height: 1.2; }
-
       .loading-state { opacity: 0.5; pointer-events: none; filter: grayscale(20%); }
       
-      @media (max-width: 991px) {
-         lottie-player { transform: scale(1) translateX(0); margin-top: 1rem; margin-bottom: 0; }
-         .hero-card { padding: 2rem 2rem; overflow: hidden; }
+      /* 📱 อัปเกรดส่วนมือถือ (Mobile Responsive) */
+      @media (max-width: 768px) {
+         /* ลดระยะห่างด้านข้างเหลือ 20px */
+         .container { padding-left: 20px !important; padding-right: 20px !important; }
+         
+         /* ลดขนาดฟอนต์หัวข้อไม่ให้ล้นจอ */
+         .main-title { font-size: 2.5rem; }
+         .main-subtitle { font-size: 1rem; padding: 0 10px; }
+         
+         /* ปรับการ์ดยอดรวมให้พอดีมือถือ */
+         .hero-card { padding: 2rem 1.5rem; border-radius: 24px; text-align: center; }
+         .total-value { font-size: 3.5rem; }
+         
+         /* 🎯 นำ Lottie กลับมาบนมือถือ จัดให้อยู่ตรงกลาง */
+         .lottie-container { justify-content: center; margin-top: 2rem; }
+         lottie-player { transform: scale(1) translateX(0); max-width: 250px !important; margin: 0; }
+         .lottie-glow { width: 200px; height: 200px; }
+
+         /* ปรับการ์ดเมนูย่อย */
+         .nav-card { padding: 2rem 1.5rem; }
+         .pr-value { font-size: 2rem; }
       }
     </style>
   </head>
   <body>
-    <div class="container py-5 px-md-4">
+    <div class="container py-5 px-3">
       
       <div class="text-center mb-4 fade-in-up" style="animation-delay: 0.1s;">
         <h2 class="main-title">CRA News Dashboard 2026</h2>
@@ -119,14 +93,13 @@
 
       <div class="fade-in-up" style="animation-delay: 0.2s;">
         <div class="hero-card" id="heroCard">
-          
           <div class="row align-items-center">
             
-            <div class="col-lg-6 text-center text-lg-start mb-4 mb-lg-0" style="position: relative; z-index: 2;">
+            <div class="col-lg-6 text-center text-lg-start mb-2 mb-lg-0" style="position: relative; z-index: 2;">
               <div class="total-label">มูลค่าประชาสัมพันธ์รวม (Total PR Value)</div>
               <div class="d-flex align-items-baseline justify-content-center justify-content-lg-start">
                 <div class="total-value" id="totalPrMain">
-                  <span class="spinner-border text-primary opacity-50" style="width: 2.5rem; height: 2.5rem; border-width: 0.25em;"></span>
+                  <span class="spinner-border text-primary opacity-50" style="width: 2rem; height: 2rem; border-width: 0.25em;"></span>
                 </div>
               </div>
               <div class="badge badge-premium rounded-pill mt-2">
@@ -134,17 +107,10 @@
               </div>
             </div>
 
-            <div class="col-lg-6 d-none d-lg-block">
+            <div class="col-lg-6 d-flex">
                <div class="lottie-container">
                  <div class="lottie-glow"></div>
-                 <lottie-player 
-                    src="https://lottie.host/dec249fe-ece9-41a0-ba38-73d634e7ca1d/Tk5rYhXSaw.json" 
-                    background="transparent" 
-                    speed="1" 
-                    style="width: 100%; max-width: 450px; height: auto;" 
-                    loop 
-                    autoplay>
-                 </lottie-player>
+                 <lottie-player src="https://lottie.host/dec249fe-ece9-41a0-ba38-73d634e7ca1d/Tk5rYhXSaw.json" background="transparent" speed="1" style="width: 100%; max-width: 450px; height: auto;" loop autoplay></lottie-player>
                </div>
             </div>
 
@@ -153,9 +119,8 @@
       </div>
 
       <div class="row g-4 mb-4">
-        
-        <div class="col-lg-4 col-md-6 fade-in-up" style="animation-delay: 0.3s;">
-          <a href="FreeMedia.html" class="nav-card card-social loading-state">
+        <div class="col-12 col-lg-4 fade-in-up" style="animation-delay: 0.3s;">
+          <a href="freemedia.html" class="nav-card card-social loading-state">
             <div class="nav-icon"><i class="bi bi-phone"></i></div>
             <div class="nav-title">ข่าวโซเชียลมีเดีย</div>
             <div>
@@ -165,7 +130,7 @@
           </a>
         </div>
 
-        <div class="col-lg-4 col-md-6 fade-in-up" style="animation-delay: 0.4s;">
+        <div class="col-12 col-lg-4 fade-in-up" style="animation-delay: 0.4s;">
           <a href="FreeTVProgram.html" class="nav-card card-tv loading-state">
             <div class="nav-icon"><i class="bi bi-tv"></i></div>
             <div class="nav-title">ข่าวโทรทัศน์</div>
@@ -176,7 +141,7 @@
           </a>
         </div>
 
-        <div class="col-lg-4 col-md-6 fade-in-up" style="animation-delay: 0.5s;">
+        <div class="col-12 col-lg-4 fade-in-up" style="animation-delay: 0.5s;">
           <a href="FreeRadioProgram.html" class="nav-card card-radio loading-state">
             <div class="nav-icon"><i class="bi bi-broadcast"></i></div>
             <div class="nav-title">ข่าววิทยุ</div>
@@ -186,7 +151,6 @@
             </div>
           </a>
         </div>
-
       </div>
 
       <div class="text-center small pb-4 fade-in-up" style="animation-delay: 0.6s; color: #94a3b8; font-weight: 500;">
@@ -195,50 +159,44 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>const API_URL = "https://script.google.com/macros/s/AKfycbzU-Gg2wbHbbhWRJZR4WDbmbcQAaGgjekN-CzWIpBdZpjena09eM2h8fOdJwujwlGrKAw/exec";
+    <script>
+      const API_URL = "https://script.google.com/macros/s/AKfycbzU-Gg2wbHbbhWRJZR4WDbmbcQAaGgjekN-CzWIpBdZpjena09eM2h8fOdJwujwlGrKAw/exec";
       function animateValue(id, start, end, duration, suffix = '') {
-        const obj = document.getElementById(id);
-        let startTimestamp = null;
+        const obj = document.getElementById(id); let startTimestamp = null;
         const step = (timestamp) => {
           if (!startTimestamp) startTimestamp = timestamp;
           const progress = Math.min((timestamp - startTimestamp) / duration, 1);
           const ease = 1 - Math.pow(1 - progress, 4); 
           const current = Math.floor(ease * (end - start) + start);
-          
           obj.innerHTML = current.toLocaleString('th-TH') + suffix;
           if (progress < 1) { window.requestAnimationFrame(step); } 
           else { obj.innerHTML = end.toLocaleString('th-TH') + suffix; }
-        };
-        window.requestAnimationFrame(step);
+        }; window.requestAnimationFrame(step);
       }
 
       $(document).ready(function() {
-    // 🎯 เปลี่ยนจาก google.script.run เป็น fetch API
-    fetch(API_URL + "?action=getDashboardSummary", { redirect: "follow" })
-      .then(response => response.json())
-      .then(data => {
-        if(data.error) throw new Error(data.error);
-        
-        let total = data.media + data.tv + data.radio;
-        
-        $('#totalPrMain').empty(); $('#prMedia').empty(); $('#prTv').empty(); $('#prRadio').empty();
-        
-        let bhtMain = '<span class="total-unit">บาท</span>';
-        let bhtCard = '<span style="font-size: 1.3rem; color: #94a3b8; font-weight: 500; margin-left: 4px;">฿</span>';
-        
-        animateValue("totalPrMain", 0, total, 1500, bhtMain);
-        animateValue("prMedia", 0, data.media, 1500, bhtCard);
-        animateValue("prTv", 0, data.tv, 1500, bhtCard);
-        animateValue("prRadio", 0, data.radio, 1500, bhtCard);
-        
-        $('.nav-card').removeClass('loading-state');
-      })
-      .catch(error => {
-        console.error("Error:", error);
-        $('#totalPrMain').html('<span style="color: #ef4444; font-size: 2.5rem;">เกิดข้อผิดพลาด</span>');
-        $('.nav-card').removeClass('loading-state');
+        fetch(API_URL + "?action=getDashboardSummary", { redirect: "follow" })
+          .then(response => response.json())
+          .then(data => {
+            if(data.error) throw new Error(data.error);
+            let total = data.media + data.tv + data.radio;
+            $('#totalPrMain').empty(); $('#prMedia').empty(); $('#prTv').empty(); $('#prRadio').empty();
+            let bhtMain = '<span class="total-unit">บาท</span>';
+            let bhtCard = '<span style="font-size: 1.3rem; color: #94a3b8; font-weight: 500; margin-left: 4px;">฿</span>';
+            
+            animateValue("totalPrMain", 0, total, 1500, bhtMain);
+            animateValue("prMedia", 0, data.media, 1500, bhtCard);
+            animateValue("prTv", 0, data.tv, 1500, bhtCard);
+            animateValue("prRadio", 0, data.radio, 1500, bhtCard);
+            
+            $('.nav-card').removeClass('loading-state');
+          })
+          .catch(error => {
+            console.error("Error:", error);
+            $('#totalPrMain').html('<span style="color: #ef4444; font-size: 2rem;">เกิดข้อผิดพลาด</span>');
+            $('.nav-card').removeClass('loading-state');
+          });
       });
-  });
-</script>
+    </script>
   </body>
 </html>
