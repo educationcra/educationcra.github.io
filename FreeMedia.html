@@ -499,10 +499,10 @@
             [...monthsForFilter].sort().forEach(m => { let displayMonth = m.substring(3); $('#filterMonth').append(new Option("เดือน: " + displayMonth, m)); });
 
             $('#dataTable tbody').html(tbody);
-            
+            $.fn.DataTable.ext.pager.numbers_length = 5;
             $('#dataTable').DataTable({ 
               "dom": 't<"d-flex flex-column flex-md-row justify-content-between align-items-center mt-4"ip>',
-              "pageLength": 10, "language": { "emptyTable": "ไม่พบข้อมูล", "info": "แสดงรายการ _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ", "paginate": { "next": ">", "previous":"<" } }
+              "pageLength": 10, "language": { "emptyTable": "ไม่พบข้อมูล", "info": "แสดงรายการ _START_ ถึง _END_ จากทั้งหมด _TOTAL_ รายการ", "paginate": { "next": "<b>&gt;</b>", "previous": "<b>&lt;</b>" } }
             });
 
             $('#filterQuarter, #filterMonth, #filterCategory, #filterType').on('change', function() { updateDashboardWidgets(); }); 
