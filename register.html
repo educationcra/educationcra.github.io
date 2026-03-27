@@ -10,251 +10,288 @@
   <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css'>
   
   <style>
-    body { font-family: 'Noto Sans Thai', sans-serif; overflow-x: hidden; background-color: #f0fdf4; -webkit-tap-highlight-color: transparent;}
+    body { font-family: 'Noto Sans Thai', sans-serif; overflow-x: hidden; background-color: #8bc34a; -webkit-tap-highlight-color: transparent;}
+    .main-container { background: #ffffff; border-radius: 2.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15); border: 1px solid rgba(255,255,255,0.5); }
     
-    /* Prettier Glassmorphism for Main Container */
-    .main-container { background: #ffffff; border-radius: 2.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08); border: 1px solid #f0fdf4; }
-    
-    /* Standardized Glass Input */
-    .input-glass { background-color: #f8fafc; border: 2px solid #e2e8f0; transition: all 0.2s ease-in-out; width: 100%; padding: 0.875rem 1.25rem; border-radius: 1rem; outline: none; font-weight: 500; color: #1e293b;}
+    /* Standard Input Glass */
+    .input-glass { background-color: #f8fafc; border: 2px solid #e2e8f0; transition: all 0.2s; width: 100%; padding: 0.875rem 1.25rem; border-radius: 1rem; outline: none; font-weight: 500; color: #1e293b;}
     .input-glass:focus { border-color: #f57c00; box-shadow: 0 0 0 4px rgba(245, 124, 0, 0.1); background-color: #fff; }
-    .input-glass::placeholder { color: #94a3b8; font-weight: 400; }
-    select.input-glass { appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 1rem center; background-repeat: no-repeat; background-size: 1.2em; padding-right: 3rem; }
-
-    /* Premium Buttons */
-    .btn-orange { background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white; transition: all 0.3s ease; border-radius: 9999px; }
-    .btn-orange:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(245, 124, 0, 0.3); }
+    select.input-glass { appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 1rem center; background-repeat: no-repeat; background-size: 1.2em; padding-right: 3rem; cursor: pointer;}
+    
+    .btn-orange { background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); color: white; transition: all 0.3s; border-radius: 9999px; }
+    .btn-orange:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(245, 124, 0, 0.4); }
     .btn-orange:disabled { opacity: 0.7; cursor: not-allowed; }
     
-    /* Stepper Styling */
-    .step-section { display: none; animation: fadeIn 0.5s ease-out; }
+    .step-section { display: none; animation: fadeIn 0.4s ease-out; }
     .step-section.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-    
-    /* Prettier Custom Radios & Checkboxes */
-    .custom-radio { position: relative; display: flex; align-items: center; cursor: pointer; padding: 1.25rem; border: 2px solid #e2e8f0; border-radius: 1rem; background: #fff; transition: 0.2s; font-weight: 500;}
-    .custom-radio input { position: absolute; opacity: 0; cursor: pointer; }
-    .checkmark { height: 22px; width: 22px; border: 2px solid #cbd5e1; border-radius: 50%; margin-right: 14px; position: relative; transition: 0.2s; }
-    .custom-radio input:checked ~ .checkmark { border-color: #f57c00; }
-    .custom-radio input:checked ~ .checkmark:after { content: ""; position: absolute; top: 4px; left: 4px; width: 10px; height: 10px; border-radius: 50%; background: #f57c00; }
-    .custom-radio.active-radio { border-color: #f57c00; background-color: #fff8f0; box-shadow: 0 4px 6px -1px rgba(245, 124, 0, 0.05); }
 
-    /* School Dropdown Styling (Desktop Friendly) */
+    /* ==================================================== */
+    /* 🌟 UI: Rating Scale 1-5 (ตามรูปภาพต้นฉบับ) 🌟 */
+    /* ==================================================== */
+    .rating-radio { position: relative; display: inline-block; cursor: pointer; }
+    .rating-radio input { display: none; }
+    .rating-box { width: 46px; height: 46px; display: flex; justify-content: center; align-items: center; border: 2px solid #e2e8f0; border-radius: 14px; font-weight: 800; font-size: 1.1rem; color: #94a3b8; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); background: white; }
+    .rating-radio:hover .rating-box { border-color: #cbd5e1; }
+    .rating-radio input:checked + .rating-box { background-color: #f57c00; border-color: #f57c00; color: white; transform: scale(1.05); box-shadow: 0 4px 12px rgba(245, 124, 0, 0.25); }
+
+    /* ==================================================== */
+    /* 🌟 UI: Custom Checkbox (Celebrate Effect) 🌟 */
+    /* ==================================================== */
+    .celebrate-wrapper { display: flex; align-items: center; cursor: pointer; position: relative; user-select: none; gap: 12px; padding: 0.5rem 0; }
+    .celebrate-wrapper input { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+    .celebrate-box { position: relative; height: 26px; width: 26px; border: 2px solid #cbd5e1; border-radius: 50%; transition: .3s; background: white; display: flex; justify-content: center; align-items: center; }
+    .celebrate-wrapper:hover .celebrate-box { border-color: #f57c00; }
+    .celebrate-wrapper input:checked ~ .celebrate-box { background-color: #f57c00; border-color: #f57c00; transform: scale(1.1); }
+    .celebrate-box:after { content: ""; display: none; width: 6px; height: 12px; border: solid white; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg); margin-bottom: 2px; }
+    .celebrate-wrapper input:checked ~ .celebrate-box:after { display: block; }
+    .celebrate-text { font-weight: 500; color: #475569; transition: 0.2s; }
+    .celebrate-wrapper input:checked ~ .celebrate-text { color: #f57c00; font-weight: 700; }
+    
+    /* The SVG Celebration */
+    .celebrate-svg { position: absolute; left: -14px; top: -10px; width: 54px; height: 54px; transform-origin: center; animation: kfr-celebrate .4s forwards; display: none; stroke: #f57c00; pointer-events: none; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .celebrate-wrapper input:checked ~ .celebrate-svg { display: block; }
+    @keyframes kfr-celebrate { 0% { transform: scale(0); } 50% { opacity: 1; } 100% { transform: scale(1.2); opacity: 0; display: none; } }
+
+    /* ==================================================== */
+    /* 🌟 UI: Custom Dropdown (ใส่ Icon ได้) 🌟 */
+    /* ==================================================== */
+    .custom-select-wrapper { position: relative; width: 100%; user-select: none; }
+    .custom-select-trigger { background: #f8fafc; border: 2px solid #e2e8f0; padding: 0.875rem 1.25rem; border-radius: 1rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; font-weight: 500; color: #1e293b; }
+    .custom-select-trigger:hover { border-color: #f57c00; }
+    .custom-select-wrapper.open .custom-select-trigger { border-color: #f57c00; box-shadow: 0 0 0 4px rgba(245, 124, 0, 0.1); background-color: #fff; }
+    .custom-options { position: absolute; display: block; top: calc(100% + 8px); left: 0; right: 0; border: 2px solid #e2e8f0; border-radius: 1rem; background: #fff; transition: all 0.2s; opacity: 0; visibility: hidden; pointer-events: none; z-index: 50; max-height: 280px; overflow-y: auto; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+    .custom-select-wrapper.open .custom-options { opacity: 1; visibility: visible; pointer-events: all; }
+    .custom-option { padding: 12px 20px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.1s; border-bottom: 1px solid #f1f5f9; font-weight: 500; color: #475569; }
+    .custom-option:last-child { border-bottom: none; }
+    .custom-option:hover, .custom-option.selected { background-color: #fff8f0; color: #f57c00; }
+
+    /* Normal Radio for Event Date / Gender */
+    .normal-radio { position: relative; display: flex; align-items: center; cursor: pointer; padding: 1.25rem; border: 2px solid #e2e8f0; border-radius: 1rem; background: #fff; transition: 0.2s; font-weight: 600;}
+    .normal-radio input { position: absolute; opacity: 0; cursor: pointer; }
+    .n-checkmark { height: 22px; width: 22px; border: 2px solid #cbd5e1; border-radius: 50%; margin-right: 12px; position: relative; transition: 0.2s; }
+    .normal-radio input:checked ~ .n-checkmark { border-color: #f57c00; }
+    .normal-radio input:checked ~ .n-checkmark:after { content: ""; position: absolute; top: 4px; left: 4px; width: 10px; height: 10px; border-radius: 50%; background: #f57c00; }
+    .normal-radio.active-radio { border-color: #f57c00; background-color: #fff8f0; }
+
+    /* School Dropdown Styling */
     #schoolDropdown { position: absolute; z-index: 50; width: 100%; background: #fff; border: 2px solid #e2e8f0; border-radius: 1rem; margin-top: 6px; max-height: 250px; overflow-y: auto; display: none; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
     #schoolDropdown li { padding: 14px 18px; font-size: 0.95rem; cursor: pointer; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; transition: 0.2s;}
     #schoolDropdown li:hover { background-color: #fff8f0; color: #f57c00; }
 
-    /* Loading Bar Animation */
-    @keyframes spin { 100% { transform: rotate(360deg); } }
     .loader-sm { width: 20px; height: 20px; border: 3px solid #FFF; border-bottom-color: transparent; border-radius: 50%; display: inline-block; animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
   </style>
 </head>
-<body class="min-h-dvh bg-gradient-to-br from-[#f0fdf4] via-[#ecfccb] to-[#d9f99d] p-4 md:p-10 flex flex-col items-center justify-center">
+<body class="min-h-dvh bg-gradient-to-br from-[#aedd50] via-[#8bc34a] to-[#689f38] p-4 md:p-8 flex flex-col items-center">
 
-  <div id="loadingScreen" class="fixed inset-0 bg-[#f0fdf4] z-[100] flex flex-col items-center justify-center transition-opacity duration-500 p-6">
-      <div class="main-container p-10 text-center max-w-md w-full animate-[fadeIn_0.5s_ease-out]">
+  <div id="loadingScreen" class="fixed inset-0 bg-[#f1f8e9] z-[100] flex flex-col items-center justify-center transition-opacity duration-500 p-6">
+      <div class="main-container p-8 md:p-12 text-center max-w-sm w-full relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#8bc34a] to-[#aedd50]"></div>
           
-          <div class="mb-8 p-6 bg-green-50 rounded-full inline-block border-2 border-green-100">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-28 h-28 text-[#8bc34a] animate-bounce" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
-              </svg>
+          <div class="w-24 h-24 bg-[#f9fbe7] rounded-full flex items-center justify-center text-[#8bc34a] mx-auto mb-6 shadow-inner border border-[#e6ee9c]">
+              <i class="fi fi-sr-document-signed text-5xl mt-2 animate-bounce"></i>
           </div>
-          
-          <h2 class="text-3xl font-extrabold text-gray-800 mb-2 tracking-tight">กำลังเปิดฟอร์ม</h2>
-          <p class="text-base text-gray-500 mb-10" id="loadingText">เชื่อมต่อกับฐานข้อมูลโรงเรียน...</p>
-          
-          <div class="w-full bg-gray-100 h-6 rounded-full overflow-hidden mb-3 p-1 shadow-inner relative border border-gray-200">
-              <div id="loadingBar" class="h-full bg-gradient-to-r from-orange-400 to-orange-600 transition-all duration-300 ease-out rounded-full w-0 flex items-center justify-center">
-                  <span id="loadPerc" class="absolute text-xs font-black text-white px-2">0%</span>
+          <h2 class="text-2xl font-extrabold text-gray-800 mb-2">เตรียมความพร้อม</h2>
+          <p class="text-sm text-gray-500 mb-8" id="loadingText">กำลังดึงฐานข้อมูลโรงเรียน...</p>
+
+          <div class="w-full bg-gray-100 h-6 rounded-full overflow-hidden mb-2 p-1 shadow-inner relative border border-gray-200">
+              <div id="loadingBar" class="h-full bg-gradient-to-r from-[#ff9800] to-[#f57c00] transition-all duration-300 ease-out rounded-full w-0 flex items-center justify-center">
+                  <span id="loadPerc" class="absolute text-xs font-black text-white px-2 drop-shadow-md">0%</span>
               </div>
           </div>
       </div>
   </div>
 
-  <div id="mainContent" class="w-full max-w-4xl relative z-10 opacity-0 hidden flex flex-col items-center transition-opacity duration-700 h-0 overflow-hidden">
-      
-      <a href="index.html" class="self-start mb-6 flex items-center gap-2 text-gray-700/80 hover:text-gray-900 font-bold bg-white px-6 py-3 rounded-xl shadow-sm border border-gray-100 transition-colors text-sm">
-         <i class="fi fi-sr-arrow-small-left text-xl mt-1"></i> ย้อนกลับ
+  <div id="mainContent" class="w-full max-w-3xl relative z-10 opacity-0 hidden transition-opacity duration-700">
+      <a href="index.html" class="mb-4 flex items-center gap-2 text-white/90 hover:text-white font-medium bg-black/20 px-5 py-2.5 rounded-full backdrop-blur-sm w-fit text-sm transition-colors cursor-pointer">
+         <i class="fi fi-sr-arrow-small-left text-xl mt-1"></i> ย้อนกลับหน้าแรก
       </a>
 
-      <div class="main-container w-full p-8 md:p-12 relative overflow-hidden">
-          
-          <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 to-rose-500"></div>
+      <div class="main-container w-full p-6 md:p-10 relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-2 bg-[#f57c00]"></div>
 
-          <div id="formStepper" class="mb-10 relative max-w-xl mx-auto px-4">
+          <div id="formStepper" class="mb-10 relative max-w-lg mx-auto mt-2">
               <div class="flex items-center justify-between relative z-10">
-                  <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200 -z-10 rounded-full"></div>
-                  <div class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-[#8bc34a] transition-all duration-500 rounded-full" id="progressBar" style="width: 0%;"></div>
-                  
-                  <div class="flex flex-col items-center gap-2">
-                      <div id="dot1" class="w-10 h-10 rounded-full bg-[#8bc34a] text-white flex justify-center items-center font-extrabold text-lg shadow-md transition-colors">1</div>
-                      <span class="text-xs font-bold text-[#8bc34a]">ส่วนตัว</span>
-                  </div>
-                  <div class="flex flex-col items-center gap-2">
-                      <div id="dot2" class="w-10 h-10 rounded-full bg-white border-2 border-gray-200 text-gray-400 flex justify-center items-center font-extrabold text-lg transition-colors">2</div>
-                      <span class="text-xs font-bold text-gray-400">การศึกษา</span>
-                  </div>
-                  <div class="flex flex-col items-center gap-2">
-                      <div id="dot3" class="w-10 h-10 rounded-full bg-white border-2 border-gray-200 text-gray-400 flex justify-center items-center font-extrabold text-lg transition-colors">3</div>
-                      <span class="text-xs font-bold text-gray-400">แบบสอบถาม</span>
-                  </div>
+                  <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-gray-200 -z-10 rounded-full"></div>
+                  <div class="absolute left-0 top-1/2 transform -translate-y-1/2 h-1 bg-[#8bc34a] transition-all duration-500 rounded-full" id="progressBar" style="width: 0%;"></div>
+                  <div class="flex flex-col items-center gap-2"><div id="dot1" class="w-10 h-10 rounded-full bg-[#8bc34a] text-white flex items-center justify-center font-extrabold text-lg shadow-md">1</div></div>
+                  <div class="flex flex-col items-center gap-2"><div id="dot2" class="w-10 h-10 rounded-full bg-white border-2 border-gray-200 text-gray-400 flex items-center justify-center font-extrabold text-lg transition-colors">2</div></div>
+                  <div class="flex flex-col items-center gap-2"><div id="dot3" class="w-10 h-10 rounded-full bg-white border-2 border-gray-200 text-gray-400 flex items-center justify-center font-extrabold text-lg transition-colors">3</div></div>
               </div>
           </div>
 
-          <form id="surveyForm" class="space-y-8">
+          <form id="surveyForm" class="space-y-6">
               
-              <div id="step1" class="step-section active space-y-7">
-                  <h2 class="text-2xl font-extrabold flex items-center gap-4 text-gray-800"><div class="w-12 h-12 bg-[#f0fdf4] rounded-xl flex items-center justify-center text-[#7cb342] border border-[#d9f99d]"><i class="fi fi-sr-user mt-1"></i></div> ข้อมูลส่วนตัว</h2>
-                  
-                  <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                      <label class="block text-sm font-bold mb-3 text-gray-600">วันที่เข้าร่วมกิจกรรม <span class="text-rose-500">*</span></label>
-                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <label class="custom-radio"><input type="radio" name="eventDate" value="25 เมษายน 2569" onchange="updateRadioStyle(this)"><span class="checkmark"></span><span class="radio-text">25 เม.ย. 69 (วันที่ 1)</span></label>
-                          <label class="custom-radio"><input type="radio" name="eventDate" value="26 เมษายน 2569" onchange="updateRadioStyle(this)"><span class="checkmark"></span><span class="radio-text">26 เม.ย. 69 (วันที่ 2)</span></label>
+              <div id="step1" class="step-section active space-y-6">
+                  <h2 class="text-2xl font-extrabold text-gray-800 flex items-center gap-4 border-b pb-4 border-gray-100">
+                      <div class="w-12 h-12 bg-[#f1f8e9] rounded-xl flex items-center justify-center text-[#7cb342]"><i class="fi fi-sr-user mt-1"></i></div> ข้อมูลส่วนตัว
+                  </h2>
+                  <div>
+                      <label class="block text-base font-bold mb-2 text-gray-700">วันที่เข้าร่วมกิจกรรม <span class="text-red-500">*</span></label>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <label class="normal-radio"><input type="radio" name="eventDate" value="25 เมษายน 2569" onchange="updateRadioStyle(this, 'normal-radio')"><span class="n-checkmark"></span><span class="text-gray-700">25 เมษายน 2569 (วันที่ 1)</span></label>
+                          <label class="normal-radio"><input type="radio" name="eventDate" value="26 เมษายน 2569" onchange="updateRadioStyle(this, 'normal-radio')"><span class="n-checkmark"></span><span class="text-gray-700">26 เมษายน 2569 (วันที่ 2)</span></label>
                       </div>
                   </div>
-
                   <div>
-                      <label class="block text-base font-bold mb-2 text-gray-700">เบอร์โทรศัพท์ (จะใช้เป็น ID คูปอง) <span class="text-rose-500">*</span></label>
-                      <input type="tel" id="phone" class="input-glass font-bold text-2xl tracking-widest text-center focus:tracking-wider focus:border-orange-500" placeholder="08X-XXX-XXXX" maxlength="12" oninput="formatPhone(this)">
+                      <label class="block text-base font-bold mb-2 text-gray-700">เบอร์โทรศัพท์ (ID คูปอง) <span class="text-red-500">*</span></label>
+                      <div class="relative">
+                          <i class="fi fi-sr-phone-call absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg"></i>
+                          <input type="tel" id="phone" class="input-glass pl-14 font-extrabold text-xl tracking-widest text-gray-800" placeholder="08X-XXX-XXXX" maxlength="12" oninput="formatPhone(this)">
+                      </div>
                   </div>
-
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div>
-                          <label class="block text-base font-bold mb-2 text-gray-700">ประเภทผู้เข้าร่วม <span class="text-rose-500">*</span></label>
+                          <label class="block text-base font-bold mb-2 text-gray-700">ประเภทผู้เข้าร่วม <span class="text-red-500">*</span></label>
                           <select id="userType" class="input-glass" onchange="updateDynamicFields()">
                               <option value="">-- เลือกประเภท --</option>
                               <option value="นักเรียน">นักเรียน</option><option value="นักศึกษามหาวิทยาลัย">นักศึกษามหาวิทยาลัย</option>
                               <option value="ครู / อาจารย์">ครู / อาจารย์</option><option value="ผู้ปกครอง">ผู้ปกครอง</option><option value="ประชาชนทั่วไป">ประชาชนทั่วไป</option>
                           </select>
                       </div>
+                      <div>
+                          <label class="block text-base font-bold mb-2 text-gray-700">เพศ <span class="text-red-500">*</span></label>
+                          <select id="gender" class="input-glass">
+                              <option value="">-- เลือกเพศ --</option><option value="ชาย">ชาย</option><option value="หญิง">หญิง</option><option value="LGBTQ">LGBTQ+</option>
+                          </select>
+                      </div>
                       <div id="wrapAge">
-                          <label class="block text-base font-bold mb-2 text-gray-700">ช่วงอายุ <span class="text-rose-500">*</span></label>
-                          <select id="age" class="input-glass"><option value="">-- เลือกช่วงอายุ --</option></select>
+                          <label class="block text-base font-bold mb-2 text-gray-700">ช่วงอายุ <span class="text-red-500">*</span></label>
+                          <select id="age" class="input-glass">
+                              <option value="">-- เลือกอายุ --</option><option value="ต่ำกว่า 15 ปี">ต่ำกว่า 15 ปี</option><option value="16 - 18 ปี">16 - 18 ปี</option><option value="18 - 23 ปี">18 - 23 ปี</option><option value="มากกว่า 23 ปี">มากกว่า 23 ปี</option>
+                          </select>
                       </div>
-                      <div id="wrapParentRelation" class="hidden col-span-1 md:col-span-2 bg-orange-50 p-5 rounded-xl border border-orange-100">
-                          <label class="block text-sm font-bold mb-2 text-orange-700">เกี่ยวข้องเป็น <span class="text-rose-500">*</span></label>
-                          <select id="parentRelation" class="input-glass border-orange-200"><option value="">-- เลือกความสัมพันธ์ --</option><option value="พ่อ">พ่อ</option><option value="แม่">แม่</option><option value="อื่นๆ">อื่นๆ</option></select>
+                      <div id="wrapParentRelation" class="hidden col-span-1 md:col-span-2 bg-orange-50 p-4 rounded-xl border border-orange-100">
+                          <label class="block text-sm font-bold mb-2 text-orange-700">ความเกี่ยวข้อง <span class="text-red-500">*</span></label>
+                          <select id="parentRelation" class="input-glass border-orange-200">
+                              <option value="">-- เลือกความเกี่ยวข้อง --</option><option value="พ่อ">พ่อ</option><option value="แม่">แม่</option><option value="ลุง">ลุง</option><option value="ป้า">ป้า</option><option value="น้า">น้า</option><option value="อา">อา</option><option value="ปู่">ปู่</option><option value="ย่า">ย่า</option><option value="ตา">ตา</option><option value="ยาย">ยาย</option>
+                          </select>
                       </div>
                   </div>
-
-                  <div>
-                      <label class="block text-base font-bold mb-2 text-gray-700">เพศ <span class="text-rose-500">*</span></label>
-                      <select id="gender" class="input-glass"><option value="">-- เลือกเพศ --</option><option value="ชาย">ชาย</option><option value="หญิง">หญิง</option><option value="LGBTQ">LGBTQ+</option></select>
-                  </div>
-
-                  <div class="flex justify-end pt-8 border-t"><button type="button" onclick="nextStep(1)" class="btn-orange px-10 py-4 font-extrabold text-lg">หน้าถัดไป</button></div>
+                  <div class="flex justify-end pt-6 border-t mt-4"><button type="button" onclick="nextStep(1)" class="btn-orange px-10 py-3.5 font-extrabold text-lg flex items-center gap-2">ถัดไป <i class="fi fi-sr-arrow-right mt-1 text-sm"></i></button></div>
               </div>
 
-              <div id="step2" class="step-section space-y-7">
-                  <h2 class="text-2xl font-extrabold flex items-center gap-4 text-gray-800"><div class="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center text-orange-500 border border-orange-100"><i class="fi fi-sr-book-alt mt-1"></i></div> การศึกษา</h2>
-                  
+              <div id="step2" class="step-section space-y-6">
+                  <h2 class="text-2xl font-extrabold text-gray-800 flex items-center gap-4 border-b pb-4 border-gray-100">
+                      <div class="w-12 h-12 bg-[#fff3e0] rounded-xl flex items-center justify-center text-[#ff9800]"><i class="fi fi-sr-book-alt mt-1"></i></div> ข้อมูลการศึกษา
+                  </h2>
                   <div>
-                      <label class="block text-base font-bold mb-2 text-gray-700">ระดับการศึกษา <span class="text-rose-500">*</span></label>
-                      <select id="education" class="input-glass" onchange="toggleOther(this, 'otherEducation')"><option value="">-- เลือกระดับ --</option></select>
-                      <input type="text" id="otherEducation" class="input-glass mt-3 hidden border-orange-300 bg-orange-50 focus:border-orange-500" placeholder="ระบุระดับการศึกษา...">
+                      <label class="block text-base font-bold mb-2 text-gray-700">ระดับการศึกษา <span class="text-red-500">*</span></label>
+                      <select id="education" class="input-glass" onchange="checkOther(this, 'otherEducation')"><option value="">-- เลือกระดับการศึกษา --</option></select>
+                      <input type="text" id="otherEducation" class="input-glass mt-3 hidden border-[#f57c00] bg-[#fff8f0]" placeholder="โปรดระบุระดับการศึกษา...">
                   </div>
 
-                  <div id="schoolSection" class="hidden bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-5">
+                  <div id="schoolSection" class="hidden bg-gray-50 p-6 rounded-2xl border border-gray-200 space-y-5">
                       <div id="wrapSchoolSearch" class="hidden relative">
-                          <label class="block text-sm font-bold mb-2 text-orange-700" id="schoolLabel">โรงเรียน <span class="text-rose-500">*</span></label>
-                          <input type="text" id="schoolInputSearch" class="input-glass border-orange-300 focus:border-orange-500" autocomplete="off" placeholder="พิมพ์ชื่อโรงเรียนเพื่อค้นหา..." oninput="fastSearchSchool(this.value)">
+                          <label class="block text-sm font-bold mb-2 text-gray-800" id="schoolLabel">โรงเรียน <span class="text-red-500">*</span></label>
+                          <input type="text" id="schoolInputSearch" class="input-glass border-orange-300 focus:border-orange-500" autocomplete="off" placeholder="พิมพ์ชื่อโรงเรียน (เช่น สตรีวิทยา...)" oninput="fastSearchSchool(this.value)">
                           <ul id="schoolDropdown"></ul>
                       </div>
                       <div id="wrapUni" class="hidden">
-                          <label class="block text-sm font-bold mb-2 text-orange-700">มหาวิทยาลัย <span class="text-rose-500">*</span></label>
-                          <input type="text" id="uniSchool" class="input-glass border-orange-300 focus:border-orange-500" placeholder="พิมพ์ชื่อมหาวิทยาลัย...">
+                          <label class="block text-sm font-bold mb-2 text-gray-800">มหาวิทยาลัย / สถาบันของท่าน <span class="text-red-500">*</span></label>
+                          <input type="text" id="uniSchool" class="input-glass border-orange-300 focus:border-orange-500" placeholder="พิมพ์ชื่อสถาบัน...">
                       </div>
                       <div id="wrapProvince" class="hidden">
-                          <label class="block text-sm font-bold mb-2 text-orange-700">จังหวัดที่สถาบันตั้งอยู่ <span class="text-rose-500">*</span></label>
+                          <label class="block text-sm font-bold mb-2 text-gray-800">จังหวัดที่ตั้งของสถาบัน <span class="text-red-500">*</span></label>
                           <select id="provinceSelect" class="input-glass border-orange-300 focus:border-orange-500"><option value="">-- เลือกจังหวัด --</option></select>
                       </div>
                   </div>
                   
-                  <div class="flex justify-between pt-8 border-t mt-8">
-                      <button type="button" onclick="prevStep(2)" class="px-8 py-3.5 text-gray-500 font-extrabold text-lg hover:text-gray-900 transition-colors">ย้อนกลับ</button>
-                      <button type="button" onclick="nextStep(2)" class="btn-orange px-10 py-4 font-extrabold text-lg">หน้าถัดไป</button>
+                  <div class="flex justify-between pt-6 border-t mt-4">
+                      <button type="button" onclick="prevStep(2)" class="px-6 py-2.5 text-gray-500 hover:text-[#f57c00] font-extrabold transition">ย้อนกลับ</button>
+                      <button type="button" onclick="nextStep(2)" class="btn-orange px-10 py-3.5 font-extrabold text-lg flex items-center gap-2">ถัดไป <i class="fi fi-sr-arrow-right mt-1 text-sm"></i></button>
                   </div>
               </div>
 
-              <div id="step3" class="step-section space-y-7">
-                  <h2 class="text-2xl font-extrabold flex items-center gap-4 text-gray-800"><div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-red-500 border border-red-100"><i class="fi fi-sr-heart mt-1"></i></div> แบบสอบถามเพิ่มเติม</h2>
+              <div id="step3" class="step-section space-y-6">
+                  <h2 class="text-2xl font-extrabold text-gray-800 flex items-center gap-4 border-b pb-4 border-gray-100">
+                      <div class="w-12 h-12 bg-[#ffebee] rounded-xl flex items-center justify-center text-[#e53935]"><i class="fi fi-sr-heart mt-1"></i></div> แบบสอบถาม
+                  </h2>
                   
-                  <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-5">
+                  <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200 space-y-6">
                       <div>
-                          <label class="block text-base font-bold mb-3 text-gray-700">รู้จัก CRA มาก่อนหรือไม่ <span class="text-rose-500">*</span></label>
-                          <div class="grid grid-cols-2 gap-4">
-                              <label class="custom-radio w-full"><input type="radio" name="knowCRA" value="ใช่ รู้จัก" onchange="updateRadioStyle(this)"><span class="checkmark"></span><span class="radio-text">ใช่ รู้จัก</span></label>
-                              <label class="custom-radio w-full"><input type="radio" name="knowCRA" value="ไม่รู้จัก" onchange="updateRadioStyle(this)"><span class="checkmark"></span><span class="radio-text">ไม่รู้จัก</span></label>
+                          <label class="block text-base font-bold mb-3 text-gray-700">รู้จักราชวิทยาลัยจุฬาภรณ์มาก่อนหรือไม่ <span class="text-red-500">*</span></label>
+                          <div class="flex gap-4">
+                              <label class="normal-radio w-full"><input type="radio" name="knowCRA" value="ใช่ รู้จัก" onchange="updateRadioStyle(this, 'normal-radio')"><span class="n-checkmark"></span><span class="text-gray-700">ใช่ รู้จัก</span></label>
+                              <label class="normal-radio w-full"><input type="radio" name="knowCRA" value="ไม่รู้จัก" onchange="updateRadioStyle(this, 'normal-radio')"><span class="n-checkmark"></span><span class="text-gray-700">ไม่รู้จัก</span></label>
                           </div>
                       </div>
                       <hr class="border-gray-200">
                       <div>
-                          <label class="block text-base font-bold mb-3 text-gray-700">ช่องทางที่ทำให้รู้จัก <span class="text-rose-500">*</span></label>
-                          <div id="channelGroup" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-gray-700 font-medium pl-1"></div>
-                          <input type="text" id="otherChannel" class="input-glass mt-3 hidden bg-orange-50" placeholder="ระบุช่องทางอื่น...">
+                          <label class="block text-base font-bold mb-3 text-[#f57c00]">รู้จักจากช่องทางใด (ตอบได้มากกว่า 1) <span class="text-red-500">*</span></label>
+                          <div id="channelGroup" class="grid grid-cols-1 gap-2 pl-1"></div>
+                          <input type="text" id="otherChannel" class="input-glass mt-3 hidden border-[#f57c00] bg-[#fff8f0]" placeholder="โปรดระบุช่องทาง...">
                       </div>
                       <hr class="border-gray-200">
                       <div>
-                          <label class="block text-base font-bold mb-3 text-gray-700">สื่อโซเชียลที่ท่านติดตาม <span class="text-rose-500">*</span></label>
-                          <div id="mediaGroup" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-gray-700 font-medium pl-1"></div>
-                          <input type="text" id="otherMedia" class="input-glass mt-3 hidden bg-orange-50" placeholder="ระบุสื่ออื่น...">
+                          <label class="block text-base font-bold mb-3 text-[#f57c00]">สื่อที่ใช้ติดตามข่าวสาร (ตอบได้มากกว่า 1) <span class="text-red-500">*</span></label>
+                          <div id="mediaGroup" class="grid grid-cols-1 md:grid-cols-2 gap-2 pl-1"></div>
+                          <input type="text" id="otherMedia" class="input-glass mt-3 hidden border-[#f57c00] bg-[#fff8f0]" placeholder="โปรดระบุสื่อ...">
                       </div>
-                  </div>
-
-                  <div class="space-y-3">
-                      <label class="block text-base font-bold mb-2 text-gray-700">หลักสูตรที่สนใจ (เลือกสูงสุด 3 อันดับ)</label>
-                      <select id="interest1" class="input-glass"><option value="">-- อันดับที่ 1 --</option></select>
-                      <select id="interest2" class="input-glass"><option value="">-- อันดับที่ 2 --</option></select>
-                      <select id="interest3" class="input-glass"><option value="">-- อันดับที่ 3 --</option></select>
                   </div>
 
                   <div>
-                      <label class="block text-base font-bold mb-2 text-gray-700">รอบ TCAS ที่สนใจสมัคร</label>
-                      <select id="tcasRound" class="input-glass"><option value="">-- เลือกรอบ --</option><option value="รอบ 1">รอบ 1 Portfolio</option><option value="รอบ 2">รอบ 2 Quota</option><option value="รอบ 3">รอบ 3 Admission</option></select>
-                  </div>
-
-                  <div class="bg-gray-50 p-6 rounded-2xl border border-orange-100 space-y-5">
-                      <label class="block text-base font-bold mb-3 text-gray-700">ติดตามเพจ Education CRA หรือไม่ <span class="text-rose-500">*</span></label>
-                      <div class="grid grid-cols-2 gap-4">
-                          <label class="custom-radio w-full"><input type="radio" name="followPage" value="ใช่ติดตาม" onchange="updateRadioStyle(this); togglePlatform(true);"><span class="checkmark"></span><span class="radio-text">ใช่ ติดตาม</span></label>
-                          <label class="custom-radio w-full"><input type="radio" name="followPage" value="ไม่ได้ติดตาม" onchange="updateRadioStyle(this); togglePlatform(false);"><span class="checkmark"></span><span class="radio-text">ไม่ได้ติดตาม</span></label>
-                      </div>
-                      <div id="wrapFollowPlatform" class="hidden mt-4 pt-5 border-t border-orange-100">
-                          <label class="block text-sm font-bold mb-2 text-orange-700">แพลตฟอร์มที่ติดตาม</label>
-                          <select id="followPlatform" class="input-glass border-orange-300 focus:border-orange-500"><option value="">-- แพลตฟอร์ม --</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="TikTok">TikTok</option></select>
+                      <label class="block text-base font-bold mb-2 text-gray-700">หลักสูตรที่สนใจ (Custom Dropdown)</label>
+                      <div class="space-y-3 p-5 border border-gray-200 rounded-2xl bg-white" id="courseDropdownContainer">
+                          <input type="hidden" id="interest1">
+                          <input type="hidden" id="interest2">
+                          <input type="hidden" id="interest3">
                       </div>
                   </div>
 
-                  <div class="pt-6">
-                      <h3 class="text-xl font-extrabold text-green-700 mb-5 bg-green-50 p-4 rounded-xl border border-green-100 flex items-center gap-3"><i class="fi fi-sr-star mt-1 text-orange-400"></i> ให้คะแนน (1=น้อย, 5=มากที่สุด) <span class="text-rose-500">*</span></h3>
+                  <div>
+                      <label class="block text-base font-bold mb-2 text-gray-700">รอบ TCAS ที่สนใจ</label>
+                      <select id="tcasRound" class="input-glass">
+                          <option value="">-- เลือกรอบ --</option><option value="รอบ 1 Portfolio">รอบ 1 Portfolio</option><option value="รอบ 2 Quota">รอบ 2 Quota</option><option value="รอบ 3 Admission">รอบ 3 Admission</option><option value="รอบ 4 Direct Admission">รอบ 4 Direct Admission</option>
+                      </select>
+                  </div>
+                  
+                  <div class="p-6 border border-orange-200 bg-orange-50/50 rounded-2xl">
+                      <label class="block text-base font-bold mb-3 text-gray-700">ติดตามประกาศในเพจ Education CRA หรือไม่ <span class="text-red-500">*</span></label>
+                      <div class="flex gap-4">
+                          <label class="normal-radio w-full bg-white"><input type="radio" name="followPage" value="ใช่ติดตาม" onchange="updateRadioStyle(this, 'normal-radio'); toggleFollowPlatform();"><span class="n-checkmark"></span><span class="text-gray-700">ติดตาม</span></label>
+                          <label class="normal-radio w-full bg-white"><input type="radio" name="followPage" value="ไม่ได้ติดตาม" onchange="updateRadioStyle(this, 'normal-radio'); toggleFollowPlatform();"><span class="n-checkmark"></span><span class="text-gray-700">ไม่ได้ติดตาม</span></label>
+                      </div>
+                      <div id="wrapFollowPlatform" class="hidden mt-5 pt-5 border-t border-orange-200">
+                          <label class="block text-sm font-bold mb-2 text-[#f57c00]">แพลตฟอร์มที่ติดตามมากที่สุด <span class="text-red-500">*</span></label>
+                          <select id="followPlatform" class="input-glass border-orange-300">
+                              <option value="">-- เลือกแพลตฟอร์ม --</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="TikTok">TikTok</option><option value="X (Twitter)">X (Twitter)</option>
+                          </select>
+                      </div>
+                  </div>
+
+                  <div class="pt-4">
+                      <h3 class="text-base font-extrabold text-[#8bc34a] mb-4 bg-[#f1f8e9] p-4 rounded-xl flex items-center gap-2 border border-[#d9f99d]"><i class="fi fi-sr-star text-orange-400"></i> ให้คะแนนความพึงพอใจ <span class="text-red-500">*</span></h3>
                       <div class="space-y-4" id="ratingContainer"></div>
                   </div>
                   
                   <div>
-                      <label class="block text-base font-bold mb-2 text-gray-700">ข้อเสนอแนะเพิ่มเติม <span class="text-rose-500">*</span></label>
-                      <textarea id="suggestion" rows="3" class="input-glass resize-none" placeholder="บอกอะไรเราหน่อย..."></textarea>
+                      <label class="block text-base font-bold mb-2 text-gray-700">ข้อเสนอแนะเพิ่มเติม <span class="text-red-500">*</span></label>
+                      <textarea id="suggestion" rows="3" class="input-glass resize-none" placeholder="อยากให้ทีมงานจัดกิจกรรมแบบไหนเพิ่มเติม..."></textarea>
                   </div>
 
-                  <div class="flex justify-between pt-8 border-t mt-8">
-                      <button type="button" onclick="prevStep(3)" class="px-8 py-3.5 text-gray-500 font-extrabold text-lg hover:text-gray-900 transition-colors">ย้อนกลับ</button>
-                      <button type="button" onclick="submitData()" id="btnSubmit" class="btn-orange px-10 py-4 font-extrabold text-lg flex items-center gap-3">ส่งแบบประเมินและรับคูปอง</button>
+                  <div class="flex justify-between pt-8 border-t border-gray-200 mt-6">
+                      <button type="button" onclick="prevStep(3)" class="px-6 py-2.5 text-gray-500 hover:text-[#f57c00] font-extrabold transition">ย้อนกลับ</button>
+                      <button type="button" onclick="submitData()" id="btnSubmit" class="btn-orange px-10 py-4 font-extrabold text-lg flex items-center gap-2 shadow-md">ส่งแบบประเมิน</button>
                   </div>
               </div>
           </form>
 
           <div id="successView" class="hidden flex flex-col items-center py-10 text-center animate-[fadeIn_0.5s_ease-out]">
-              <div class="w-24 h-24 bg-green-50 rounded-full flex justify-center items-center mb-6 border-4 border-green-100 text-green-500"><i class="fi fi-sr-check-circle text-6xl mt-1 animate-pulse"></i></div>
-              <h2 class="text-4xl font-extrabold mb-2Tracking-tight">ส่งเรียบร้อย!</h2>
-              <p class="text-lg text-gray-600 mb-8 max-w-sm">รับสิทธิ์ถ่ายรูปฟรีที่บูธ เพียงยื่นหน้าจอนี้ให้เจ้าหน้าที่สแกน</p>
+              <div class="w-24 h-24 bg-[#f1f8e9] rounded-full flex items-center justify-center mb-6 border-4 border-[#d9f99d]">
+                  <i class="fi fi-sr-check-circle text-6xl text-[#8bc34a] mt-1 animate-pulse"></i>
+              </div>
+              <h2 class="text-4xl font-extrabold text-gray-800 mb-2">สำเร็จ!!</h2>
+              <p class="text-gray-500 mb-8 max-w-sm text-base">ยื่นหน้าจอนี้ให้สตาฟฟ์เพื่อรับสิทธิ์ถ่ายรูปฟรีที่บูธ</p>
               
-              <div class="main-container p-8 border border-orange-100 w-full max-w-sm shadow-xl mb-10 relative">
-                  <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-orange-500 text-white px-5 py-1 rounded-full font-bold text-xs uppercase tracking-wider">คูปองของคุณ</div>
-                  <div class="bg-white p-5 rounded-2xl mb-5 border-2 border-dashed border-gray-200 shadow-inner"><img id="displayQrCode" src="" class="w-full"></div>
-                  <div class="bg-gradient-to-r from-orange-400 to-rose-500 text-white text-3xl font-black py-4 rounded-xl tracking-widest shadow-md" id="displayUserId"></div>
+              <div class="bg-gray-50 p-6 rounded-3xl border border-gray-200 w-full max-w-sm shadow-lg relative overflow-hidden mb-8">
+                  <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#f57c00] text-white px-4 py-1 rounded-full text-xs font-bold tracking-widest">คูปองของคุณ</div>
+                  <div class="bg-white p-4 rounded-2xl mb-5 shadow-sm border border-gray-100"><img id="displayQrCode" src="" class="w-full object-contain mx-auto" style="max-height: 250px;"></div>
+                  <div class="bg-gradient-to-r from-[#ff9800] to-[#f57c00] text-white font-mono text-3xl font-black py-4 rounded-xl shadow-inner tracking-widest" id="displayUserId"></div>
               </div>
               
-              <a href="index.html" class="text-orange-500 border-2 border-orange-500 px-12 py-4 rounded-full font-extrabold text-lg hover:bg-orange-50 transition-colors shadow-sm">กลับหน้าหลัก</a>
+              <a href="index.html" class="text-[#f57c00] border-2 border-[#f57c00] hover:bg-[#fff3e0] px-12 py-3.5 rounded-full font-extrabold transition shadow-sm">กลับหน้าหลัก</a>
           </div>
       </div>
   </div>
@@ -263,13 +300,13 @@
     // ==========================================
     // ใส่ URL ของ Google Apps Script ของคุณที่นี่
     // ==========================================
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbz2WVLumggLAGfibD_9u-Ms3hiTKz0gaEtx9EDSKm_yXtgqmuBZ8NlefiJHp7C0ejTY/exec'; 
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbz2WVLumggLAGfibD_9u-Ms3hiTKz0gaEtx9EDSKm_yXtgqmuBZ8NlefiJHp7C0ejTY/exec';
 
     async function apiCall(action, data = {}) {
         try {
             const res = await fetch(GAS_URL, {
                 method: 'POST',
-                redirect: 'follow', // รับประกันการยิงข้าม GAS ได้ดีขึ้น
+                redirect: 'follow',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ action: action, data: data })
             });
@@ -280,29 +317,26 @@
     }
 
     let rawSchoolData = []; 
-    const provinces = ["กรุงเทพมหานคร","กระบี่","กาญจนบุรี","ขอนแก่น","ชลบุรี","เชียงใหม่","นครปฐม","นครราชสีมา","นนทบุรี","ปทุมธานี","ระยอง","สมุทรปราการ","สุราษฎร์ธานี","อยุธยา","อื่นๆ"];
-    const courses = ["แพทยศาสตร์", "นวัตกรรมวิทยาศาสตร์การแพทย์", "เทคโนโลยีอาหาร", "วิศวกรรมชีวการแพทย์", "รังสีเทคนิค", "วิทยาศาสตร์การเคลื่อนไหว", "ฉุกเฉินการแพทย์", "พยาบาลศาสตร์"];
-    
-    // ====================================================
-    // 1-100% LOADING LOGIC (ตามที่คุณออมขอ)
-    // ====================================================
     let currentPerc = 0;
     let loadingInterval;
 
-    function startLoadingBar() {
-        // วิ่งทีละนิดในช่วงแรก 0-90%
-        loadingInterval = setInterval(() => {
-            if (currentPerc < 90) {
-                currentPerc += Math.random() * 5; // วิ่งแบบสุ่มให้ดูเป็นธรรมชาติ
-                if(currentPerc > 90) currentPerc = 90;
-                updateLoadingUI(Math.floor(currentPerc));
-            } else {
-                // ถ้าวิ่งไปถึง 90% แล้วให้ค้างรอจนกว่า API จะเสร็จ
-                clearInterval(loadingInterval);
-                document.getElementById('loadingText').innerText = "กำลังจัดเตรียมฟอร์ม (รอสักครู่)...";
-            }
-        }, 150); // ความเร็วในการอัปเดตแท่งพลัง
-    }
+    const coursesMap = [
+        { name: "แพทยศาสตรบัณฑิต", icon: "fi-sr-stethoscope" },
+        { name: "วท.บ. สาขาวิชาแพทยศาสตรบัณฑิต", icon: "fi-sr-stethoscope" },
+        { name: "วท.บ. สาขาวิชานวัตกรรมวิทยาศาสตร์การแพทย์", icon: "fi-sr-flask" },
+        { name: "วท.บ. สาขาเทคโนโลยีอาหารทางการแพทย์และสุขภาพ", icon: "fi-sr-restaurant" },
+        { name: "วศ.บ. สาขาวิศวกรรมชีวการแพทย์", icon: "fi-sr-settings" },
+        { name: "วท.บ. สาขาวิชารังสีเทคนิค", icon: "fi-sr-bone" },
+        { name: "วท.บ. สาขาวิชาวิทยาศาสตร์การเคลื่อนไหวและสุขภาพ", icon: "fi-sr-heart-rate" },
+        { name: "วท.บ. สาขาวิชาฉุกเฉินการแพทย์", icon: "fi-sr-ambulance" },
+        { name: "พยาบาลศาสตรบัณฑิต", icon: "fi-sr-heart" },
+        { name: "พยาบาลศาสตรบัณฑิต (หลักสูตรนานาชาติ)", icon: "fi-sr-globe" },
+        { name: "พยาบาลศาสตรบัณฑิต (รับผู้สำเร็จปริญญาตรีสาขาอื่น)", icon: "fi-sr-heart" }
+    ];
+
+    const provinces = ["กรุงเทพมหานคร","กระบี่","กาญจนบุรี","กาฬสินธุ์","กำแพงเพชร","ขอนแก่น","จันทบุรี","ฉะเชิงเทรา","ชลบุรี","ชัยนาท","ชัยภูมิ","ชุมพร","เชียงราย","เชียงใหม่","ตรัง","ตราด","ตาก","นครนายก","นครปฐม","นครพนม","นครราชสีมา","นครศรีธรรมราช","นครสวรรค์","นนทบุรี","นราธิวาส","น่าน","บึงกาฬ","บุรีรัมย์","ปทุมธานี","ประจวบคีรีขันธ์","ปราจีนบุรี","ปัตตานี","พระนครศรีอยุธยา","พะเยา","พังงา","พัทลุง","พิจิตร","พิษณุโลก","เพชรบุรี","เพชรบูรณ์","แพร่","ภูเก็ต","มหาสารคาม","มุกดาหาร","แม่ฮ่องสอน","ยโสธร","ยะลา","ร้อยเอ็ด","ระนอง","ระยอง","ราชบุรี","ลพบุรี","ลำปาง","ลำพูน","เลย","ศรีสะเกษ","สกลนคร","สงขลา","สตูล","สมุทรปราการ","สมุทรสงคราม","สมุทรสาคร","สระแก้ว","สระบุรี","สิงห์บุรี","สุโขทัย","สุพรรณบุรี","สุราษฎร์ธานี","สุรินทร์","หนองคาย","หนองบัวลำภู","อ่างทอง","อำนาจเจริญ","อุดรธานี","อุตรดิตถ์","อุทัยธานี","อุบลราชธานี"];
+    const channels = ["ภายในกิจกรรม DEK-D's TCAS Fair ไบเทค บางนา", "กิจกรรม CRA Roadshow (ที่โรงเรียนของท่าน)", "กิจกรรม CRA Open House", "สื่อสังคมออนไลน์ Education CRA และสื่อราชวิทยาลัยจุฬาภรณ์", "เว็บไซต์ของราชวิทยาลัยจุฬาภรณ์", "เว็บไซต์ข่าว/หนังสือพิมพ์ / วารสาร / โบว์ชัวร์", "โทรทัศน์และวิทยุ", "เพื่อน/คนรู้จัก/ครอบครัว/ครูที่โรงเรียน"];
+    const medias = ["Facebook", "Instagram", "Youtube", "Tiktok", "X (Twitter)", "สื่อสังคมออนไลน์ Education CRA และสื่อราชวิทยาลัยจุฬาภรณ์", "เว็บไซต์ของราชวิทยาลัยจุฬาภรณ์", "เว็บไซต์ข่าว", "สื่อโทรทัศน์และวิทยุ", "สื่อหนังสือพิมพ์"];
 
     function updateLoadingUI(perc) {
         document.getElementById('loadingBar').style.width = perc + '%';
@@ -310,264 +344,333 @@
     }
 
     window.onload = function() {
-        // เริ่มต้นแท่งพลัง
-        startLoadingBar();
-        updateLoadingUI(0);
+        // 🌟 Loading 1-100% 🌟
+        loadingInterval = setInterval(() => {
+            if (currentPerc < 90) {
+                currentPerc += Math.random() * 5;
+                if(currentPerc > 90) currentPerc = 90;
+                updateLoadingUI(Math.floor(currentPerc));
+            }
+        }, 150);
 
-        // ดึงข้อมูลโรงเรียน (การโหลดจริง)
         apiCall('getSchoolData').then(data => {
-            clearInterval(loadingInterval); // หยุดแอนิเมชันช่วงแรก
+            clearInterval(loadingInterval);
             rawSchoolData = data; 
-            
-            // สั่งให้แท่งพลังกระโดดไป 100% ทันทีที่ API สำเร็จ
             updateLoadingUI(100);
-            document.getElementById('loadingText').innerText = "พร้อมใช้งาน!";
+            document.getElementById('loadingText').innerText = "เตรียมข้อมูลเสร็จสิ้น!";
             
-            // รอแป๊บนึงเพื่อให้เห็น 100% แล้วเปิดหน้า
-            setTimeout(() => {
-                document.getElementById('loadingScreen').classList.add('opacity-0');
+            setTimeout(function() {
+                let loader = document.getElementById('loadingScreen');
+                loader.classList.add('opacity-0');
                 setTimeout(() => {
-                    document.getElementById('loadingScreen').classList.add('hidden');
-                    document.getElementById('mainContent').classList.remove('hidden', 'opacity-0', 'h-0', 'overflow-hidden');
-                }, 500);
-            }, 600); // ดีเลย์หลังจากเต็ม 100%
-
-        }).catch(() => {
+                    loader.classList.add('hidden');
+                    document.getElementById('mainContent').classList.remove('h-0', 'overflow-hidden', 'opacity-0', 'hidden');
+                }, 500); 
+            }, 600);
+        }).catch(err => {
             clearInterval(loadingInterval);
             updateLoadingUI(0);
-            document.getElementById('loadingBar').classList.replace('bg-orange-500', 'bg-red-500');
-            document.getElementById('loadingText').innerText = "เชื่อมต่อล้มเหลว โปรดรีเฟรช";
-            Swal.fire({icon: 'error', text: 'โหลดฐานข้อมูลไม่สำเร็จ'});
+            document.getElementById('loadingText').innerText = "โหลดล้มเหลว";
+            Swal.fire({icon: 'error', text: 'โหลดฐานข้อมูลไม่สำเร็จ กรุณารีเฟรชหน้าเว็บ'});
         });
 
-        // Setup static data options
-        let pv = document.getElementById('provinceSelect');
-        provinces.forEach(p => pv.add(new Option(p, p)));
+        var pv = document.getElementById('provinceSelect');
+        for(var i=0; i<provinces.length; i++) pv.add(new Option(provinces[i], provinces[i]));
 
-        let c1 = document.getElementById('interest1'), c2 = document.getElementById('interest2'), c3 = document.getElementById('interest3');
-        courses.forEach(c => { c1.add(new Option(c,c)); c2.add(new Option(c,c)); c3.add(new Option(c,c)); });
+        // 🌟 Custom Checkbox (Celebrate Effect) 🌟
+        const svgCelebrate = `<svg class="celebrate-svg"><path d="M27 27l-6-6M27 27l6 6M27 27l-6 6M27 27l6-6" /><circle cx="27" cy="27" r="16"/></svg>`;
+        var buildCheck = function(arr, name, otherId) {
+            var html = "";
+            for(var i=0; i<arr.length; i++) {
+                html += `<label class="celebrate-wrapper"><input type="checkbox" name="${name}" value="${arr[i]}"><div class="celebrate-box"></div>${svgCelebrate}<span class="celebrate-text">${arr[i]}</span></label>`;
+            }
+            html += `<label class="celebrate-wrapper"><input type="checkbox" onchange="checkOther(this, '${otherId}')"><div class="celebrate-box"></div>${svgCelebrate}<span class="celebrate-text">อื่นๆ</span></label>`;
+            return html;
+        };
+        document.getElementById('channelGroup').innerHTML = buildCheck(channels, 'chkChannel', 'otherChannel');
+        document.getElementById('mediaGroup').innerHTML = buildCheck(medias, 'chkMedia', 'otherMedia');
 
-        // Build Pretty Checks
-        const checkIcon = `<div class="cbx flex h-6 w-6 items-center justify-center rounded-lg border-2 border-gray-300 transition-colors"><i class="fi fi-sr-check text-white scale-0 transition-transform"></i></div>`;
-        const buildChecks = (arr, name, otherId) => arr.map(i => `
-            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-100 hover:bg-orange-50 cursor-pointer transition-colors chk-label">
-                <input type="checkbox" name="${name}" value="${i}" class="absolute opacity-0 chk-inp">
-                ${checkIcon}
-                <span class="text-gray-800">${i}</span>
-            </label>
-        `).join('') + `
-            <label class="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-100 hover:bg-orange-50 cursor-pointer transition-colors chk-label">
-                <input type="checkbox" onchange="toggleOther(this, '${otherId}')" class="absolute opacity-0 chk-inp chk-other">
-                ${checkIcon}
-                <span class="text-gray-800">อื่นๆ</span>
-            </label>
-        `;
-        document.getElementById('channelGroup').innerHTML = buildChecks(["ในงาน (สแกน)", "CRA Roadshow", "Open House", "เพจ Education CRA", "Dek-D TCAS Fair"], 'chkChannel', 'otherChannel');
-        document.getElementById('mediaGroup').innerHTML = buildChecks(["Facebook", "Instagram", "TikTok", "TikTok (บูธถ่ายรูป)"], 'chkMedia', 'otherMedia');
-        
-        // CSS for prettier checks
-        const style = document.createElement('style');
-        style.innerHTML = `
-            .chk-inp:checked + .cbx { border-color: #f57c00; background-color: #f57c00; }
-            .chk-inp:checked + .cbx .fi { scale: 1; }
-            .chk-inp:checked ~ span { color: #f57c00; font-bold: 600; }
-            .chk-label:has(.chk-inp:checked) { border-color: #ffcc80; background-color: #fff8f0; }
-        `;
-        document.head.appendChild(style);
+        buildCustomCourseDropdown('interest1', '-- อันดับที่ 1 --');
+        buildCustomCourseDropdown('interest2', '-- อันดับที่ 2 --');
+        buildCustomCourseDropdown('interest3', '-- อันดับที่ 3 --');
 
-        // Build Prettier Rating Grids
-        const qs = [
-            { id: "desireScore", text: "1. อยากเข้าศึกษาต่อระดับใด" }, { id: "mediaScore", text: "2. พึงพอใจสื่อแนะแนว (เล่ม)" }, { id: "prScore", text: "3. พึงพอใจสื่อแนะแนว (บูธ)" }, { id: "ohScore", text: "4. สนใจ CRA Open House" }, { id: "satScore", text: "5. พึงพอใจภาพรวมกิจกรรม" }
+        // 🌟 Rating Scale (1-5 UI แบบรูปภาพเป๊ะๆ ขาวเวลาเลือก) 🌟
+        var questions = [ 
+            { id: "desireScore", text: "1. หลังจากเข้าร่วมกิจกรรมแล้วท่านรู้สึกอยากเข้าศึกษาต่อในราชวิทยาลัยจุฬาภรณ์ในระดับใด" }, 
+            { id: "mediaSatisfactionScore", text: "2. ความพึงพอใจสื่อที่ใช้ประกอบการแนะแนวภายในกิจกรรม" },
+            { id: "prSatisfactionScore", text: "3. ความพึงพอใจการประชาสัมพันธ์ข่าวสารเพจ Education CRA ในแพลตฟอร์มต่าง ๆ" },
+            { id: "openHouseScore", text: "4. ราชวิทยาลัยจุฬาภรณ์จะจัดกิจกรรมแนะแนวการศึกษา CRA Open House 2026 ในเดือนตุลาคม 2568 ท่านสนใจเข้าร่วมหรือไม่" }, 
+            { id: "satisfactionScore", text: "5. ความพึงพอใจภาพรวมของกิจกรรมราชวิทยาลัยจุฬาภรณ์แนะแนวการศึกษา Dek's-D TCAS Fair 2026" }
         ];
-        document.getElementById('ratingContainer').innerHTML = qs.map(q => `
-            <div class="bg-white p-5 rounded-xl border border-gray-100 flex flex-col md:flex-row md:justify-between md:items-center gap-4 hover:shadow-sm hover:border-orange-100 transition-all">
-                <span class="text-sm font-bold text-gray-800">${q.text}</span>
-                <div class="flex gap-2 justify-end">
-                    ${[1,2,3,4,5].map(n=>`
-                        <label class="custom-radio !p-0 w-11 h-11 flex justify-center items-center rounded-xl font-black text-lg border-2 border-gray-200">
-                            <input type="radio" name="${q.id}" value="${n}" onchange="updateRadioStyle(this)">
-                            <span class="checkmark !hidden"></span>
-                            <span class="radio-text z-10 transition-colors text-gray-400">${n}</span>
-                        </label>`).join('')}
-                </div>
-            </div>`).join('');
-            
-        const gridStyle = document.createElement('style');
-        gridStyle.innerHTML = `
-            .custom-radio:has(input:checked) { border-color: #f57c00; background-color: #f57c00; }
-            .custom-radio:has(input:checked) .radio-text { color: #white; }
-        `;
-        document.head.appendChild(gridStyle);
+        var rHTML = '';
+        for(var l=0; l<questions.length; l++) {
+            rHTML += `<div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4"><span class="text-sm font-bold text-gray-700 leading-relaxed md:max-w-md">${questions[l].text}</span><div class="flex gap-2 justify-end">`;
+            for(var m=1; m<=5; m++){ 
+                rHTML += `<label class="rating-radio"><input type="radio" name="${questions[l].id}" value="${m}"><div class="rating-box">${m}</div></label>`; 
+            }
+            rHTML += '</div></div>';
+        }
+        document.getElementById('ratingContainer').innerHTML = rHTML;
     };
 
-    function updateRadioStyle(el) {
-        document.querySelectorAll(`input[name="${el.name}"]`).forEach(r => r.parentElement.classList.remove('active-radio', '!border-f57c00', 'bg-f57c00'));
+    // 🌟 Custom Dropdown Engine (With Icons) 🌟
+    function refreshCourseOptions() {
+        var v1 = document.getElementById('interest1').value;
+        var v2 = document.getElementById('interest2').value;
+        var v3 = document.getElementById('interest3').value;
+        var selectedArr = [v1, v2, v3].filter(v => v !== "");
+
+        var wrappers = document.querySelectorAll('.custom-select-wrapper');
+        wrappers.forEach(function(wrapper, index) {
+            var currentSelectId = 'interest' + (index + 1);
+            var currentVal = document.getElementById(currentSelectId).value;
+            var opts = wrapper.querySelectorAll('.custom-option');
+
+            opts.forEach(function(opt) {
+                var val = opt.getAttribute('data-value');
+                if (!val) return; 
+                opt.style.display = (selectedArr.includes(val) && val !== currentVal) ? 'none' : 'flex'; 
+            });
+        });
+    }
+
+    function buildCustomCourseDropdown(selectId, placeholder) {
+        var container = document.getElementById('courseDropdownContainer');
+        var hiddenSelect = document.getElementById(selectId);
+        var wrapper = document.createElement('div');
+        wrapper.className = "custom-select-wrapper mb-3";
+        var trigger = document.createElement('div');
+        trigger.className = "custom-select-trigger";
+        trigger.innerHTML = `<span class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400"><i class="fi fi-sr-apps mt-1 text-sm"></i></div> ${placeholder}</span><i class="fi fi-sr-angle-small-down text-gray-400"></i>`;
+        
+        var optionsList = document.createElement('div');
+        optionsList.className = "custom-options";
+        var defOpt = document.createElement('div');
+        defOpt.className = "custom-option text-gray-400";
+        defOpt.innerHTML = `<span>${placeholder}</span>`;
+        defOpt.onclick = function(e) {
+            e.stopPropagation();
+            hiddenSelect.value = "";
+            trigger.innerHTML = `<span class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400"><i class="fi fi-sr-apps mt-1 text-sm"></i></div> ${placeholder}</span><i class="fi fi-sr-angle-small-down text-gray-400"></i>`;
+            wrapper.classList.remove('open');
+            refreshCourseOptions();
+        };
+        optionsList.appendChild(defOpt);
+
+        for (var i = 0; i < coursesMap.length; i++) {
+            var c = coursesMap[i];
+            var opt = document.createElement('div');
+            opt.className = "custom-option";
+            opt.innerHTML = `<div class="w-8 h-8 bg-orange-50 rounded-full flex items-center justify-center text-[#f57c00]"><i class="fi ${c.icon} mt-1 text-sm"></i></div> <span class="font-bold">${c.name}</span>`;
+            opt.setAttribute('data-value', c.name);
+            opt.onclick = function(e) {
+                e.stopPropagation();
+                hiddenSelect.value = this.getAttribute('data-value');
+                trigger.innerHTML = this.innerHTML + '<i class="fi fi-sr-angle-small-down text-gray-400"></i>';
+                wrapper.classList.remove('open');
+                refreshCourseOptions(); 
+            };
+            optionsList.appendChild(opt);
+        }
+
+        trigger.onclick = function(e) {
+            e.stopPropagation();
+            document.querySelectorAll('.custom-select-wrapper').forEach(w => { if(w !== wrapper) w.classList.remove('open'); });
+            wrapper.classList.toggle('open');
+        };
+        wrapper.appendChild(trigger);
+        wrapper.appendChild(optionsList);
+        container.insertBefore(wrapper, hiddenSelect);
+    }
+    
+    document.addEventListener('click', () => document.querySelectorAll('.custom-select-wrapper').forEach(w => w.classList.remove('open')));
+
+    function updateRadioStyle(el, cls) {
+        document.querySelectorAll(`input[name="${el.name}"]`).forEach(r => r.parentElement.classList.remove('active-radio'));
         if(el.checked) el.parentElement.classList.add('active-radio');
     }
 
-    function toggleOther(el, id) {
-        let inp = document.getElementById(id);
-        if((el.value && el.value === "อื่นๆ") || el.checked) { inp.classList.remove('hidden'); inp.focus(); }
-        else { inp.classList.add('hidden'); inp.value = ""; }
-    }
-    
-    function togglePlatform(show) {
-        let p = document.getElementById('wrapFollowPlatform');
-        show ? p.classList.remove('hidden') : (p.classList.add('hidden'), document.getElementById('followPlatform').value="");
+    function formatPhone(input) {
+        var val = input.value.replace(/\D/g, '');
+        if (val.length > 10) val = val.substring(0, 10);
+        if (val.length > 6) input.value = val.substring(0, 3) + '-' + val.substring(3, 6) + '-' + val.substring(6);
+        else if (val.length > 3) input.value = val.substring(0, 3) + '-' + val.substring(3);
+        else input.value = val;
     }
 
-    function formatPhone(inp) {
-        let v = inp.value.replace(/\D/g, '').substring(0,10);
-        inp.value = v.length > 6 ? `${v.substring(0,3)}-${v.substring(3,6)}-${v.substring(6)}` : v.length > 3 ? `${v.substring(0,3)}-${v.substring(3)}` : v;
+    function checkOther(el, inputId) {
+        var inp = document.getElementById(inputId);
+        if ((el.value && el.value === "อื่นๆ") || el.checked) { inp.classList.remove('hidden'); inp.focus(); } 
+        else { inp.classList.add('hidden'); inp.value = ""; }
     }
 
     function updateDynamicFields() {
-        let t = document.getElementById('userType').value;
-        let edu = document.getElementById('education'), age = document.getElementById('age');
+        var type = document.getElementById('userType').value;
+        var edu = document.getElementById('education');
+        var sec = document.getElementById('schoolSection');
+        var wSch = document.getElementById('wrapSchoolSearch'), wUni = document.getElementById('wrapUni'), wPv = document.getElementById('wrapProvince');
+        var wrapAge = document.getElementById('wrapAge');
+        var wrapParent = document.getElementById('wrapParentRelation');
         
-        // Reset dynamic views
-        document.getElementById('schoolSection').classList.add('hidden');
-        document.getElementById('wrapSchoolSearch').classList.add('hidden');
-        document.getElementById('wrapUni').classList.add('hidden');
-        document.getElementById('wrapProvince').classList.add('hidden');
-        document.getElementById('wrapAge').classList.remove('hidden');
-        document.getElementById('wrapParentRelation').classList.add('hidden');
-        document.getElementById('otherEducation').classList.add('hidden'); document.getElementById('otherEducation').value="";
-        document.getElementById('uniSchool').value=""; document.getElementById('schoolInputSearch').value=""; document.getElementById('provinceSelect').value="";
+        wSch.classList.add('hidden'); wUni.classList.add('hidden'); wPv.classList.add('hidden');
+        document.getElementById('schoolInputSearch').value = ""; document.getElementById('uniSchool').value = ""; document.getElementById('provinceSelect').value = "";
+        document.getElementById('otherEducation').classList.add('hidden'); sec.classList.add('hidden');
 
-        age.innerHTML = '<option value="">-- ช่วงอายุ --</option><option value="ต่ำกว่า 15">ต่ำกว่า 15 ปี</option><option value="16-18">16-18 ปี</option><option value="18-23">18-23 ปี</option><option value="มากกว่า 23">มากกว่า 23 ปี</option>';
-        edu.innerHTML = '<option value="">-- เลือกระดับ --</option>';
+        wrapAge.classList.remove('hidden');
+        wrapParent.classList.add('hidden');
+        document.getElementById('parentRelation').value = "";
         
-        if(t === "นักเรียน") {
-            ['ม.ต้น', 'ม.4', 'ม.5', 'ม.6'].forEach(i => edu.add(new Option(i,i)));
-            document.getElementById('schoolSection').classList.remove('hidden');
-            document.getElementById('wrapSchoolSearch').classList.remove('hidden');
-            document.getElementById('wrapProvince').classList.remove('hidden');
-            document.getElementById('schoolLabel').innerText = "โรงเรียน *";
-        } else if(t === "นักศึกษามหาวิทยาลัย") {
-            ['ปริญญาตรี', 'สูงกว่าปริญญาตรี', 'อื่นๆ'].forEach(i => edu.add(new Option(i,i)));
-            document.getElementById('schoolSection').classList.remove('hidden');
-            document.getElementById('wrapUni').classList.remove('hidden');
-            document.getElementById('wrapProvince').classList.remove('hidden');
-        } else if(t === "ครู / อาจารย์") {
-            document.getElementById('wrapAge').classList.add('hidden'); // ซ่อนอายุครู
-            ['ปริญญาตรี', 'สูงกว่าปริญญาตรี', 'อื่นๆ'].forEach(i => edu.add(new Option(i,i)));
-            document.getElementById('schoolSection').classList.remove('hidden');
-            document.getElementById('wrapSchoolSearch').classList.remove('hidden');
-            document.getElementById('schoolLabel').innerText = "สถาบันที่ท่านสอน *";
-        } else if(t === "ผู้ปกครอง") {
-            document.getElementById('wrapAge').classList.add('hidden'); // ซ่อนอายุผู้ปกครอง
-            document.getElementById('wrapParentRelation').classList.remove('hidden');
-            ['มัธยมปลาย', 'ปริญญาตรี', 'สูงกว่าปริญญาตรี', 'อื่นๆ'].forEach(i => edu.add(new Option(i,i)));
+        edu.innerHTML = '<option value="">-- เลือกระดับการศึกษา --</option>';
+        
+        if (type === "") return;
+
+        if (type === "นักเรียน") {
+            ["มัธยมศึกษาตอนต้น", "มัธยมศึกษาปีที่ 4 หรือเทียบเท่า", "มัธยมศึกษาปีที่ 5 หรือเทียบเท่า", "มัธยมศึกษาปีที่ 6 หรือเทียบเท่า", "อื่นๆ"].forEach(i => edu.add(new Option(i,i)));
+            sec.classList.remove('hidden'); wSch.classList.remove('hidden'); wPv.classList.remove('hidden');
+            document.getElementById('schoolLabel').innerHTML = 'โรงเรียนของท่าน (พิมพ์เพื่อค้นหา) <span class="text-red-500">*</span>';
+        } else if (type === "นักศึกษามหาวิทยาลัย") {
+            ["ปริญญาตรี", "มากกว่าปริญญาตรี", "อื่นๆ"].forEach(i => edu.add(new Option(i,i)));
+            sec.classList.remove('hidden'); wUni.classList.remove('hidden'); wPv.classList.remove('hidden');
+        } else if (type === "ครู / อาจารย์") {
+            wrapAge.classList.add('hidden'); 
+            ["ปริญญาตรี", "มากกว่าปริญญาตรี", "อื่นๆ"].forEach(i => edu.add(new Option(i,i)));
+            sec.classList.remove('hidden'); wSch.classList.remove('hidden');
+            document.getElementById('schoolLabel').innerHTML = 'สถาบันที่ท่านสอน (พิมพ์เพื่อค้นหา) <span class="text-red-500">*</span>';
+        } else if (type === "ผู้ปกครอง") {
+            wrapAge.classList.add('hidden'); 
+            wrapParent.classList.remove('hidden'); 
+            ["มัธยมศึกษาตอนปลาย", "ปริญญาตรี", "มากกว่าปริญญาตรี", "อื่นๆ"].forEach(i => edu.add(new Option(i,i)));
+        } else if (type === "ประชาชนทั่วไป") {
+            ["มัธยมศึกษาตอนปลาย", "ปริญญาตรี", "มากกว่าปริญญาตรี", "อื่นๆ"].forEach(i => edu.add(new Option(i,i)));
         }
-        edu.add(new Option('อื่นๆ','อื่นๆ')); // เติมอื่นๆ เสมอ
     }
 
     function fastSearchSchool(val) {
-        let box = document.getElementById('schoolDropdown'); box.innerHTML = '';
-        if(val.trim().length < 2) { box.style.display = 'none'; return; }
-        // ค้นหารายชื่อโรงเรียนจาก rawSchoolData
-        let res = rawSchoolData.filter(r => r[0].toLowerCase().includes(val.toLowerCase())).slice(0, 10);
-        if(res.length) {
-            res.forEach(r => {
-                let li = document.createElement('li');
-                li.innerHTML = `<span class="font-bold text-gray-900">${r[0]}</span> <span class="text-xs text-gray-400 font-medium">จ.${r[1]}</span>`;
-                li.onclick = () => { 
-                    document.getElementById('schoolInputSearch').value = r[0]; 
-                    document.getElementById('provinceSelect').value = r[1]; 
-                    box.style.display='none'; 
-                    document.getElementById('schoolInputSearch').classList.replace('border-orange-300','border-green-300'); // เปลียนเป็นสีเขียวเมื่อเลือกแล้ว
-                }
+        var box = document.getElementById('schoolDropdown');
+        box.innerHTML = '';
+        if (val.trim().length < 2) { box.style.display = 'none'; return; }
+
+        var results = rawSchoolData.filter(r => r[0].toLowerCase().includes(val.toLowerCase())).slice(0, 15);
+        if (results.length > 0) {
+            results.forEach(r => {
+                var li = document.createElement('li');
+                li.innerHTML = '<span class="font-bold text-gray-800">' + r[0] + '</span> <span class="text-xs text-gray-400 ml-auto">จ.' + r[1] + '</span>';
+                li.onclick = function() {
+                    document.getElementById('schoolInputSearch').value = r[0];
+                    document.getElementById('provinceSelect').value = r[1];
+                    box.style.display = 'none';
+                };
                 box.appendChild(li);
             });
-        } else { box.innerHTML = '<li class="text-gray-400 italic">ไม่พบในฐานข้อมูล (พิมพ์ชื่อโรงเรียนของท่านได้เลย)</li>'; }
+        } else {
+            box.innerHTML = '<li class="text-gray-500 italic px-4 py-3">พิมพ์ชื่อโรงเรียนของท่านเองได้เลยครับ</li>';
+        }
         box.style.display = 'block';
     }
 
-    function nextStep(s) {
-        // Validation หน้า 1-2
-        if(s === 1) {
-            if(!document.querySelector('input[name="eventDate"]:checked') || document.getElementById('phone').value.length !== 12 || !document.getElementById('userType').value || !document.getElementById('gender').value) {
-                return Swal.fire({icon: 'warning', text: 'กรุณากรอกข้อมูลวันที่, เบอร์โทร, ประเภท และ เพศ ให้ครบถ้วนในหน้าแรก'});
+    function toggleFollowPlatform() {
+        var followRadio = document.querySelector('input[name="followPage"]:checked');
+        var wrap = document.getElementById('wrapFollowPlatform');
+        if (followRadio && followRadio.value === "ใช่ติดตาม") { wrap.classList.remove('hidden'); } 
+        else { wrap.classList.add('hidden'); document.getElementById('followPlatform').value = ""; }
+    }
+
+    function nextStep(step) {
+        if (step === 1) {
+            if (!document.querySelector('input[name="eventDate"]:checked') || document.getElementById('phone').value.length !== 12 || !document.getElementById('userType').value || !document.getElementById('gender').value) {
+                Swal.fire({icon: 'warning', title: 'ข้อมูลไม่ครบ', text: 'กรุณากรอกข้อมูลให้ครบถ้วน'}); return;
             }
-        } else if(s === 2) {
-            if(!document.getElementById('education').value) return Swal.fire({icon: 'warning', text: 'กรุณาเลือกระดับการศึกษา'});
+            if (document.getElementById('userType').value === 'ผู้ปกครอง' && !document.getElementById('parentRelation').value) {
+                Swal.fire({icon: 'warning', title: 'ข้อมูลไม่ครบ', text: 'กรุณาเลือกความเกี่ยวข้อง'}); return;
+            }
+        } 
+        else if (step === 2) {
+            var edu = document.getElementById('education');
+            if (!edu.value || (edu.value === 'อื่นๆ' && !document.getElementById('otherEducation').value)) { 
+                Swal.fire({icon: 'warning', title: 'ข้อมูลไม่ครบ', text: 'กรุณาระบุระดับการศึกษา'}); return; 
+            }
+            var type = document.getElementById('userType').value;
+            if (type === "นักเรียน" && (!document.getElementById('schoolInputSearch').value || !document.getElementById('provinceSelect').value)) return Swal.fire({icon: 'warning', text: 'ระบุโรงเรียนและจังหวัด'});
+            if (type === "นักศึกษามหาวิทยาลัย" && (!document.getElementById('uniSchool').value || !document.getElementById('provinceSelect').value)) return Swal.fire({icon: 'warning', text: 'ระบุมหาวิทยาลัยและจังหวัด'});
+            if (type === "ครู / อาจารย์" && !document.getElementById('schoolInputSearch').value) return Swal.fire({icon: 'warning', text: 'ระบุสถาบันที่สอน'});
         }
-        
-        // เลื่อนหน้าฟอร์ม
-        document.getElementById(`step${s}`).classList.remove('active'); document.getElementById(`step${s+1}`).classList.add('active');
-        document.getElementById('progressBar').style.width = s===1 ? '50%' : '100%';
-        document.getElementById(`dot${s+1}`).classList.replace('bg-white', 'bg-[#8bc34a]'); document.getElementById(`dot${s+1}`).classList.replace('text-gray-400', 'text-white');
-        document.getElementById(`dot${s+1}`).classList.add('shadow-md');
+
+        document.getElementById('step'+step).classList.remove('active'); document.getElementById('step'+(step+1)).classList.add('active');
+        document.getElementById('progressBar').style.width = step===1 ? '50%' : '100%';
+        document.getElementById('dot'+(step+1)).className = "w-10 h-10 rounded-full bg-[#8bc34a] text-white flex items-center justify-center font-extrabold text-lg shadow-md transition-colors";
         window.scrollTo(0,0);
     }
 
-    function prevStep(s) {
-        document.getElementById(`step${s}`).classList.remove('active'); document.getElementById(`step${s-1}`).classList.add('active');
-        document.getElementById('progressBar').style.width = s===2 ? '0%' : '50%';
-        document.getElementById(`dot${s}`).classList.replace('bg-[#8bc34a]', 'bg-white'); document.getElementById(`dot${s}`).classList.replace('text-white', 'text-gray-400');
-        document.getElementById(`dot${s}`).classList.remove('shadow-md');
+    function prevStep(step) {
+        document.getElementById('step'+step).classList.remove('active'); document.getElementById('step'+(step-1)).classList.add('active');
+        document.getElementById('progressBar').style.width = step===2 ? '0%' : '50%';
+        document.getElementById('dot'+step).className = "w-10 h-10 rounded-full bg-white border-2 border-gray-200 text-gray-400 flex items-center justify-center font-extrabold text-lg transition-colors";
         window.scrollTo(0,0);
     }
+
+    function goBackToHome() { window.top.location.href = "index.html"; }
 
     function submitData() {
-        // Validation หน้า 3 (แบบสอบถาม)
-        let reqRadios = ['knowCRA', 'followPage', 'desireScore', 'mediaScore', 'prScore', 'ohScore', 'satScore'];
-        if(reqRadios.some(n => !document.querySelector(`input[name="${n}"]:checked`))) return Swal.fire({icon: 'warning', text: 'กรุณาทำแบบสอบถามและให้คะแนนความพึงพอใจให้ครบทุกข้อ'});
-        if(!document.getElementById('suggestion').value.trim()) return Swal.fire({icon: 'warning', text: 'กรุณากรอกข้อเสนอแนะเพิ่มเติม'});
+        let reqRadios = ['knowCRA', 'followPage', 'desireScore', 'mediaSatisfactionScore', 'prSatisfactionScore', 'openHouseScore', 'satisfactionScore'];
+        if(reqRadios.some(n => !document.querySelector(`input[name="${n}"]:checked`))) {
+            return Swal.fire({icon:'warning', text:'กรุณาทำแบบสอบถามและให้คะแนน 1-5 ให้ครบทุกข้อ'});
+        }
 
-        // เปลี่ยนปุ่มเป็น Loading
-        let btn = document.getElementById('btnSubmit');
-        btn.innerHTML = '<span class="loader-sm mr-2"></span> กำลังบันทึก...'; btn.disabled = true;
+        if (document.querySelector('input[name="followPage"]:checked').value === "ใช่ติดตาม" && !document.getElementById('followPlatform').value) {
+            return Swal.fire({icon:'warning', text:'กรุณาเลือกแพลตฟอร์มที่คุณติดตาม'});
+        }
 
-        // รวบรวมข้อมูลเช็คบ็อกซ์ (รวมอื่นๆ)
+        if (!document.getElementById('suggestion').value.trim()) return Swal.fire({icon:'warning', text:'กรุณากรอกข้อเสนอแนะ'});
+
         let getCheck = (n, id) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(e=>e.value).concat(document.getElementById(id).value ? ["อื่นๆ: "+document.getElementById(id).value] : []).join(', ');
+        var channelsStr = getCheck('chkChannel', 'otherChannel'), mediasStr = getCheck('chkMedia', 'otherMedia');
+        if(!channelsStr || !mediasStr) return Swal.fire({icon:'warning', text:'กรุณาเลือกช่องทางและสื่ออย่างน้อย 1 ข้อ'});
 
-        // สร้าง Payload
-        let payload = {
+        var type = document.getElementById('userType').value;
+        var schoolData = (type === "นักศึกษามหาวิทยาลัย") ? document.getElementById('uniSchool').value : document.getElementById('schoolInputSearch').value;
+
+        var payload = {
             eventDate: document.querySelector('input[name="eventDate"]:checked').value,
             phone: document.getElementById('phone').value,
-            userType: document.getElementById('userType').value === 'ผู้ปกครอง' ? 'ผู้ปกครอง: '+document.getElementById('parentRelation').value : document.getElementById('userType').value,
-            gender: document.getElementById('gender').value,
-            age: document.getElementById('userType').value.match(/ครู|ผู้ปกครอง/) ? "มากกว่า 23" : document.getElementById('age').value,
+            userType: type === 'ผู้ปกครอง' ? 'ผู้ปกครอง : ' + document.getElementById('parentRelation').value : type, 
+            gender: document.getElementById('gender').value, 
+            age: (type === 'ครู / อาจารย์' || type === 'ผู้ปกครอง') ? "มากกว่า 23 ปี" : document.getElementById('age').value,
             education: document.getElementById('education').value === "อื่นๆ" ? document.getElementById('otherEducation').value : document.getElementById('education').value,
-            school: document.getElementById('userType').value === 'นักศึกษามหาวิทยาลัย' ? document.getElementById('uniSchool').value : document.getElementById('schoolInputSearch').value,
-            teachingSchool: document.getElementById('userType').value === 'ครู / อาจารย์' ? document.getElementById('schoolInputSearch').value : "",
+            school: schoolData, 
+            teachingSchool: (type === "ครู / อาจารย์") ? schoolData : "", 
             province: document.getElementById('provinceSelect').value,
-            knowCRA: document.querySelector('input[name="knowCRA"]:checked').value,
-            channel: getCheck('chkChannel', 'otherChannel'),
-            media: getCheck('chkMedia', 'otherMedia'),
-            interest1: document.getElementById('interest1').value,
-            interest2: document.getElementById('interest2').value,
-            interest3: document.getElementById('interest3').value,
+            knowCRA: document.querySelector('input[name="knowCRA"]:checked').value, 
+            channel: channelsStr, media: mediasStr,
+            interest1: document.getElementById('interest1').value, 
+            interest2: document.getElementById('interest2').value, 
+            interest3: document.getElementById('interest3').value, 
             tcasRound: document.getElementById('tcasRound').value,
-            desireScore: document.querySelector('input[name="desireScore"]:checked').value,
-            openHouseScore: document.querySelector('input[name="ohScore"]:checked').value,
-            satisfactionScore: document.querySelector('input[name="satScore"]:checked').value,
+            desireScore: document.querySelector('input[name="desireScore"]:checked').value, 
+            openHouseScore: document.querySelector('input[name="openHouseScore"]:checked').value, 
+            satisfactionScore: document.querySelector('input[name="satisfactionScore"]:checked').value, 
             suggestion: document.getElementById('suggestion').value,
             followPage: document.querySelector('input[name="followPage"]:checked').value,
-            followPlatform: document.getElementById('followPlatform').value,
-            prSatisfactionScore: document.querySelector('input[name="prScore"]:checked').value,
-            mediaSatisfactionScore: document.querySelector('input[name="mediaScore"]:checked').value
+            followPlatform: document.getElementById('followPlatform').value || "-",
+            prSatisfactionScore: document.querySelector('input[name="prSatisfactionScore"]:checked').value,
+            mediaSatisfactionScore: document.querySelector('input[name="mediaSatisfactionScore"]:checked').value
         };
 
-        // เติมขีด (-) สำหรับช่องว่าง
         Object.keys(payload).forEach(k => payload[k] = payload[k] || "-");
 
-        // ยิงข้อมูลไป GAS
+        var btn = document.getElementById('btnSubmit'); var originTxt = btn.innerHTML;
+        btn.innerHTML = '<span class="loader-sm mr-2"></span> กำลังบันทึก...'; btn.disabled = true;
+
         apiCall('submitSurvey', payload).then(res => {
-            btn.innerHTML = 'ส่งแบบประเมินและรับคูปอง'; btn.disabled = false;
-            if(res.status === 'success') {
-                // ซ่อนฟอร์ม โชว์หน้าสำเร็จ
+            btn.innerHTML = originTxt; btn.disabled = false;
+            if (res.status === 'success') {
                 document.getElementById('surveyForm').classList.add('hidden'); document.getElementById('formStepper').classList.add('hidden');
                 document.getElementById('successView').classList.remove('hidden');
                 document.getElementById('displayUserId').innerText = res.couponData.id;
-                document.getElementById('displayQrCode').src = 'https://quickchart.io/qr?text=' + encodeURIComponent(res.couponData.id) + '&size=200';
+                document.getElementById('displayQrCode').src = 'https://quickchart.io/qr?text=' + encodeURIComponent(res.couponData.id) + '&size=300';
                 window.scrollTo(0,0);
-            } else Swal.fire({icon: 'error', text: res.message}); // เช่น เบอร์โทรซ้ำ
-        }).catch(() => {
-            btn.innerHTML = 'ส่งแบบประเมินและรับคูปอง'; btn.disabled = false;
-            Swal.fire({icon: 'error', title: 'การเชื่อมต่อล้มเหลว', text: 'ยิง API ไปยังหลังบ้านไม่สำเร็จ โปรดเช็ค GAS_URL หรือเชื่อมต่อเน็ต'});
+            } else Swal.fire({icon: 'error', title: 'ไม่สำเร็จ', text: res.message});
+        }).catch(() => { 
+            btn.innerHTML = originTxt; btn.disabled = false; Swal.fire({icon: 'error', text: 'เชื่อมต่อเซิร์ฟเวอร์ขัดข้อง'}); 
         });
     }
   </script>
