@@ -128,26 +128,14 @@
         inp.value = v.length > 6 ? `${v.substring(0,3)}-${v.substring(3,6)}-${v.substring(6)}` : v.length > 3 ? `${v.substring(0,3)}-${v.substring(3)}` : v;
     }
 
-    // 🌟 ระบบเช็ควันหมดอายุ (หลังเที่ยงคืน) 🌟
-    function checkIsExpired(isDay1) {
-        const today = new Date();
-        const y = today.getFullYear(), m = today.getMonth(), d = today.getDate();
-        // งานจัดเดือนเมษายน (เดือน 3 ใน Javascript) ปี 2026
-        if (y > 2026 || (y === 2026 && m > 3)) return true; // เลยเดือนงานไปแล้ว
-        if (y === 2026 && m === 3) {
-            if (isDay1 && d > 25) return true; // คูปอง Day 1 แต่เลยวันที่ 25 ไปแล้ว (หมดอายุ)
-            if (!isDay1 && d > 26) return true; // คูปอง Day 2 แต่เลยวันที่ 26 ไปแล้ว (หมดอายุ)
-        }
-        return false;
-    }
-
+    // 🌟 โชว์ QR Code พร้อมเช็คสเตตัส 🌟
     function showQR(codeStr, dateStr, isDay1, isUsed, isExpired) {
         if(isUsed) {
             Swal.fire({icon: 'info', title: 'คูปองถูกใช้แล้ว', text: 'คูปองรหัสนี้ถูกสแกนใช้งานไปเรียบร้อยแล้วครับ', confirmButtonColor: '#9ca3af', customClass: { popup: 'rounded-[2rem]' }});
             return;
         }
         if(isExpired) {
-            Swal.fire({icon: 'error', title: 'คูปองหมดอายุ', text: 'คูปองใบนี้หมดอายุไปแล้ว (ใช้ได้เฉพาะวันงานที่เลือกเท่านั้น)', confirmButtonColor: '#f43f5e', customClass: { popup: 'rounded-[2rem]' }});
+            Swal.fire({icon: 'error', title: 'คูปองหมดอายุ', text: 'คูปองใบนี้หมดอายุข้ามวันไปแล้วครับ', confirmButtonColor: '#f43f5e', customClass: { popup: 'rounded-[2rem]' }});
             return;
         }
 
@@ -196,10 +184,12 @@
                 
                 document.getElementById('couponList').innerHTML = res.userData.coupons.map(c => {
                     let isD1 = c.date.includes('25') || c.code.includes('D1');
-                    let isUsed = c.status === "ใช้งานแล้ว";
-                    let isExpired = !isUsed && checkIsExpired(isD1); // 🌟 ประมวลผลวันหมดอายุ 🌟
                     
-                    // ปรับสี: ถ้าถูกใช้แล้ว หรือ หมดอายุ ให้เป็นสีเทาทั้งคู่
+                    // 🌟 ดึงสถานะที่แท้จริงจาก Google Sheet 🌟
+                    let isUsed = c.status === "ใช้งานแล้ว";
+                    let isExpired = c.status === "หมดอายุ";
+                    
+                    // ปรับสี: ถ้าถูกใช้แล้ว หรือ หมดอายุ ให้เป็นสีเทา (Bank)
                     let bg = (isUsed || isExpired) ? "bg-gray-50 border-gray-200 opacity-70" : (isD1 ? "bg-gradient-to-br from-orange-50 to-orange-100/50 border-orange-200" : "bg-gradient-to-br from-green-50 to-green-100/50 border-green-200");
                     let txt = (isUsed || isExpired) ? "text-gray-400" : (isD1 ? "text-orange-500" : "text-green-600");
                     
@@ -216,7 +206,7 @@
                             </div>
                             <div class="text-left">
                                 <p class="font-black text-gray-800 text-lg md:text-2xl lg:text-3xl leading-tight mb-1 lg:mb-2">คูปองถ่ายรูป</p>
-                                <p class="text-sm md:text-base lg:text-lg font-bold ${txt} opacity-80">${isD1 ? 'DAY 1' : 'DAY 2'} ${isExpired ? '(เลยวันงานแล้ว)' : ''}</p>
+                                <p class="text-sm md:text-base lg:text-lg font-bold ${txt} opacity-80">${isD1 ? 'DAY 1' : 'DAY 2'}</p>
                             </div>
                         </div>
                         <i class="fi fi-sr-qr-scan text-3xl md:text-5xl lg:text-6xl text-gray-300 group-hover:text-gray-400 transition-colors ${(isUsed || isExpired) ? 'hidden' : ''} ml-2"></i>
