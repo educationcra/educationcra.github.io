@@ -123,6 +123,19 @@
       <div id="sourceTableContainer" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
     </div>
 
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 no-print mb-8">
+      <button onclick="openCustomModal('newCurr')" class="bg-gradient-to-r from-orange-50 to-amber-50 p-8 rounded-3xl border-2 border-orange-100 flex flex-col items-center hover:-translate-y-1 transition-all group shadow-sm">
+        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:scale-110 transition-transform"><i class="fi fi-sr-add text-3xl text-orange-500 mt-1"></i></div>
+        <h3 class="font-black text-orange-800 text-xl md:text-2xl mb-3">หลักสูตรใหม่ที่อยากให้เปิด</h3>
+        <span class="bg-orange-500 text-white px-6 py-2.5 rounded-full shadow font-bold">ดูสถิติการจัดอันดับ</span>
+      </button>
+      <button onclick="openCustomModal('suggest')" class="bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-3xl border-2 border-blue-100 flex flex-col items-center hover:-translate-y-1 transition-all group shadow-sm">
+        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:scale-110 transition-transform"><i class="fi fi-sr-comment-alt text-3xl text-blue-500 mt-1"></i></div>
+        <h3 class="font-black text-blue-800 text-xl md:text-2xl mb-3">ข้อเสนอแนะเพิ่มเติม</h3>
+        <span class="bg-blue-500 text-white px-6 py-2.5 rounded-full shadow font-bold">เปิดอ่านข้อความทั้งหมด</span>
+      </button>
+    </div>
+    
     <div class="grid grid-cols-1 no-print mb-8">
       <button onclick="openCustomModal('suggest')" class="bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-3xl border-2 border-blue-100 flex flex-col items-center hover:-translate-y-1 transition-all group shadow-sm">
         <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:scale-110 transition-transform"><i class="fi fi-sr-comment-alt text-3xl text-blue-500 mt-1"></i></div>
@@ -408,13 +421,21 @@
     }
 
     function openCustomModal(type) {
-      document.getElementById('mHeader').innerHTML = `<i class="fi fi-sr-comment-alt text-blue-500"></i> ข้อเสนอแนะเพิ่มเติม`;
       let data = RAW_DATA;
       if(filterDate !== "All") { let expectedStr = filterDate === "Day 1" ? "25 เมษายน 2569" : "26 เมษายน 2569"; data = data.filter(r => String(r[20]).trim() === expectedStr); }
       if(filterType !== "All") { data = data.filter(r => String(r[1]).includes(filterType)); }
 
-      const list = [...new Set(data.map(r => r[19]))].filter(v => v && v.toString().trim() !== "-" && v.toString().length > 2);
-      document.getElementById('mBody').innerHTML = list.length ? `<ul class="space-y-3">${list.map(v => `<li class="p-4 bg-blue-50/50 rounded-xl border border-blue-100 flex items-start gap-3 text-sm text-slate-700 font-medium"><i class="fi fi-sr-quote-right text-blue-400 mt-0.5"></i> <span class="leading-relaxed">${v}</span></li>`).join('')}</ul>` : '<p class="text-center text-gray-400 py-10 font-bold">ไม่มีข้อเสนอแนะในเงื่อนไขนี้</p>';
+      if (type === 'newCurr') {
+          document.getElementById('mHeader').innerHTML = `<i class="fi fi-sr-add text-orange-500"></i> อันดับหลักสูตรใหม่ที่อยากให้เปิด`;
+          const list = getCounts(data, 26, false); // 🌟 คอลัมน์ 26 คือ AA 🌟
+          document.getElementById('mBody').innerHTML = `<table class="w-full text-sm border-collapse"><thead class="bg-gray-100 uppercase font-bold text-slate-600"><tr><th class="p-3 w-20 text-center rounded-tl-lg">อันดับ</th><th class="p-3 text-left">หลักสูตร</th><th class="p-3 text-right">จำนวน</th><th class="p-3 text-right rounded-tr-lg">ร้อยละ</th></tr></thead><tbody id="modalRankBody" class="divide-y divide-gray-100"></tbody></table>`;
+          renderRankingTable('modalRankBody', list, data.length, false);
+      } else {
+          document.getElementById('mHeader').innerHTML = `<i class="fi fi-sr-comment-alt text-blue-500"></i> ข้อเสนอแนะเพิ่มเติม`;
+          const list = [...new Set(data.map(r => r[19]))].filter(v => v && v.toString().trim() !== "-" && v.toString().length > 2);
+          document.getElementById('mBody').innerHTML = list.length ? `<ul class="space-y-3">${list.map(v => `<li class="p-4 bg-blue-50/50 rounded-xl border border-blue-100 flex items-start gap-3 text-sm text-slate-700 font-medium"><i class="fi fi-sr-quote-right text-blue-400 mt-0.5"></i> <span class="leading-relaxed">${v}</span></li>`).join('')}</ul>` : '<p class="text-center text-gray-400 py-10 font-bold">ไม่มีข้อเสนอแนะในเงื่อนไขนี้</p>';
+      }
+      
       document.getElementById('mFooter').innerHTML = ''; 
       document.getElementById('modalBase').classList.remove('hidden');
     }
