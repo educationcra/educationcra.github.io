@@ -84,12 +84,13 @@
                   <div>
                       <h3 class="font-bold text-gray-800">รอบกิจกรรม (Day)</h3>
                       <p class="text-xs text-gray-500">เลือกวันที่ของคูปองที่ต้องการสแกน</p>
+                      <p id="dateLockMsg" class="text-xs font-bold text-rose-500 mt-1 hidden"></p>
                   </div>
                   <div class="flex items-center gap-4 bg-gray-50 p-2 rounded-2xl border border-gray-200">
                       <span class="font-bold text-gray-800 px-2" id="textD1">Day 1</span>
                       <div class="relative inline-block w-14 align-middle select-none">
                           <input type="checkbox" id="dayToggle" onchange="updateDayMode()" class="toggle-checkbox absolute block w-7 h-7 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 transition-all duration-300"/>
-                          <label for="dayToggle" class="toggle-label block h-7 rounded-full bg-orange-400 cursor-pointer transition-colors duration-300"></label>
+                          <label for="dayToggle" id="dayToggleLabel" class="toggle-label block h-7 rounded-full bg-orange-400 cursor-pointer transition-colors duration-300"></label>
                       </div>
                       <span class="font-bold text-gray-400 px-2" id="textD2">Day 2</span>
                   </div>
@@ -230,10 +231,43 @@
     function showScannerUI() {
         document.getElementById('loginSection').classList.add('hidden');
         document.getElementById('scannerSection').classList.remove('hidden');
+        checkAdminEventDate(); // เรียกฟังก์ชันล็อกวันอัตโนมัติ
+    }
+
+    // 🌟 ระบบตรวจสอบและล็อกวันอัตโนมัติ 🌟
+    function checkAdminEventDate() {
+        const today = new Date();
+        const y = today.getFullYear();
+        const m = today.getMonth(); // 3 = เมษายน
+        const d = today.getDate();
+
+        const toggle = document.getElementById('dayToggle');
+        const toggleLabel = document.getElementById('dayToggleLabel');
+        const lockMsg = document.getElementById('dateLockMsg');
+
+        if (y === 2026 && m === 3 && d === 25) {
+            // ล็อกเป็น Day 1
+            toggle.checked = false;
+            toggle.disabled = true;
+            toggle.classList.replace('cursor-pointer', 'cursor-not-allowed');
+            toggleLabel.classList.replace('cursor-pointer', 'cursor-not-allowed');
+            toggleLabel.classList.add('opacity-50');
+            lockMsg.innerText = "🔒 ล็อกสแกนเฉพาะคูปอง Day 1";
+            lockMsg.classList.remove('hidden');
+        } else if (y === 2026 && m === 3 && d === 26) {
+            // ล็อกเป็น Day 2
+            toggle.checked = true;
+            toggle.disabled = true;
+            toggle.classList.replace('cursor-pointer', 'cursor-not-allowed');
+            toggleLabel.classList.replace('cursor-pointer', 'cursor-not-allowed');
+            toggleLabel.classList.add('opacity-50');
+            lockMsg.innerText = "🔒 ล็อกสแกนเฉพาะคูปอง Day 2";
+            lockMsg.classList.remove('hidden');
+        }
+        
         updateDayMode();
     }
 
-    // 🌟 ฟังก์ชันสลับโหมดและเปลี่ยนสีการ์ดสถิติ 🌟
     function updateDayMode() {
         currentSuffix = document.getElementById('dayToggle').checked ? "D2" : "D1";
         
@@ -263,7 +297,7 @@
             listIcon.className = "fi fi-sr-time-past text-orange-500";
         }
         
-        document.getElementById('manualCode').value = ""; // เคลียร์ช่องพิมพ์
+        document.getElementById('manualCode').value = ""; 
         fetchStats(); 
     }
 
@@ -283,7 +317,7 @@
                     if(navigator.vibrate) navigator.vibrate(200);
                     processCode(decodedText);
                 },
-                (err) => {} // Ignore scan errors
+                (err) => {} 
             );
             isCameraOpen = true;
         } catch(err) {
@@ -322,7 +356,7 @@
         });
 
         apiCall('processCouponScan', { code: code, suffix: currentSuffix }).then(async res => {
-            // หน่วงเวลา 2 วินาที
+            // หน่วงเวลาให้เห็น 2 วิ
             await new Promise(resolve => setTimeout(resolve, 2000));
 
             if(res.status === 'success') {
@@ -350,9 +384,7 @@
                 });
             }
             
-            // 🌟 แก้บัคหน้าจอกระตุก: เคลียร์ช่องพิมพ์เฉยๆ ไม่ต้องบังคับ .focus() 🌟
             document.getElementById('manualCode').value = ""; 
-            
             if(html5QrCode && html5QrCode.getState() === 3) html5QrCode.resume();
         }).catch(async () => {
             await new Promise(resolve => setTimeout(resolve, 2000));
@@ -374,7 +406,6 @@
         totalEl.innerText = stats.total || 0;
 
         let list = document.getElementById('recentScansList');
-        // กำหนดสีไอคอน Check ให้ตรงกับโหมดวัน
         let iconColor = currentSuffix === "D2" ? "bg-rose-50 text-rose-500" : "bg-orange-50 text-orange-500";
 
         if(stats.recent && stats.recent.length > 0) {
