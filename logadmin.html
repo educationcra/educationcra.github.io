@@ -96,6 +96,18 @@
               </div>
 
               <div class="glass-card p-6">
+                  <h2 class="text-sm font-bold text-gray-500 mb-4 flex items-center gap-2">
+                      <i class="fi fi-sr-keyboard text-gray-400"></i> พิมพ์รหัสหากสแกนไม่ติด
+                  </h2>
+                  <form onsubmit="event.preventDefault(); submitManualCode();" class="flex gap-3">
+                      <div class="bg-gray-100 px-4 py-4 rounded-xl font-bold text-gray-500 flex items-center justify-center border border-gray-200">Dek</div>
+                      <input type="tel" id="manualCode" placeholder="001" class="w-full bg-white border-2 border-gray-200 text-center rounded-xl font-extrabold text-2xl text-orange-500 outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-50 transition-all" autocomplete="off" maxlength="3">
+                      <div id="suffixBox" class="bg-orange-500 text-white px-4 py-4 rounded-xl font-extrabold text-xl flex items-center justify-center shadow-md">D1</div>
+                      <button type="submit" class="bg-slate-800 hover:bg-black text-white px-6 rounded-xl font-bold transition-colors"><i class="fi fi-sr-paper-plane text-xl mt-1"></i></button>
+                  </form>
+              </div>
+
+              <div class="glass-card p-6">
                   <div class="flex justify-between items-center mb-4">
                       <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2"><i class="fi fi-sr-expand"></i> สแกน QR Code</h2>
                       <span id="cameraStatusBadge" class="text-xs font-bold bg-gray-100 text-gray-500 px-3 py-1 rounded-full">กล้องปิดอยู่</span>
@@ -122,26 +134,17 @@
                   </div>
               </div>
 
-              <div class="glass-card p-6">
-                  <h2 class="text-sm font-bold text-gray-500 mb-4">พิมพ์รหัสหากสแกนไม่ติด</h2>
-                  <form onsubmit="event.preventDefault(); submitManualCode();" class="flex gap-3">
-                      <div class="bg-gray-100 px-4 py-4 rounded-xl font-bold text-gray-500 flex items-center justify-center border border-gray-200">Dek</div>
-                      <input type="tel" id="manualCode" placeholder="001" class="w-full bg-white border-2 border-gray-200 text-center rounded-xl font-extrabold text-2xl text-orange-500 outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-50 transition-all" autocomplete="off" maxlength="3">
-                      <div id="suffixBox" class="bg-orange-500 text-white px-4 py-4 rounded-xl font-extrabold text-xl flex items-center justify-center shadow-md">D1</div>
-                      <button type="submit" class="bg-slate-800 hover:bg-black text-white px-6 rounded-xl font-bold transition-colors"><i class="fi fi-sr-paper-plane text-xl mt-1"></i></button>
-                  </form>
-              </div>
           </div>
 
           <div class="lg:col-span-5 space-y-6">
               
-              <div class="glass-card p-6 bg-gradient-to-br from-green-500 to-emerald-600 text-white relative overflow-hidden">
+              <div id="statsCard" class="glass-card p-6 bg-gradient-to-br from-orange-500 to-amber-600 text-white relative overflow-hidden transition-all duration-500">
                   <i class="fi fi-sr-chart-pie-alt absolute -right-6 -bottom-6 text-9xl text-white opacity-10"></i>
                   <div class="relative z-10">
                       <div class="flex justify-between items-start mb-6">
                           <div>
-                              <h2 class="text-lg font-bold text-green-50">ยอดสแกนสำเร็จ</h2>
-                              <p class="text-xs text-green-100 mt-1">ข้อมูลรอบ <span id="statDayBadge" class="bg-white/20 px-2 py-0.5 rounded text-white font-bold">D1</span></p>
+                              <h2 class="text-lg font-bold text-white opacity-90">ยอดสแกนสำเร็จ</h2>
+                              <p class="text-xs text-white opacity-75 mt-1">ข้อมูลรอบ <span id="statDayBadge" class="bg-white/20 px-2 py-0.5 rounded font-bold">D1</span></p>
                           </div>
                           <div class="w-10 h-10 bg-white/20 rounded-full flex justify-center items-center backdrop-blur-sm">
                               <i class="fi fi-sr-users text-xl mt-1"></i>
@@ -153,8 +156,8 @@
 
               <div class="glass-card p-0 overflow-hidden flex flex-col h-[400px]">
                   <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                      <h2 class="font-bold text-gray-800 flex items-center gap-2"><i class="fi fi-sr-time-past text-orange-500"></i> ประวัติล่าสุด</h2>
-                      <button onclick="fetchStats()" class="text-xs font-bold text-orange-500 hover:bg-orange-50 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                      <h2 class="font-bold text-gray-800 flex items-center gap-2"><i class="fi fi-sr-time-past text-orange-500" id="listIcon"></i> ประวัติล่าสุด</h2>
+                      <button onclick="fetchStats()" class="text-xs font-bold text-gray-500 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 bg-gray-100">
                           <i class="fi fi-sr-refresh"></i> รีเฟรช
                       </button>
                   </div>
@@ -168,7 +171,7 @@
 
   <script>
     // ==========================================
-    // ใส่ URL ของ Google Apps Script ของคุณที่นี่
+    // ⚠️ ใส่ URL ของ Google Apps Script ของคุณที่นี่ ⚠️
     // ==========================================
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbz2WVLumggLAGfibD_9u-Ms3hiTKz0gaEtx9EDSKm_yXtgqmuBZ8NlefiJHp7C0ejTY/exec'; 
 
@@ -230,31 +233,40 @@
         updateDayMode();
     }
 
+    // 🌟 ฟังก์ชันสลับโหมดและเปลี่ยนสีการ์ดสถิติ 🌟
     function updateDayMode() {
         currentSuffix = document.getElementById('dayToggle').checked ? "D2" : "D1";
         
-        // Update UI colors based on Day
         const box = document.getElementById('suffixBox');
         const badge = document.getElementById('statDayBadge');
+        const statsCard = document.getElementById('statsCard');
+        const listIcon = document.getElementById('listIcon');
         
         box.innerText = currentSuffix;
         badge.innerText = currentSuffix;
 
         if(currentSuffix === "D2") {
+            // โหมด Day 2: สีชมพู-แดง (Rose)
             box.className = "bg-rose-500 text-white px-4 py-4 rounded-xl font-extrabold text-xl flex items-center justify-center shadow-md transition-colors";
             document.getElementById('textD1').classList.replace('text-gray-800', 'text-gray-400');
             document.getElementById('textD2').classList.replace('text-gray-400', 'text-gray-800');
+            
+            statsCard.className = "glass-card p-6 bg-gradient-to-br from-rose-500 to-pink-600 text-white relative overflow-hidden transition-all duration-500";
+            listIcon.className = "fi fi-sr-time-past text-rose-500";
         } else {
+            // โหมด Day 1: สีส้ม (Orange)
             box.className = "bg-orange-500 text-white px-4 py-4 rounded-xl font-extrabold text-xl flex items-center justify-center shadow-md transition-colors";
             document.getElementById('textD1').classList.replace('text-gray-400', 'text-gray-800');
             document.getElementById('textD2').classList.replace('text-gray-800', 'text-gray-400');
+            
+            statsCard.className = "glass-card p-6 bg-gradient-to-br from-orange-500 to-amber-600 text-white relative overflow-hidden transition-all duration-500";
+            listIcon.className = "fi fi-sr-time-past text-orange-500";
         }
         
-        document.getElementById('manualCode').value = "";
+        document.getElementById('manualCode').value = ""; // เคลียร์ช่องพิมพ์
         fetchStats(); 
     }
 
-    // 🌟 ระบบกล้องเปิด/ปิด ถนอมแบตเตอรี่ 🌟
     async function startScanner() {
         document.getElementById('startCameraBtn').classList.add('hidden');
         document.getElementById('scannerContainer').classList.remove('hidden');
@@ -271,7 +283,7 @@
                     if(navigator.vibrate) navigator.vibrate(200);
                     processCode(decodedText);
                 },
-                (err) => {} // ข้าม error อ่านเฟรมภาพพลาด
+                (err) => {} // Ignore scan errors
             );
             isCameraOpen = true;
         } catch(err) {
@@ -301,7 +313,6 @@
     }
 
     function processCode(code) {
-        // 1. แจ้งเตือนสแกนกำลังตรวจสอบ (มีวงกลมหมุนๆ)
         Swal.fire({ 
             title: 'กำลังตรวจสอบ...', 
             html: `<div class="mt-4 py-3 bg-gray-50 rounded-xl border"><b class="text-3xl tracking-widest text-orange-500 font-mono">${code}</b></div>`, 
@@ -311,11 +322,10 @@
         });
 
         apiCall('processCouponScan', { code: code, suffix: currentSuffix }).then(async res => {
-            // 2. หน่วงเวลา 2 วินาทีตามที่ขอ
+            // หน่วงเวลา 2 วินาที
             await new Promise(resolve => setTimeout(resolve, 2000));
 
             if(res.status === 'success') {
-                // 3. โชว์ผลสำเร็จ และบังคับให้กด "ปิดหน้าต่าง"
                 await Swal.fire({ 
                     icon: 'success', 
                     title: 'ใช้งานคูปองสำเร็จ!', 
@@ -340,10 +350,10 @@
                 });
             }
             
-            // 4. สแกนเนอร์จะทำงานต่อก็ต่อเมื่อกดปิด Popup แล้วเท่านั้น
+            // 🌟 แก้บัคหน้าจอกระตุก: เคลียร์ช่องพิมพ์เฉยๆ ไม่ต้องบังคับ .focus() 🌟
+            document.getElementById('manualCode').value = ""; 
+            
             if(html5QrCode && html5QrCode.getState() === 3) html5QrCode.resume();
-            document.getElementById('manualCode').value = "";
-            document.getElementById('manualCode').focus();
         }).catch(async () => {
             await new Promise(resolve => setTimeout(resolve, 2000));
             await Swal.fire({ icon: 'error', title: 'ขัดข้อง', text: 'ยิง API ไม่สำเร็จ', showConfirmButton: true, customClass: { popup: 'rounded-3xl' } });
@@ -353,23 +363,25 @@
 
     function fetchStats() {
         let list = document.getElementById('recentScansList');
-        list.innerHTML = '<div class="flex justify-center py-4"><span class="w-6 h-6 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin"></span></div>';
+        list.innerHTML = '<div class="flex justify-center py-4"><span class="w-6 h-6 border-4 border-gray-200 border-t-gray-500 rounded-full animate-spin"></span></div>';
         apiCall('getScanStats', { suffix: currentSuffix }).then(stats => updateStatsUI(stats));
     }
 
     function updateStatsUI(stats) {
-        // แอนิเมชันตอนตัวเลขเปลี่ยน
         const totalEl = document.getElementById('totalScanned');
-        totalEl.classList.add('scale-110', 'text-yellow-200');
-        setTimeout(() => totalEl.classList.remove('scale-110', 'text-yellow-200'), 300);
+        totalEl.classList.add('scale-110', 'text-white/70');
+        setTimeout(() => totalEl.classList.remove('scale-110', 'text-white/70'), 300);
         totalEl.innerText = stats.total || 0;
 
         let list = document.getElementById('recentScansList');
+        // กำหนดสีไอคอน Check ให้ตรงกับโหมดวัน
+        let iconColor = currentSuffix === "D2" ? "bg-rose-50 text-rose-500" : "bg-orange-50 text-orange-500";
+
         if(stats.recent && stats.recent.length > 0) {
             list.innerHTML = stats.recent.map(i => `
                 <div class="flex justify-between items-center bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all group">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-green-50 text-green-500 rounded-full flex justify-center items-center group-hover:scale-110 transition-transform">
+                        <div class="w-10 h-10 ${iconColor} rounded-full flex justify-center items-center group-hover:scale-110 transition-transform">
                             <i class="fi fi-sr-check mt-1"></i>
                         </div>
                         <div>
