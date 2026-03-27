@@ -163,7 +163,6 @@
     let filterType = "All"; 
 
     window.onload = async () => {
-      // 🌟 ระบบป้องกันคนเข้าตรงๆ (ถ้าไม่ได้ล็อกอินจากหน้า logadmin.html)
       if(sessionStorage.getItem('adminDataAuth') !== 'true') {
           window.location.href = 'logadmin.html';
           return;
@@ -199,13 +198,13 @@
         window.location.href = 'logadmin.html';
     }
 
-    function preciseRound(number, decimals = 1) {
+    // 🌟 ปรับทศนิยมเป็น 2 ตำแหน่ง 🌟
+    function preciseRound(number, decimals = 2) {
       const multiplier = Math.pow(10, decimals);
       return Math.round(number * multiplier) / multiplier;
     }
 
     function renderDashboard() {
-      // 🌟 ระบบกรองข้อมูล 🌟
       let data = RAW_DATA;
       if(filterDate !== "All") {
           let expectedStr = filterDate === "Day 1" ? "25 เมษายน 2569" : "26 เมษายน 2569";
@@ -235,7 +234,7 @@
       renderSatisfaction(data);
       renderPieSections(data, total);
       
-      // 🌟 เรียกใช้ฟังก์ชันนับรวม 3 อันดับ 🌟
+      // เรียกใช้ฟังก์ชันนับรวม 3 อันดับ
       renderRankingTable('currTableBody', getCombinedCourseCounts(data), total, true); 
 
       const dynGrid = document.getElementById('dynamicGrid'); dynGrid.innerHTML = '';
@@ -254,11 +253,9 @@
       renderPrintData(data);
     }
 
-    // 🌟 ฟังก์ชันนับรวบยอดความสนใจอันดับ 1, 2, 3 🌟
     function getCombinedCourseCounts(data) {
         let c = {};
         data.forEach(r => {
-            // คอลัมน์ 12, 13, 14 ใน GS คือ อันดับ 1, 2, 3 ตามลำดับ
             [12, 13, 14].forEach(idx => {
                 let val = String(r[idx]).trim();
                 if (val && val !== "-" && val !== "") {
@@ -266,12 +263,10 @@
                 }
             });
         });
-        // เรียงจากมากไปน้อย
         return Object.entries(c).sort((a,b) => b[1] - a[1]);
     }
 
     function renderSatisfaction(data) {
-      // 16=ศึกษาต่อ, 17=Open House, 24=สื่อในงาน, 23=PRเพจ, 18=ภาพรวม
       const m = [
         {c:16, l:'อยากเข้าศึกษาต่อ', ic:'fi-sr-graduation-cap'}, 
         {c:17, l:'สนใจร่วม Open House', ic:'fi-sr-building'}, 
@@ -283,11 +278,12 @@
         let sum = 0, validC = 0;
         data.forEach(r => { let v = r[item.c]; if(v){ let n = parseFloat(v); if(!isNaN(n)){ sum += n; validC++; } } });
         let avg = validC ? preciseRound(sum/validC, 2).toFixed(2) : "0.00";
-        let pct = preciseRound((parseFloat(avg)/5)*100, 1).toFixed(1);
+        let pct = preciseRound((parseFloat(avg)/5)*100, 2).toFixed(2);
         return `<div class="bg-white p-5 rounded-2xl border border-gray-100 flex flex-col shadow-sm hover:-translate-y-1 transition-transform"><div class="flex justify-between items-start mb-4"><span class="text-sm font-bold text-gray-600 flex items-start gap-2"><i class="fi ${item.ic} text-yellow-500 mt-0.5"></i> ${item.l}</span><div class="flex flex-col items-end"><span class="text-2xl font-black text-gray-800">${avg}<span class="text-sm text-gray-400 font-medium">/5</span></span></div></div><div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden mt-auto"><div class="bg-gradient-to-r from-yellow-400 to-orange-500 h-full rounded-full" style="width:${pct}%"></div></div></div>`;
       }).join('');
     }
 
+    // 🌟 เอา % ออก และเป็น ทศนิยม 2 ตำแหน่ง 🌟
     function renderRankingTable(containerId, data, total, showBar = false) {
       const medals = [
           '<div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center mx-auto shadow-sm border border-yellow-200"><i class="fi fi-sr-medal text-xl text-yellow-500 mt-1"></i></div>', 
@@ -296,7 +292,7 @@
       ];
       
       document.getElementById(containerId).innerHTML = data.map((it, i) => {
-        let p = preciseRound(it[1]*100/total, 1).toFixed(1);
+        let p = preciseRound(it[1]*100/total, 2).toFixed(2); // 2 Decimals
         let icon = i < 3 ? medals[i] : `<span class="font-black text-gray-400 text-lg">${i+1}</span>`;
         let rs = i===0 ? "bg-orange-50/60" : (i===1 ? "bg-gray-50/60" : (i===2 ? "bg-amber-50/30" : ""));
         
@@ -304,7 +300,7 @@
             <td class="p-3 text-center align-middle">${icon}</td> 
             <td class="p-3 font-bold text-gray-700">${it[0]}</td> 
             <td class="p-3 text-right font-black text-cra-primary text-lg">${it[1]}</td> 
-            <td class="p-3 text-right text-gray-500 font-bold">${p}%</td> 
+            <td class="p-3 text-right text-gray-500 font-bold">${p}</td> 
             ${showBar ? `<td class="p-3 no-print"><div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden"><div class="bg-cra-secondary h-2 rounded-full" style="width:${p}%"></div></div></td>` : ''}
         </tr>`;
       }).join('');
@@ -312,7 +308,6 @@
 
     function renderPieSections(data, total) {
       const container = document.getElementById('pieCardContainer'); container.innerHTML = '';
-      // Col: 2=Gender, 1=Type, 9=Know CRA
       const items = [
         { id: 'G', col: 2, title: 'เพศ', ic: 'fi-sr-venus-mars' }, 
         { id: 'T', col: 1, title: 'ประเภทผู้เข้าร่วม', ic: 'fi-sr-users' }, 
@@ -325,12 +320,12 @@
       });
     }
 
+    // 🌟 เอา % ออก และเป็น ทศนิยม 2 ตำแหน่ง 🌟
     function renderTableHTML(data, total, header) { 
-        return `<table class="w-full text-sm border-collapse"><thead class="bg-gray-50 font-bold text-gray-500"><tr><th class="p-3 text-left rounded-tl-lg">${header}</th><th class="p-3 text-right">จำนวน</th><th class="p-3 text-right rounded-tr-lg">ร้อยละ</th></tr></thead><tbody class="divide-y divide-gray-100">${data.map(i => `<tr><td class="p-3 text-gray-700 font-medium">${i[0]}</td><td class="p-3 text-right font-black text-cra-primary">${i[1]}</td><td class="p-3 text-right font-bold text-gray-400">${preciseRound(i[1]*100/total, 1).toFixed(1)}%</td></tr>`).join('')}</tbody></table>`; 
+        return `<table class="w-full text-sm border-collapse"><thead class="bg-gray-50 font-bold text-gray-500"><tr><th class="p-3 text-left rounded-tl-lg">${header}</th><th class="p-3 text-right">จำนวน</th><th class="p-3 text-right rounded-tr-lg">ร้อยละ</th></tr></thead><tbody class="divide-y divide-gray-100">${data.map(i => `<tr><td class="p-3 text-gray-700 font-medium">${i[0]}</td><td class="p-3 text-right font-black text-cra-primary">${i[1]}</td><td class="p-3 text-right font-bold text-gray-400">${preciseRound(i[1]*100/total, 2).toFixed(2)}</td></tr>`).join('')}</tbody></table>`; 
     }
     
     function renderSplitTables(data, total) {
-        // Col 10 = ช่องทางที่รู้จัก, Col 11 = สื่อโซเชียลที่ใช้
         document.getElementById('sourceTableContainer').innerHTML = `
             <div><h4 class="font-bold text-gray-600 mb-3"><i class="fi fi-sr-marker text-rose-400"></i> ช่องทางที่รู้จัก</h4>${renderTableHTML(getCounts(data, 10, true), total, 'ช่องทาง')}</div>
             <div><h4 class="font-bold text-gray-600 mb-3"><i class="fi fi-sr-share text-blue-400"></i> สื่อโซเชียลที่ใช้ติดตาม</h4>${renderTableHTML(getCounts(data, 11, true), total, 'สื่อ')}</div>
@@ -378,7 +373,6 @@
         }); 
     }
 
-    // 🌟 ระบบ Filter Modal (กรองวันและประเภท) 🌟
     function openFilterModal() {
       document.getElementById('mHeader').innerHTML = `<i class="fi fi-sr-filter text-cra-primary"></i> กรองข้อมูล`;
       document.getElementById('mBody').innerHTML = `
