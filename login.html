@@ -64,32 +64,75 @@
         inp.value = v.length > 6 ? `${v.substring(0,3)}-${v.substring(3,6)}-${v.substring(6)}` : v.length > 3 ? `${v.substring(0,3)}-${v.substring(3)}` : v;
     }
 
-    function showQR(codeStr, dateStr, isDay1) {
+    let pollInterval; // ตัวแปรเก็บเวลาการเช็ค
+
+    function showQR(codeStr, dateStr, isDay1, isUsed) {
+        if(isUsed) {
+            Swal.fire({icon: 'info', title: 'ใช้งานไปแล้ว', text: 'คูปองรหัสนี้ถูกสแกนใช้งานไปเรียบร้อยแล้วครับ', confirmButtonColor: '#9ca3af', customClass: { popup: 'rounded-3xl' }});
+            return;
+        }
+
         let color = isDay1 ? "#f57c00" : "#2e7d32";
         Swal.fire({
             title: 'ยื่นให้สตาฟฟ์',
-            html: `<p class="text-xs text-gray-500 mb-3">${dateStr}</p><div class="bg-white p-3 rounded-2xl border inline-block mb-3 shadow-sm"><img src="https://quickchart.io/qr?text=${encodeURIComponent(codeStr)}&size=200" class="w-48 h-48"></div><div class="font-mono text-2xl font-bold py-2 rounded-lg" style="color:${color}; background:${color}15;">${codeStr}</div>`,
-            confirmButtonText: 'ปิด', confirmButtonColor: color, customClass: { popup: 'rounded-3xl' }
+            html: `<p class="text-xs text-gray-500 mb-3">${dateStr}</p><div id="popupQrWrap" class="bg-white p-3 rounded-2xl border inline-block mb-3 shadow-sm transition-all duration-500"><img id="popupQrImg" src="https://quickchart.io/qr?text=${encodeURIComponent(codeStr)}&size=200" class="w-48 h-48"></div><div id="popupCodeTxt" class="font-mono text-2xl font-bold py-2 rounded-lg transition-all duration-500" style="color:${color}; background:${color}15;">${codeStr}</div>`,
+            confirmButtonText: 'ปิด', confirmButtonColor: color, customClass: { popup: 'rounded-3xl' },
+            didOpen: () => {
+                // เริ่มเช็คสถานะตอนเปิด QR
+                pollInterval = setInterval(() => {
+                    apiCall('checkCouponStatus', { code: codeStr }).then(res => {
+                        if(res.used) {
+                            clearInterval(pollInterval);
+                            document.getElementById('popupQrImg').classList.add('grayscale', 'opacity-30');
+                            document.getElementById('popupQrWrap').classList.add('bg-gray-100');
+                            document.getElementById('popupCodeTxt').innerText = "ใช้งานแล้ว";
+                            document.getElementById('popupCodeTxt').style = "color:#9ca3af; background:#f3f4f6;";
+                            Swal.fire({icon:'success', title:'สแกนเสร็จสิ้น!', text:'ขอบคุณที่มาร่วมสนุกกันนะครับ!', confirmButtonColor: '#f57c00', customClass: { popup: 'rounded-3xl' }});
+                            // โหลดหน้าใหม่เพื่ออัปเดตลิสต์คูปองเป็นสีเทา
+                            setTimeout(() => handleLogin(document.getElementById('loginPhone').value), 2000);
+                        }
+                    });
+                }, 3000);
+            },
+            willClose: () => { clearInterval(pollInterval); } // หยุดเช็คตอนกดปิด
         });
     }
 
-    function handleLogin() {
-        let btn = document.getElementById('btnLogin'), phone = document.getElementById('loginPhone').value;
+    function handleLogin(autoPhone = null) {
+        let btn = document.getElementById('btnLogin');
+        let phone = autoPhone || document.getElementById('loginPhone').value;
         if(phone.length !== 12) return Swal.fire({icon: 'warning', text: 'เบอร์ไม่ครบ 10 หลัก'});
         
-        btn.innerHTML = '<span class="loader mr-2"></span> รอสักครู่...'; btn.disabled = true;
+        if(!autoPhone) { btn.innerHTML = '<span class="loader mr-2"></span> รอสักครู่...'; btn.disabled = true; }
 
         apiCall('doLogin', { phone: phone }).then(res => {
             btn.innerHTML = '<i class="fi fi-sr-search"></i> ค้นหา'; btn.disabled = false;
             if(res.status === 'success') {
                 document.getElementById('userNameType').innerText = "สถานะ: " + res.userData.type;
                 document.getElementById('userPhoneDisplay').innerText = res.userData.phone;
+                
                 document.getElementById('couponList').innerHTML = res.userData.coupons.map(c => {
                     let isD1 = c.date.includes('25') || c.code.includes('D1');
-                    let bg = isD1 ? "bg-orange-50 border-orange-200" : "bg-green-50 border-green-200";
-                    let txt = isD1 ? "text-orange-500" : "text-green-600";
-                    return `<div onclick="showQR('${c.code}', '${c.date}', ${isD1})" class="w-full max-w-[280px] p-4 rounded-2xl border-2 ${bg} cursor-pointer active:scale-95 transition flex justify-between items-center shadow-sm"><div class="flex items-center gap-3"><i class="fi fi-sr-ticket text-3xl ${txt} opacity-80"></i><div class="text-left"><p class="font-bold text-gray-800 leading-tight">คูปองถ่ายรูป</p><p class="text-[10px] text-gray-500">${isD1 ? 'วันที่ 1' : 'วันที่ 2'}</p></div></div><i class="fi fi-sr-qr-scan text-xl text-gray-400"></i></div>`;
+                    let isUsed = c.status === "ใช้งานแล้ว";
+                    
+                    // กำหนดสี: ถ้าใช้แล้วให้เป็นสีเทาหม่นๆ
+                    let bg = isUsed ? "bg-gray-100 border-gray-200 opacity-60" : (isD1 ? "bg-orange-50 border-orange-200" : "bg-green-50 border-green-200");
+                    let txt = isUsed ? "text-gray-400" : (isD1 ? "text-orange-500" : "text-green-600");
+                    let badge = isUsed ? `<span class="absolute top-2 right-2 bg-gray-500 text-white text-[10px] px-2 py-0.5 rounded font-bold">ใช้แล้ว</span>` : '';
+
+                    return `<div onclick="showQR('${c.code}', '${c.date}', ${isD1}, ${isUsed})" class="relative w-full max-w-[280px] p-4 rounded-2xl border-2 ${bg} cursor-pointer active:scale-95 transition flex justify-between items-center shadow-sm">
+                        ${badge}
+                        <div class="flex items-center gap-3">
+                            <i class="fi fi-sr-ticket text-3xl ${txt} opacity-80"></i>
+                            <div class="text-left">
+                                <p class="font-bold text-gray-800 leading-tight">คูปองถ่ายรูป ${isUsed ? '(หมดอายุ)' : ''}</p>
+                                <p class="text-[10px] text-gray-500">${isD1 ? 'วันที่ 1' : 'วันที่ 2'}</p>
+                            </div>
+                        </div>
+                        <i class="fi fi-sr-qr-scan text-xl text-gray-400"></i>
+                    </div>`;
                 }).join('');
+                
                 document.getElementById('view-login').classList.add('hidden');
                 document.getElementById('view-coupons').classList.remove('hidden');
             } else Swal.fire({icon: 'error', text: res.message});
