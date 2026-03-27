@@ -730,8 +730,37 @@
                 document.getElementById('displayUserId').innerText = res.couponData.id;
                 document.getElementById('displayQrCode').src = 'https://quickchart.io/qr?text=' + encodeURIComponent(res.couponData.id) + '&size=300';
                 window.scrollTo(0,0);
+
+                // 🌟 ระบบ Real-time: เช็คสถานะคูปองทุกๆ 3 วินาที 🌟
+                let couponCode = res.couponData.id;
+                let pollInterval = setInterval(() => {
+                    apiCall('checkCouponStatus', { code: couponCode }).then(statusRes => {
+                        if(statusRes.used) {
+                            clearInterval(pollInterval); // หยุดเช็ค
+                            // ทำให้ภาพ QR เป็นสีเทา
+                            document.getElementById('displayQrCode').classList.add('grayscale', 'opacity-30');
+                            document.getElementById('displayQrCode').parentElement.classList.add('bg-gray-100');
+                            document.getElementById('displayUserId').classList.replace('from-orange-400', 'from-gray-400');
+                            document.getElementById('displayUserId').classList.replace('to-rose-500', 'to-gray-500');
+                            document.getElementById('displayUserId').innerText = "ใช้งานแล้ว";
+                            
+                            // โชว์แจ้งเตือนให้น้องๆ ทราบและกดปิดเอง
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'สแกนเสร็จสิ้น!',
+                                text: 'ขอบคุณที่ร่วมสนุกกับบูธราชวิทยาลัยจุฬาภรณ์ครับ',
+                                confirmButtonText: 'รับทราบ',
+                                confirmButtonColor: '#f57c00',
+                                customClass: { popup: 'rounded-3xl' }
+                            });
+                        }
+                    });
+                }, 3000);
+
             } else Swal.fire({icon: 'error', title: 'ไม่สำเร็จ', text: res.message});
-        }).catch(() => { btn.innerHTML = originTxt; btn.disabled = false; Swal.fire({icon: 'error', text: 'เชื่อมต่อเซิร์ฟเวอร์ขัดข้อง'}); });
+        }).catch(() => { 
+            btn.innerHTML = originTxt; btn.disabled = false; Swal.fire({icon: 'error', text: 'เชื่อมต่อเซิร์ฟเวอร์ขัดข้อง'}); 
+        });
     }
   </script>
 </body>
