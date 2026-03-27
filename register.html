@@ -12,7 +12,6 @@
   <style>
     body { font-family: 'Noto Sans Thai', sans-serif; -webkit-tap-highlight-color: transparent; }
     
-    /* 🌟 แก้ปัญหาขอบตัด Dropdown โดนบัง 🌟 */
     .main-container { background: #ffffff; border-radius: 2.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08); border: 1px solid #f0fdf4; position: relative; }
     
     /* Standard Input Glass */
@@ -94,6 +93,7 @@
     
     /* Disabled state for Date Radio */
     .normal-radio.disabled-radio { opacity: 0.4; cursor: not-allowed; background-color: #f1f5f9; }
+    .normal-radio.disabled-radio:hover { background-color: #f1f5f9; border-color: #e2e8f0; }
 
     /* School Autocomplete Match */
     #schoolDropdown { position: absolute; z-index: 999; width: 100%; background: #fff; border: 2px solid #e2e8f0; border-radius: 1.25rem; margin-top: 8px; max-height: 250px; overflow-y: auto; display: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
@@ -125,9 +125,9 @@
           <h2 class="text-3xl md:text-4xl font-black text-gray-800 mb-3 tracking-tight">กำลังจัดเตรียมข้อมูล</h2>
           <p class="text-base text-gray-500 mb-10 font-medium" id="loadingText">เชื่อมต่อระบบฐานข้อมูล...</p>
           
-          <div class="w-full bg-gray-100 h-10 rounded-2xl overflow-hidden mb-2 shadow-inner relative border border-gray-200">
+          <div class="w-full bg-gray-200 h-10 rounded-2xl overflow-hidden mb-2 shadow-inner relative border border-gray-300">
               <div id="loadingBar" class="h-full bg-gradient-to-r from-orange-400 to-orange-500 transition-all duration-300 ease-out w-0 relative"></div>
-              <span id="loadPerc" class="absolute inset-0 flex items-center justify-center text-xl font-black text-gray-700 mix-blend-overlay drop-shadow-md">0%</span>
+              <span id="loadPerc" class="absolute inset-0 flex items-center justify-center text-xl font-black text-white drop-shadow-md">0%</span>
           </div>
       </div>
   </div>
@@ -201,7 +201,7 @@
                           <div id="dd-age"></div>
                       </div>
                       <div id="wrapParentRelation" class="hidden md:col-span-2 bg-orange-50/50 p-6 rounded-2xl border border-orange-100 mt-2">
-                          <label class="block text-base font-bold mb-3 text-orange-700">เกี่ยวข้องเป็น <span class="text-rose-500">*</span></label>
+                          <label class="block text-base font-bold mb-3 text-orange-700">ความเกี่ยวข้อง <span class="text-rose-500">*</span></label>
                           <input type="hidden" id="parentRelation" value="">
                           <div id="dd-parentRelation"></div>
                       </div>
@@ -266,15 +266,15 @@
                       <div class="h-px w-full bg-gray-200"></div>
                       
                       <div>
-                          <label class="block text-base font-bold mb-4 text-gray-800">รู้จักจากช่องทางใด (ตอบได้มากกว่า 1) <span class="text-rose-500">*</span></label>
+                          <label class="block text-base font-bold mb-4 text-gray-800">ท่านรู้จักราชวิทยาลัยจุฬาภรณ์จากช่องทางใด (ตอบได้มากกว่า 1 ข้อ ดังนี้) <span class="text-rose-500">*</span></label>
                           <div id="channelGroup" class="grid grid-cols-1 md:grid-cols-2 gap-3 pl-1"></div>
-                          <input type="text" id="otherChannel" class="input-glass mt-4 hidden bg-orange-50 focus:border-orange-500" placeholder="ระบุช่องทางอื่น...">
+                          <input type="text" id="otherChannel" class="input-glass mt-4 hidden bg-orange-50 focus:border-orange-500" placeholder="โปรดระบุช่องทางอื่น...">
                       </div>
                       <div class="h-px w-full bg-gray-200"></div>
                       <div>
-                          <label class="block text-base font-bold mb-4 text-gray-800">สื่อที่ใช้ติดตามข่าวสาร (ตอบได้มากกว่า 1) <span class="text-rose-500">*</span></label>
+                          <label class="block text-base font-bold mb-4 text-gray-800">ท่านใช้สื่อประเภทใดในการหาข้อมูลและติดตามข่าวสาร (ตอบได้มากกว่า 1 ข้อ ดังนี้) <span class="text-rose-500">*</span></label>
                           <div id="mediaGroup" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pl-1"></div>
-                          <input type="text" id="otherMedia" class="input-glass mt-4 hidden bg-orange-50 focus:border-orange-500" placeholder="ระบุสื่ออื่น...">
+                          <input type="text" id="otherMedia" class="input-glass mt-4 hidden bg-orange-50 focus:border-orange-500" placeholder="โปรดระบุสื่ออื่น...">
                       </div>
                   </div>
 
@@ -298,12 +298,12 @@
                   <div class="bg-gradient-to-br from-orange-50 to-orange-100/50 p-6 md:p-8 rounded-3xl border border-orange-200 mt-6">
                       <label class="block text-base font-bold mb-4 text-gray-800">ท่านได้ติดตามประกาศและข่าวสารต่าง ๆ ในเพจ Education CRA หรือไม่ <span class="text-rose-500">*</span></label>
                       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <label class="normal-radio bg-white"><input type="radio" name="followPage" value="ใช่ติดตาม" onchange="updateRadioStyle(this); togglePlatform(true);"><span class="n-checkmark"></span><span class="text-gray-700">ใช่ ติดตาม</span></label>
-                          <label class="normal-radio bg-white"><input type="radio" name="followPage" value="ไม่ได้ติดตาม" onchange="updateRadioStyle(this); togglePlatform(false);"><span class="n-checkmark"></span><span class="text-gray-700">ไม่ได้ติดตาม</span></label>
+                          <label class="normal-radio bg-white"><input type="radio" name="followPage" value="ใช่ติดตาม" onchange="updateRadioStyle(this); toggleFollowPlatform();"><span class="n-checkmark"></span><span class="text-gray-700">ใช่ ติดตาม</span></label>
+                          <label class="normal-radio bg-white"><input type="radio" name="followPage" value="ไม่ได้ติดตาม" onchange="updateRadioStyle(this); toggleFollowPlatform();"><span class="n-checkmark"></span><span class="text-gray-700">ไม่ได้ติดตาม</span></label>
                       </div>
                       
                       <div id="wrapFollowPlatform" class="hidden mt-6 pt-6 border-t border-orange-200/60">
-                          <label class="block text-base font-bold mb-3 text-orange-800">ส่วนใหญ่ติดตามเพจเพื่อดูข่าวสารในแพลตฟอร์มใดมากที่สุด <span class="text-rose-500">*</span></label>
+                          <label class="block text-base font-bold mb-3 text-orange-800">ส่วนใหญ่ติดตามเพจ Education CRA เพื่อดูข่าวสารในแพลตฟอร์มใดมากที่สุด <span class="text-rose-500">*</span></label>
                           <input type="hidden" id="followPlatform" value="">
                           <div id="dd-followPlatform"></div>
                       </div>
@@ -311,7 +311,7 @@
 
                   <div class="pt-8">
                       <h3 class="text-xl md:text-2xl font-black text-green-700 mb-6 bg-green-50 p-5 rounded-2xl border-2 border-green-100 flex items-center gap-3 shadow-sm">
-                          <i class="fi fi-sr-star mt-1 text-orange-500"></i> ให้คะแนน (1=น้อย, 5=มากที่สุด) <span class="text-rose-500">*</span>
+                          <i class="fi fi-sr-star mt-1 text-orange-500"></i> ให้คะแนนความพึงพอใจ <span class="text-rose-500">*</span>
                       </h3>
                       <div class="space-y-4" id="ratingContainer"></div>
                   </div>
@@ -319,7 +319,7 @@
                   <div class="pt-6">
                       <label class="block text-base font-bold mb-2 text-gray-700">ข้อเสนอแนะเพิ่มเติม <span class="text-rose-500">*</span></label>
                       <p class="text-sm text-gray-500 font-medium mb-4 leading-relaxed">บอกเราหน่อยว่า "อยากให้ทีมงานจัดกิจกรรมแบบไหนเพิ่มเติม หรือมีอะไรอยากจะบอกหรือให้กำลังใจทีมงาน"</p>
-                      <textarea id="suggestion" rows="4" class="input-glass resize-none leading-relaxed text-gray-700" placeholder="พิมพ์ข้อความของคุณที่นี่..."></textarea>
+                      <textarea id="suggestion" rows="4" class="input-glass resize-none leading-relaxed text-gray-700" placeholder="พิมพ์ข้อความของคุณที่นี่ (จำเป็นต้องกรอก)..."></textarea>
                   </div>
 
                   <div class="flex justify-between items-center pt-10 border-t border-gray-200 mt-8">
@@ -370,10 +370,10 @@
     let currentPerc = 0;
     let loadingInterval;
 
-    // Data Sources
+    // Data Sources (อัปเดตข้อมูลตามที่ขอ)
     const coursesMap = [
         { name: "แพทยศาสตรบัณฑิต", icon: "fi-sr-stethoscope" },
-        { name: "วท.บ. สาขาวิชาแพทยศาสตรบัณฑิต", icon: "fi-sr-stethoscope" },
+        { name: "วท.บ. สาขาวิชาวิทยาศาสตร์ข้อมูลสุขภาพ", icon: "fi-sr-chart-histogram" },
         { name: "วท.บ. สาขาวิชานวัตกรรมวิทยาศาสตร์การแพทย์", icon: "fi-sr-flask" },
         { name: "วท.บ. สาขาเทคโนโลยีอาหารทางการแพทย์และสุขภาพ", icon: "fi-sr-restaurant" },
         { name: "วศ.บ. สาขาวิศวกรรมชีวการแพทย์", icon: "fi-sr-settings" },
@@ -385,8 +385,8 @@
         { name: "พยาบาลศาสตรบัณฑิต (รับผู้สำเร็จปริญญาตรีสาขาอื่น)", icon: "fi-sr-heart" }
     ];
     const provinces = ["กรุงเทพมหานคร","กระบี่","กาญจนบุรี","กาฬสินธุ์","กำแพงเพชร","ขอนแก่น","จันทบุรี","ฉะเชิงเทรา","ชลบุรี","ชัยนาท","ชัยภูมิ","ชุมพร","เชียงราย","เชียงใหม่","ตรัง","ตราด","ตาก","นครนายก","นครปฐม","นครพนม","นครราชสีมา","นครศรีธรรมราช","นครสวรรค์","นนทบุรี","นราธิวาส","น่าน","บึงกาฬ","บุรีรัมย์","ปทุมธานี","ประจวบคีรีขันธ์","ปราจีนบุรี","ปัตตานี","พระนครศรีอยุธยา","พะเยา","พังงา","พัทลุง","พิจิตร","พิษณุโลก","เพชรบุรี","เพชรบูรณ์","แพร่","ภูเก็ต","มหาสารคาม","มุกดาหาร","แม่ฮ่องสอน","ยโสธร","ยะลา","ร้อยเอ็ด","ระนอง","ระยอง","ราชบุรี","ลพบุรี","ลำปาง","ลำพูน","เลย","ศรีสะเกษ","สกลนคร","สงขลา","สตูล","สมุทรปราการ","สมุทรสงคราม","สมุทรสาคร","สระแก้ว","สระบุรี","สิงห์บุรี","สุโขทัย","สุพรรณบุรี","สุราษฎร์ธานี","สุรินทร์","หนองคาย","หนองบัวลำภู","อ่างทอง","อำนาจเจริญ","อุดรธานี","อุตรดิตถ์","อุทัยธานี","อุบลราชธานี"];
-    const channels = ["ภายในกิจกรรม DEK-D's TCAS Fair", "กิจกรรม CRA Roadshow", "กิจกรรม CRA Open House", "สื่อออนไลน์ Education CRA", "เว็บไซต์ราชวิทยาลัยจุฬาภรณ์", "ข่าว/หนังสือพิมพ์/แผ่นพับ", "โทรทัศน์/วิทยุ", "คนรู้จัก/ครูแนะแนว"];
-    const medias = ["Facebook", "Instagram", "Youtube", "Tiktok", "X (Twitter)", "เว็บไซต์องค์กร", "สื่อหนังสือพิมพ์"];
+    const channels = ["ภายในกิจกรรม DEK-D's TCAS Fair ไบเทค บางนา", "กิจกรรม CRA Roadshow (ที่โรงเรียนของท่าน)", "กิจกรรม CRA Open House", "สื่อสังคมออนไลน์ Education CRA และสื่อราชวิทยาลัยจุฬาภรณ์", "เว็บไซต์ของราชวิทยาลัยจุฬาภรณ์", "เว็บไซต์ข่าว/หนังสือพิมพ์ / วารสาร / โบว์ชัวร์", "โทรทัศน์และวิทยุ", "เพื่อน/คนรู้จัก/ครอบครัว/ครูที่โรงเรียน"];
+    const medias = ["Facebook", "Instagram", "Youtube", "Tiktok", "X (Twitter)", "สื่อสังคมออนไลน์ Education CRA และสื่อราชวิทยาลัยจุฬาภรณ์", "เว็บไซต์ของราชวิทยาลัยจุฬาภรณ์", "เว็บไซต์ข่าว", "สื่อโทรทัศน์และวิทยุ", "สื่อหนังสือพิมพ์"];
 
     function updateLoadingUI(perc) {
         document.getElementById('loadingBar').style.width = perc + '%';
@@ -449,7 +449,7 @@
 
         // 🌟 Celebrate Checkbox Render 🌟
         const svgCelebrate = `<svg class="celebrate-svg"><path d="M27 27l-6-6M27 27l6 6M27 27l-6 6M27 27l6-6" /><circle cx="27" cy="27" r="16"/></svg>`;
-        const buildCheck = (arr, name, otherId) => arr.map(i => `<label class="celebrate-wrapper shadow-sm"><input type="checkbox" name="${name}" value="${i}"><div class="celebrate-box"></div>${svgCelebrate}<span class="celebrate-text">${i}</span></label>`).join('') + `<label class="celebrate-wrapper shadow-sm"><input type="checkbox" onchange="checkOther(this, '${otherId}')"><div class="celebrate-box"></div>${svgCelebrate}<span class="celebrate-text">อื่นๆ</span></label>`;
+        const buildCheck = (arr, name, otherId) => arr.map(i => `<label class="celebrate-wrapper shadow-sm"><input type="checkbox" name="${name}" value="${i}"><div class="celebrate-box"></div>${svgCelebrate}<span class="celebrate-text">${i}</span></label>`).join('') + `<label class="celebrate-wrapper shadow-sm"><input type="checkbox" onchange="checkOther(this, '${otherId}')"><div class="celebrate-box"></div>${svgCelebrate}<span class="celebrate-text">อื่นๆ (ให้พิมพ์ระบุ)</span></label>`;
         
         document.getElementById('channelGroup').innerHTML = buildCheck(channels, 'chkChannel', 'otherChannel');
         document.getElementById('mediaGroup').innerHTML = buildCheck(medias, 'chkMedia', 'otherMedia');
@@ -579,7 +579,7 @@
 
     function checkOther(el, inputId) {
         var inp = document.getElementById(inputId);
-        if (el.value === "อื่นๆ") { inp.classList.remove('hidden'); inp.focus(); } 
+        if (el.value === "อื่นๆ (ให้พิมพ์ระบุ)" || el.value === "อื่นๆ") { inp.classList.remove('hidden'); inp.focus(); } 
         else { inp.classList.add('hidden'); inp.value = ""; }
     }
 
@@ -686,8 +686,8 @@
     function submitData() {
         let reqRadios = ['knowCRA', 'followPage', 'desireScore', 'mediaSatisfactionScore', 'prSatisfactionScore', 'openHouseScore', 'satisfactionScore'];
         if(reqRadios.some(n => !document.querySelector(`input[name="${n}"]:checked`))) return Swal.fire({icon:'warning', text:'กรุณาให้คะแนนความพึงพอใจ 1-5 ให้ครบทุกข้อ'});
-        if (document.querySelector('input[name="followPage"]:checked').value === "ใช่ติดตาม" && !document.getElementById('followPlatform').value) return Swal.fire({icon:'warning', text:'กรุณาเลือกแพลตฟอร์มที่คุณติดตาม'});
-        if (!document.getElementById('suggestion').value.trim()) return Swal.fire({icon:'warning', text:'กรุณากรอกข้อเสนอแนะ'});
+        if (document.querySelector('input[name="followPage"]:checked').value === "ใช่ติดตาม" && !document.getElementById('followPlatform').value) return Swal.fire({icon:'warning', text:'กรุณาเลือกแพลตฟอร์มที่คุณติดตามเพจ Education CRA'});
+        if (!document.getElementById('suggestion').value.trim()) return Swal.fire({icon:'warning', text:'กรุณากรอกข้อเสนอแนะเพิ่มเติม'});
 
         let getCheck = (n, id) => Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(e=>e.value).concat(document.getElementById(id).value ? ["อื่นๆ: "+document.getElementById(id).value] : []).join(', ');
         var channelsStr = getCheck('chkChannel', 'otherChannel'), mediasStr = getCheck('chkMedia', 'otherMedia');
