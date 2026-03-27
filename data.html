@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dek's-D TCAS Fair 2026 - Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+  <script>
+    tailwind.config = {
+      theme: { 
+        extend: { 
+          fontFamily: { sans: ['"Noto Sans Thai"', 'sans-serif'] },
+          // ปรับสีธีมให้เป็น ส้ม(Primary) และ เขียว(Secondary) ตามหน้า Index
+          colors: { cra: { primary: '#f57c00', secondary: '#8bc34a' } }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Noto Sans Thai', sans-serif !important; }
+    @media print {
+      .no-print { display: none !important; }
+      .chart-container { display: none !important; }
+      .table-container { display: block !important; }
+      .print-only { display: block !important; }
+      body { background-color: white; padding: 0; }
+      .container { max-width: 100%; width: 100%; }
+      .card { box-shadow: none !important; border: 1px solid #eee !important; break-inside: avoid; margin-bottom: 20px; }
+    }
+    .print-only { display: none; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .loader { border: 4px solid #f3f3f3; border-top: 4px solid #f57c00; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .btn-filter-item { transition: all 0.2s; min-height: 54px; }
+
+    @media only screen and (max-width: 768px), print {
+      #source-split-grid { gap: 0 !important; }
+      #source-split-grid > div:nth-child(2) > div:first-child { display: none !important; } 
+      #source-split-grid > div:nth-child(1) > div:last-child { border-bottom: none !important; } 
+      #source-split-grid > div:nth-child(2) > div:nth-child(2) { border-top: none !important; margin-top: -1px; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <div id="loading" class="fixed inset-0 bg-white/95 z-[60] flex flex-col items-center justify-center">
+    <div class="loader mb-4"></div>
+    <p class="text-cra-primary font-bold animate-pulse text-lg">กำลังประมวลผลข้อมูลจากระบบ...</p>
+  </div>
+
+  <div id="mainApp" class="container mx-auto px-4 py-8 max-w-7xl opacity-0 transition-opacity duration-700">
+    <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-gray-200 pb-6 no-print">
+      <div class="flex items-center gap-3">
+        <svg class="w-10 h-10 text-cra-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        <h1 class="text-3xl font-extrabold text-cra-primary">TCAS Fair 2026 Dashboard</h1>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="openFilterModal()" class="flex items-center gap-2 px-4 py-3 bg-white border-2 border-cra-primary text-cra-primary rounded-xl font-bold hover:bg-orange-50 transition shadow-sm">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
+          เลือกรอบวันที่ <span id="filterBadge" class="bg-cra-primary text-white text-xs px-2 py-0.5 rounded-full ml-1 font-sans">All</span>
+        </button>
+        <button onclick="window.print()" class="flex items-center gap-2 px-4 py-3 bg-cra-primary text-white rounded-xl font-bold hover:bg-orange-600 transition shadow-md">
+          พิมพ์รายงานฉบับเต็ม
+        </button>
+        <button onclick="google.script.run.withSuccessHandler(url=>window.top.location.href=url+'?page=index').getAppUrl()" class="flex items-center gap-2 px-4 py-3 bg-slate-800 text-white rounded-xl font-bold hover:bg-black transition shadow-md">
+          ออก
+        </button>
+      </div>
+    </header>
+
+    <div id="dynamicFilterTitle" class="mb-4 text-2xl font-bold text-slate-700 px-2 flex items-center flex-wrap gap-2"></div>
+
+    <div class="mb-6 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-6 text-white flex items-center justify-between card shadow-lg">
+       <h2 class="text-xl font-semibold opacity-90 flex items-center gap-3">
+         <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 005.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+         ผู้ตอบแบบสอบถามทั้งหมด
+       </h2>
+       <div class="text-right"><span class="text-5xl font-black" id="kpiTotal">0</span><span class="text-xl ml-2 opacity-80">คน</span></div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8 card">
+      <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+        <svg class="w-7 h-7 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+        ภาพรวมความพึงพอใจ (คะแนนเต็ม 5)
+      </h3>
+      <div id="satisfactionContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+    </div>
+
+    <div id="pieCardContainer" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8"></div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8 card">
+      <h3 class="text-xl font-bold text-cra-primary mb-4 flex items-center gap-2 text-slate-700">
+        <svg class="w-7 h-7 text-cra-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg> 
+        จัดอันดับความสนใจศึกษาต่อ (อันดับ 1)
+      </h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left border-collapse">
+          <thead class="bg-gray-50 text-gray-600 font-bold uppercase"><tr><th class="p-3 w-16 text-center">อันดับ</th><th class="p-3">หลักสูตร / คณะ</th><th class="p-3 text-right">จำนวน</th><th class="p-3 text-right">ร้อยละ</th><th class="p-3 w-1/4 no-print">ความนิยม</th></tr></thead>
+          <tbody id="currTableBody" class="divide-y"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="dynamicGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"></div>
+
+    <div class="bg-white rounded-2xl border p-6 mb-8 card">
+      <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2 text-lg text-slate-700">
+        <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg> 
+        ช่องทางที่รู้จักราชวิทยาลัยจุฬาภรณ์
+      </h3>
+      <div id="sourceTableContainer"></div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 no-print mb-8">
+      <button onclick="openSuggestModal()" class="bg-green-50 p-6 rounded-2xl border-2 border-green-100 flex flex-col items-center hover:bg-green-100 transition group shadow-sm">
+        <h3 class="font-bold text-cra-secondary text-xl mb-3 flex items-center gap-2">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+          ข้อเสนอแนะเพิ่มเติมจากผู้เข้าร่วมงาน
+        </h3>
+        <span class="bg-white px-8 py-2 rounded-full shadow font-bold text-cra-secondary group-hover:scale-105 transition">เปิดอ่านข้อความ</span>
+      </button>
+    </div>
+
+    <div class="print-only">
+      <div class="card p-6"><h3 class="text-xl font-bold mb-4 text-cra-secondary">ข้อเสนอแนะเพิ่มเติม</h3><div id="printSuggestContainer"></div></div>
+    </div>
+  </div>
+
+  <div id="modalBase" class="fixed inset-0 z-50 hidden no-print">
+    <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="closeModal()"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col relative overflow-hidden">
+        <div class="p-6 border-b border-gray-100 bg-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div id="mHeader" class="text-xl font-bold text-cra-primary flex items-center gap-2"></div>
+          <div class="flex items-center gap-3">
+            <div id="modalActions" class="flex gap-2"></div>
+            <button onclick="closeModal()" class="bg-white text-gray-400 hover:text-red-500 rounded-full p-2 border transition">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
+        <div id="mBody" class="p-6 overflow-y-auto bg-white"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    Chart.register(ChartDataLabels);
+    const ICONS = {
+      table: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>`,
+      chart: `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>`,
+      medal: (c) => `<svg class="w-8 h-8 mx-auto" viewBox="0 0 24 24" fill="${c}"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/></svg>`,
+      calendar: `<svg class="w-5 h-5 text-cra-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`
+    };
+
+    let RAW_DATA = [], selectedFilters = [], allFilters = [];
+
+    window.onload = () => {
+      // 🌟 ใช้ google.script.run ดึงข้อมูลแทน Fetch API 🌟
+      google.script.run.withSuccessHandler(function(data) {
+        if(data && data.length > 0) {
+            RAW_DATA = data;
+            // คอลัมน์ 20 คือ 'วันที่ร่วมงาน'
+            allFilters = [...new Set(data.map(r => r[20].trim()))].filter(Boolean).sort();
+            selectedFilters = [...allFilters];
+            renderDashboard();
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('opacity-0');
+        } else {
+            showError("ยังไม่มีข้อมูลในระบบ");
+        }
+      }).withFailureHandler(function(err) {
+        showError(err.toString());
+      }).getDashboardData();
+    };
+
+    function showError(msg) {
+        document.getElementById('loading').innerHTML = `
+          <div class="text-red-500 font-bold text-center p-4">
+            <i class="fi fi-sr-engine-warning text-4xl mb-2 block"></i>
+            ไม่สามารถดึงข้อมูลได้ <br>
+            <span class="text-xs text-gray-400 font-normal">${msg}</span>
+          </div>`;
+    }
+
+    function preciseRound(number, decimals = 1) {
+      const multiplier = Math.pow(10, decimals);
+      return Math.round(number * multiplier) / multiplier;
+    }
+
+    function renderDashboard() {
+      // กรองข้อมูลตาม "วันที่" (คอลัมน์ 20)
+      const data = RAW_DATA.filter(r => selectedFilters.includes(r[20].trim()));
+      const total = data.length;
+      
+      const titleDiv = document.getElementById('dynamicFilterTitle');
+      if(selectedFilters.length === 1) {
+        titleDiv.innerHTML = `${ICONS.calendar} <span class="text-cra-primary">${selectedFilters[0]}</span>`;
+      } else {
+        titleDiv.innerHTML = `${ICONS.calendar} <span>แสดงข้อมูลทุกรอบวันที่</span>`;
+      }
+
+      document.getElementById('kpiTotal').innerText = total.toLocaleString();
+      document.getElementById('filterBadge').innerText = selectedFilters.length === allFilters.length ? 'All' : selectedFilters.length;
+      
+      renderSatisfaction(data);
+      renderPieSections(data, total);
+      // ความสนใจอันดับ 1 (คอลัมน์ 12)
+      renderRankingTable('currTableBody', getCounts(data, 12), total, true);
+
+      const dynGrid = document.getElementById('dynamicGrid'); dynGrid.innerHTML = '';
+      const configs = [
+        { id: 'type', col: 1, title: 'ประเภทผู้เข้าร่วมงาน', icon: ICONS.table },
+        { id: 'edu', col: 4, title: 'ระดับการศึกษา', icon: ICONS.table },
+        { id: 'media', col: 11, title: 'สื่อที่ใช้หาข้อมูล', multi: true, icon: ICONS.table },
+        { id: 'plat', col: 22, title: 'แพลตฟอร์มที่ติดตาม', multi: true, icon: ICONS.table }
+      ];
+      configs.forEach(c => {
+        const div = document.createElement('div'); div.className = "bg-white rounded-2xl border p-6 card flex flex-col";
+        div.innerHTML = `<div class="flex justify-between items-center mb-4"><h3 class="font-bold text-sm flex items-center gap-2 text-slate-700">${c.icon} ${c.title}</h3><div class="flex bg-gray-100 rounded-lg p-1 no-print"><button onclick="toggleV('${c.id}','table')" id="btn${c.id}Table" class="p-1.5 rounded bg-white shadow text-cra-primary transition">${ICONS.table}</button><button onclick="toggleV('${c.id}','chart')" id="btn${c.id}Chart" class="p-1.5 rounded text-gray-400 ml-1 transition">${ICONS.chart}</button></div></div><div id="v${c.id}Chart" class="h-48 chart-container hidden"><canvas id="c${c.id}"></canvas></div><div id="v${c.id}Table" class="table-container">${renderTableHTML(getCounts(data, c.col, c.multi), total, c.title)}</div>`;
+        dynGrid.appendChild(div); renderChart(`c${c.id}`, 'bar', getCounts(data, c.col, c.multi), total);
+      });
+      
+      // ช่องทางที่รู้จัก (คอลัมน์ 10)
+      renderSplitTable('sourceTableContainer', getCounts(data, 10, true), total);
+      renderPrintData(data);
+    }
+
+    function renderSatisfaction(data) {
+      // คอลัมน์คะแนนความพึงพอใจ: 16, 17, 18, 23, 24
+      const m = [
+        {c:16, l:'ความสนใจศึกษาต่อ (CRA)', ic:'M12 14l9-5-9-5-9 5 9 5z'}, 
+        {c:17, l:'ความสนใจเข้าร่วม Open House', ic:'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'}, 
+        {c:18, l:'ความพึงพอใจภาพรวมงาน', ic:'M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'}, 
+        {c:24, l:'ความพึงพอใจสื่อแนะแนว', ic:'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.168.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'}
+      ];
+      document.getElementById('satisfactionContainer').innerHTML = m.map(item => {
+        let sum = 0, validC = 0;
+        data.forEach(r => { let v = r[item.c]; if(v){ let n = parseFloat(v); if(!isNaN(n)){ sum += n; validC++; } } });
+        let avg = validC ? preciseRound(sum/validC, 2).toFixed(2) : "0.00";
+        let pct = preciseRound((parseFloat(avg)/5)*100, 1).toFixed(1);
+        return `<div class="bg-slate-50 p-4 rounded-xl border flex flex-col shadow-sm"><div class="flex justify-between items-center mb-3"><span class="text-sm font-medium text-slate-700 flex items-center gap-2"><svg class="w-5 h-5 text-cra-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${item.ic}"/></svg>${item.l}</span><div class="flex items-center gap-2 font-bold text-slate-900">${avg}/5 <span class="bg-cra-primary text-white text-[10px] px-2 py-0.5 rounded shadow-sm">ร้อยละ ${pct}</span></div></div><div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden"><div class="bg-cra-primary h-full transition-all duration-1000" style="width:${pct}%"></div></div></div>`;
+      }).join('');
+    }
+
+    function renderRankingTable(containerId, data, total, showBar = false) {
+      document.getElementById(containerId).innerHTML = data.map((it, i) => {
+        let p = total > 0 ? preciseRound(it[1]*100/total, 1).toFixed(1) : 0;
+        let icon = i < 3 ? ICONS.medal(['#fbbf24','#94a3b8','#d97706'][i]) : i+1;
+        let rs = i===0 ? "bg-orange-50" : i===1 ? "bg-slate-50" : "";
+        return `<tr class="${rs} hover:opacity-90"> <td class="p-4 text-center font-bold">${icon}</td> <td class="p-4 font-medium text-slate-700">${it[0]}</td> <td class="p-4 text-right font-bold text-cra-primary">${it[1]}</td> <td class="p-4 text-right text-gray-500 font-semibold">${p}</td> ${showBar ? `<td class="p-4 no-print"><div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden"><div class="bg-cra-primary h-1.5 rounded-full" style="width:${p}%"></div></div></td>` : ''}</tr>`;
+      }).join('');
+    }
+
+    function openFilterModal() {
+      document.getElementById('mHeader').innerHTML = `<span class="flex items-center gap-2">${ICONS.calendar} เลือกรอบวันที่ต้องการดูข้อมูล</span>`;
+      document.getElementById('modalActions').innerHTML = `
+        <button onclick="selectAll(true)" class="text-xs bg-cra-primary text-white px-3 py-2 rounded-lg hover:bg-orange-600 transition font-bold shadow-sm flex items-center gap-1">เลือกทั้งหมด</button>
+      `;
+      renderFilterList();
+      document.getElementById('modalBase').classList.remove('hidden');
+    }
+
+    function renderFilterList() {
+      document.getElementById('mBody').innerHTML = `
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6" id="filterGrid">
+          ${allFilters.map(s => {
+            const isS = selectedFilters.includes(s);
+            return `<button onclick="toggleFilter('${s}')" class="btn-filter-item p-4 text-left border rounded-xl text-sm ${isS?'bg-orange-50 border-cra-primary text-cra-primary font-bold shadow-sm':'bg-white border-gray-200 text-slate-500'}">
+              <span class="flex items-center gap-2">${isS?'✓':''} ${s}</span>
+            </button>`;
+          }).join('')}
+        </div>
+        <div class="sticky bottom-0 bg-white py-4 border-t border-gray-100 flex justify-center">
+          <button onclick="closeModal();renderDashboard();" class="w-full max-w-md py-4 bg-green-600 text-white font-bold text-lg rounded-xl shadow-lg hover:bg-green-700 transition transform active:scale-95">ยืนยันและแสดงผล</button>
+        </div>`;
+    }
+
+    function selectAll(v) { selectedFilters = v ? [...allFilters] : []; renderFilterList(); }
+    function toggleFilter(s) { if(selectedFilters.includes(s)) selectedFilters = selectedFilters.filter(x=>x!==s); else selectedFilters.push(s); renderFilterList(); }
+    function closeModal() { document.getElementById('modalBase').classList.add('hidden'); }
+
+    function openSuggestModal() {
+      document.getElementById('modalActions').innerHTML = '';
+      const data = RAW_DATA.filter(r => selectedFilters.includes(r[20].trim()));
+      document.getElementById('mHeader').innerHTML = `<span class="flex items-center gap-2"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>ข้อเสนอแนะเพิ่มเติม</span>`;
+      
+      // คอลัมน์ 19 คือ ข้อเสนอแนะ
+      const list = [...new Set(data.map(r => r[19]))].filter(v => v && v.toString().length > 2);
+      document.getElementById('mBody').innerHTML = `<ul class="space-y-3">${list.map(v => `<li class="p-4 bg-slate-50 rounded-xl border border-gray-100 flex gap-3 text-sm text-slate-700 font-medium group hover:bg-white transition shadow-sm"><span class="text-orange-400">💬</span> ${v}</li>`).join('')}</ul>`;
+      
+      document.getElementById('modalBase').classList.remove('hidden');
+    }
+
+    function renderPieSections(data, total) {
+      const container = document.getElementById('pieCardContainer'); container.innerHTML = '';
+      const items = [
+        { id: 'G', col: 2, title: 'สัดส่วนเพศ', ic: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' }, 
+        { id: 'K', col: 9, title: 'รู้จัก CRA ไหม', ic: 'M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' }, 
+        { id: 'F', col: 21, title: 'ติดตามเพจ Education CRA', ic: 'M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5' }
+      ];
+      items.forEach(p => {
+        const div = document.createElement('div'); div.className = "bg-white rounded-2xl border p-6 card flex flex-col";
+        div.innerHTML = `<div class="flex justify-between items-center mb-4"><h3 class="font-bold text-sm flex items-center gap-2 text-slate-700"><svg class="w-5 h-5 text-cra-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${p.ic}"/></svg>${p.title}</h3><div class="flex bg-gray-100 rounded-lg p-1 no-print"><button onclick="toggleV('${p.id}','table')" id="btn${p.id}Table" class="p-1.5 rounded bg-white shadow text-cra-primary transition">${ICONS.table}</button><button onclick="toggleV('${p.id}','chart')" id="btn${p.id}Chart" class="p-1.5 rounded text-gray-400 ml-1 transition">${ICONS.chart}</button></div></div><div id="v${p.id}Chart" class="h-48 chart-container hidden"><canvas id="c${p.id}"></canvas></div><div id="v${p.id}Table" class="table-container">${renderTableHTML(getCounts(data, p.col), total, p.title)}</div>`;
+        container.appendChild(div); renderChart(`c${p.id}`, 'pie', getCounts(data, p.col), total);
+      });
+    }
+
+    function renderTableHTML(data, total, header) { return `<table class="w-full text-sm"><thead class="bg-gray-50 font-bold uppercase text-gray-600"><tr><th class="p-2 text-left">${header}</th><th class="p-2 text-right">จำนวน</th><th class="p-2 text-right">ร้อยละ</th></tr></thead><tbody>${data.map(i => `<tr class="border-b"><td class="p-2 text-slate-700 font-medium">${i[0]}</td><td class="p-2 text-right font-bold text-cra-primary">${i[1]}</td><td class="p-2 text-right font-semibold text-gray-500">${total > 0 ? preciseRound(i[1]*100/total, 1).toFixed(1) : 0}</td></tr>`).join('')}</tbody></table>`; }
+    
+    function renderSplitTable(id, data, total) { const mid = Math.ceil(data.length/2), L=data.slice(0,mid), R=data.slice(mid), head=`<div class="flex justify-between bg-gray-100 p-2 font-bold text-[14px] uppercase text-gray-600 border-b font-sans"><span>ช่องทางที่รู้จัก</span><div class="flex gap-4"><span>จำนวน</span><span>ร้อยละ</span></div></div>`, row=(d)=>`<div class="flex justify-between py-1.5 border-b text-[12px] px-1 hover:bg-slate-50 font-sans"><span>${d[0]}</span><div class="flex gap-4 font-bold text-cra-primary"><span>${d[1]}</span><span class="text-gray-400 font-normal w-12 text-right">${total > 0 ? preciseRound(d[1]*100/total, 1).toFixed(1) : 0}</span></div></div>`; document.getElementById(id).innerHTML=`<div id="source-split-grid" class="grid grid-cols-1 md:grid-cols-2 gap-x-12"><div>${head}${L.map(row).join('')}</div><div>${head}${R.map(row).join('')}</div></div>`; }
+    
+    function toggleV(id, m) { const isT=m==='table'; document.getElementById(`v${id}Table`).classList.toggle('hidden',!isT); document.getElementById(`v${id}Chart`).classList.toggle('hidden',isT); document.getElementById(`btn${id}Table`).className=isT?"p-1.5 rounded bg-white shadow text-cra-primary":"p-1.5 rounded text-gray-400 ml-1"; document.getElementById(`btn${id}Chart`).className=!isT?"p-1.5 rounded bg-white shadow text-cra-primary":"p-1.5 rounded text-gray-400 ml-1"; }
+    
+    function getCounts(data, idx, multi) { let c={}; data.forEach(r => { let v=multi?r[idx].toString().split(/,\s*/):[r[idx].toString().trim()]; v.forEach(x=>{if(x)c[x]=(c[x]||0)+1;}); }); return Object.entries(c).sort((a,b)=>b[1]-a[1]); }
+    
+    function renderChart(id, type, data, total) { new Chart(document.getElementById(id),{type:type,data:{labels:data.map(d=>d[0]),datasets:[{data:data.map(d=>d[1]),backgroundColor:['#f57c00','#8bc34a','#3b82f6','#10b981','#f59e0b','#e53935','#8e24aa']}]},options:{maintainAspectRatio:false,plugins:{datalabels:{color:'#fff',font:{family:'"Noto Sans Thai"',weight:'bold'},formatter:(v)=> total > 0 ? `${v}\n(${preciseRound(v*100/total, 0).toFixed(0)}%)` : ''},legend:{position:'right',labels:{font:{family:'"Noto Sans Thai"',size:9},boxWidth:10}}}}}); }
+    
+    function renderPrintData(data) {
+      const sg = [...new Set(data.map(r => r[19]))].filter(v => v && v.toString().length > 2);
+      document.getElementById('printSuggestContainer').innerHTML = sg.length ? `<ul class="list-disc pl-8 space-y-1 text-sm">${sg.map(v => `<li class="text-slate-700">${v}</li>`).join('')}</ul>` : 'ไม่มีข้อมูล';
+    }
+  </script>
+</body>
+</html>
