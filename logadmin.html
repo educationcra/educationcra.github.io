@@ -240,24 +240,22 @@
         checkAdminEventDate(); 
     }
 
+    // 🌟 ระบบเซ็ตค่าเริ่มต้น แต่ปลดล็อกแล้ว 🌟
     function checkAdminEventDate() {
         const today = new Date();
         const y = today.getFullYear(), m = today.getMonth(), d = today.getDate();
         const toggle = document.getElementById('dayToggle');
-        const toggleLabel = document.getElementById('dayToggleLabel');
-        const lockMsg = document.getElementById('dateLockMsg');
-
-        if (y === 2026 && m === 3 && d === 25) {
-            toggle.checked = false; toggle.disabled = true;
-            toggle.classList.replace('cursor-pointer', 'cursor-not-allowed');
-            toggleLabel.classList.replace('cursor-pointer', 'cursor-not-allowed'); toggleLabel.classList.add('opacity-50');
-            lockMsg.innerText = "🔒 ล็อกสแกนเฉพาะคูปอง Day 1"; lockMsg.classList.remove('hidden');
-        } else if (y === 2026 && m === 3 && d === 26) {
-            toggle.checked = true; toggle.disabled = true;
-            toggle.classList.replace('cursor-pointer', 'cursor-not-allowed');
-            toggleLabel.classList.replace('cursor-pointer', 'cursor-not-allowed'); toggleLabel.classList.add('opacity-50');
-            lockMsg.innerText = "🔒 ล็อกสแกนเฉพาะคูปอง Day 2"; lockMsg.classList.remove('hidden');
+        
+        // ถ้าเป็นวันที่ 26 ให้เลื่อนสวิตช์เป็น D2 ให้เลย แต่ไม่ล็อก
+        if (y === 2026 && m === 3 && d === 26) {
+            toggle.checked = true;
+        } else {
+            toggle.checked = false; // วันที่ 25 ให้เลื่อนเป็น D1
         }
+        
+        // ซ่อนข้อความเตือนเรื่องการล็อก
+        document.getElementById('dateLockMsg').classList.add('hidden');
+        
         updateDayMode();
     }
 
