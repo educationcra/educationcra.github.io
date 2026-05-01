@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRA TCAS Fair 2026 - Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    tailwind.config = {
+      theme: { 
+        extend: { 
+          fontFamily: { sans: ['"Noto Sans Thai"', 'sans-serif'] },
+          colors: { cra: { primary: '#f57c00', secondary: '#8bc34a' } }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Noto Sans Thai', sans-serif; background-color: #f8fafc; }
+    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; }
+    
+    @media print {
+      .no-print { display: none !important; }
+      .chart-container { display: none !important; }
+      .table-container { display: block !important; }
+      .print-only { display: block !important; }
+      body { background-color: white; padding: 0; }
+      .container { max-width: 100%; width: 100%; }
+      .glass-card { box-shadow: none !important; border: 1px solid #eee !important; break-inside: avoid; margin-bottom: 20px; }
+    }
+    .print-only { display: none; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    
+    .loader { border: 4px solid #f3f3f3; border-top: 4px solid #f57c00; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="text-slate-800 antialiased">
+
+  <div id="loading" class="fixed inset-0 bg-white/95 z-[60] flex flex-col items-center justify-center transition-opacity duration-500">
+    <div class="loader mb-4"></div>
+    <p class="text-cra-primary font-bold animate-pulse text-xl">กำลังประมวลผลข้อมูล Real-time...</p>
+    <p class="text-sm text-gray-400 mt-2">Connecting to CRA Database...</p>
+  </div>
+
+  <div id="mainApp" class="container mx-auto px-4 py-8 max-w-7xl opacity-0 transition-opacity duration-700 hidden">
+    <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b border-gray-200 pb-6 no-print">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 bg-orange-100 rounded-2xl flex justify-center items-center text-orange-500">
+            <i class="fi fi-sr-chart-pie-alt text-3xl mt-1"></i>
+        </div>
+        <div>
+            <h1 class="text-3xl font-black text-gray-800 tracking-tight">CRA TCAS Fair 2026</h1>
+            <p class="text-gray-500 font-medium">Dashboard วิเคราะห์ข้อมูลผู้เข้าร่วมกิจกรรม</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap justify-center gap-2">
+        <button onclick="openFilterModal()" class="flex items-center gap-2 px-5 py-3 bg-white border-2 border-cra-primary text-cra-primary rounded-xl font-bold hover:bg-orange-50 transition shadow-sm">
+          <i class="fi fi-sr-filter"></i> ตัวกรอง <span id="filterCountBadge" class="bg-cra-primary text-white text-xs px-2 py-0.5 rounded-full ml-1">ทั้งหมด</span>
+        </button>
+        <button onclick="window.print()" class="flex items-center gap-2 px-5 py-3 bg-cra-primary text-white rounded-xl font-bold hover:bg-orange-600 transition shadow-md">
+          <i class="fi fi-sr-print"></i> พิมพ์รายงาน
+        </button>
+      </div>
+    </header>
+
+    <div id="dynamicTitle" class="mb-4 text-2xl font-bold text-slate-700 px-2 flex items-center flex-wrap gap-2">
+        <i class="fi fi-sr-apps text-cra-primary"></i> <span id="titleText">ข้อมูลผู้ตอบแบบสอบถามทั้งหมด</span>
+    </div>
+
+    <div class="mb-8 bg-gradient-to-r from-orange-500 to-rose-500 rounded-3xl p-8 text-white flex flex-col md:flex-row items-center justify-between shadow-lg relative overflow-hidden">
+       <i class="fi fi-sr-users absolute -right-6 -bottom-6 text-9xl text-white opacity-10"></i>
+       <h2 class="text-xl md:text-2xl font-bold opacity-95 flex items-center gap-3 relative z-10">
+         <i class="fi fi-sr-document-signed"></i> ยอดผู้ตอบแบบสอบถาม
+       </h2>
+       <div class="text-right relative z-10 mt-2 md:mt-0"><span class="text-6xl font-black tracking-tighter" id="kpiTotal">0</span><span class="text-xl ml-2 opacity-80 font-bold">คน</span></div>
+    </div>
+
+    <div class="glass-card p-8 mb-8">
+      <h3 class="text-xl font-black text-gray-800 mb-6 flex items-center gap-3">
+        <i class="fi fi-sr-star text-yellow-500 text-2xl"></i> ภาพรวมความพึงพอใจและแนวโน้ม (เต็ม 5)
+      </h3>
+      <div id="satisfactionContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+    </div>
+
+    <div id="pieCardContainer" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8"></div>
+
+    <div class="glass-card p-8 mb-8">
+      <h3 class="text-xl font-black text-gray-800 mb-6 flex items-center gap-3">
+        <i class="fi fi-sr-graduation-cap text-cra-secondary text-2xl"></i> จัดอันดับความสนใจหลักสูตร (รวมทั้ง 3 อันดับ)
+      </h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left border-collapse">
+          <thead class="bg-green-50 text-green-700 font-bold uppercase rounded-t-xl">
+              <tr>
+                  <th class="p-4 w-20 text-center">อันดับ</th>
+                  <th class="p-4">หลักสูตร</th>
+                  <th class="p-4 text-right">จำนวน (Mentions)</th>
+                  <th class="p-4 text-right">ร้อยละของผู้เข้าร่วม</th>
+                  <th class="p-4 w-1/4 no-print">ความนิยม</th>
+              </tr>
+          </thead>
+          <tbody id="currTableBody" class="divide-y divide-gray-100"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="dynamicGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"></div>
+
+    <div class="glass-card p-8 mb-8">
+      <h3 class="text-xl font-black text-gray-800 mb-6 flex items-center gap-3">
+        <i class="fi fi-sr-share text-purple-500 text-2xl"></i> การรับรู้ข่าวสารและสื่อที่ใช้ติดตาม
+      </h3>
+      <div id="sourceTableContainer" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 no-print mb-8">
+      <button onclick="openCustomModal('newCurr')" class="bg-gradient-to-r from-orange-50 to-amber-50 p-8 rounded-3xl border-2 border-orange-100 flex flex-col items-center hover:-translate-y-1 transition-all group shadow-sm">
+        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:scale-110 transition-transform"><i class="fi fi-sr-add text-3xl text-orange-500 mt-1"></i></div>
+        <h3 class="font-black text-orange-800 text-xl md:text-2xl mb-3">หลักสูตรใหม่ที่อยากให้เปิด</h3>
+        <span class="bg-orange-500 text-white px-6 py-2.5 rounded-full shadow font-bold">ดูสถิติการจัดอันดับ</span>
+      </button>
+      <button onclick="openCustomModal('suggest')" class="bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-3xl border-2 border-blue-100 flex flex-col items-center hover:-translate-y-1 transition-all group shadow-sm">
+        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:scale-110 transition-transform"><i class="fi fi-sr-comment-alt text-3xl text-blue-500 mt-1"></i></div>
+        <h3 class="font-black text-blue-800 text-xl md:text-2xl mb-3">ข้อเสนอแนะเพิ่มเติม</h3>
+        <span class="bg-blue-500 text-white px-6 py-2.5 rounded-full shadow font-bold">เปิดอ่านข้อความทั้งหมด</span>
+      </button>
+    </div>
+
+    <div class="print-only">
+      <div class="glass-card p-6"><h3 class="text-xl font-bold mb-4 text-blue-600">ข้อเสนอแนะเพิ่มเติม</h3><div id="printSuggestContainer"></div></div>
+    </div>
+  </div>
+
+  <div id="modalBase" class="fixed inset-0 z-50 hidden no-print">
+    <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="closeModal()"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col relative overflow-hidden">
+        <div class="p-6 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+          <h2 id="mHeader" class="text-xl font-black text-gray-800 flex items-center gap-2"></h2>
+          <button onclick="closeModal()" class="bg-white text-gray-400 hover:text-red-500 rounded-full w-10 h-10 flex justify-center items-center shadow-sm transition"><i class="fi fi-sr-cross-small text-xl mt-1"></i></button>
+        </div>
+        <div id="mBody" class="p-6 overflow-y-auto bg-white"></div>
+        <div id="mFooter" class="p-6 border-t border-gray-100 bg-gray-50"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // ⚠️ ใส่ URL ของ Google Apps Script ของคุณที่นี่ ⚠️
+    // ==========================================
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbz2WVLumggLAGfibD_9u-Ms3hiTKz0gaEtx9EDSKm_yXtgqmuBZ8NlefiJHp7C0ejTY/exec'; 
+
+    Chart.register(ChartDataLabels);
+    
+    let RAW_DATA = [];
+    let filterDate = "All"; 
+    let filterType = "All"; 
+
+    window.onload = async () => {
+      try {
+        const res = await fetch(GAS_URL, {
+            method: 'POST', redirect: 'follow',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'getDashboardData', data: {} })
+        });
+        const json = await res.json();
+        
+        if(json.status === 'success') {
+            RAW_DATA = json.data;
+            renderDashboard();
+            document.getElementById('loading').classList.add('opacity-0');
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                setTimeout(()=>document.getElementById('mainApp').classList.remove('opacity-0'), 50);
+            }, 500);
+        } else {
+            throw new Error(json.message);
+        }
+      } catch (error) {
+        document.getElementById('loading').innerHTML = `<div class="text-red-500 font-bold text-center p-6 bg-white rounded-3xl shadow-xl"><i class="fi fi-sr-triangle-warning text-5xl mb-4"></i><br>ไม่สามารถดึงข้อมูลได้<br><span class="text-sm text-gray-400 font-normal">${error.message}</span></div>`;
+      }
+    };
+
+    // 🌟 ปรับทศนิยมเป็น 2 ตำแหน่ง 🌟
+    function preciseRound(number, decimals = 2) {
+      const multiplier = Math.pow(10, decimals);
+      return Math.round(number * multiplier) / multiplier;
+    }
+
+    function renderDashboard() {
+      let data = RAW_DATA;
+      if(filterDate !== "All") {
+          let expectedStr = filterDate === "Day 1" ? "25 เมษายน 2569" : "26 เมษายน 2569";
+          data = data.filter(r => String(r[20]).trim() === expectedStr);
+      }
+      if(filterType !== "All") {
+          data = data.filter(r => String(r[1]).includes(filterType));
+      }
+
+      const total = data.length;
+      
+      let titleTxt = "ข้อมูลผู้ตอบแบบสอบถามทั้งหมด";
+      if(filterDate !== "All" || filterType !== "All") {
+          titleTxt = `ข้อมูลกรองตาม: <span class="text-cra-primary">${filterDate}</span> | <span class="text-cra-primary">${filterType}</span>`;
+      }
+      document.getElementById('titleText').innerHTML = titleTxt;
+      document.getElementById('kpiTotal').innerText = total.toLocaleString();
+      
+      let fCount = (filterDate !== "All" ? 1 : 0) + (filterType !== "All" ? 1 : 0);
+      document.getElementById('filterCountBadge').innerText = fCount > 0 ? fCount : 'ทั้งหมด';
+
+      if(total === 0) {
+          Swal.fire({icon:'info', title:'ไม่พบข้อมูล', text:'ไม่มีผู้ตอบแบบสอบถามในเงื่อนไขที่เลือก'});
+          return;
+      }
+
+      renderSatisfaction(data);
+      renderPieSections(data, total);
+      
+      // เรียกใช้ฟังก์ชันนับรวม 3 อันดับ
+      renderRankingTable('currTableBody', getCombinedCourseCounts(data), total, true); 
+
+      const dynGrid = document.getElementById('dynamicGrid'); dynGrid.innerHTML = '';
+      const configs = [
+        { id: 'edu', col: 4, title: 'ระดับการศึกษา', icon: 'fi-sr-graduation-cap' },
+        { id: 'round', col: 15, title: 'รอบ TCAS ที่สนใจ', icon: 'fi-sr-bullseye-pointer' },
+        { id: 'plat', col: 22, title: 'แพลตฟอร์มโซเชียลที่ติดตาม', multi: true, icon: 'fi-sr-mobile-notch' }
+      ];
+      configs.forEach(c => {
+        const div = document.createElement('div'); div.className = "glass-card p-6 flex flex-col";
+        div.innerHTML = `<div class="flex justify-between items-center mb-6"><h3 class="font-bold text-gray-700 flex items-center gap-2"><i class="fi ${c.icon} text-orange-500"></i> ${c.title}</h3><div class="flex bg-gray-100 rounded-lg p-1 no-print"><button onclick="toggleV('${c.id}','table')" id="btn${c.id}Table" class="px-2 py-1 rounded bg-white shadow text-cra-primary transition"><i class="fi fi-sr-apps-sort"></i></button><button onclick="toggleV('${c.id}','chart')" id="btn${c.id}Chart" class="px-2 py-1 rounded text-gray-400 hover:text-gray-600 transition"><i class="fi fi-sr-chart-histogram"></i></button></div></div><div id="v${c.id}Chart" class="h-56 chart-container hidden"><canvas id="c${c.id}"></canvas></div><div id="v${c.id}Table" class="table-container">${renderTableHTML(getCounts(data, c.col, c.multi), total, c.title)}</div>`;
+        dynGrid.appendChild(div); renderChart(`c${c.id}`, 'bar', getCounts(data, c.col, c.multi), total);
+      });
+
+      renderSplitTables(data, total);
+      renderPrintData(data);
+    }
+
+    function getCombinedCourseCounts(data) {
+        let c = {};
+        data.forEach(r => {
+            [12, 13, 14].forEach(idx => {
+                let val = String(r[idx]).trim();
+                if (val && val !== "-" && val !== "") {
+                    c[val] = (c[val] || 0) + 1;
+                }
+            });
+        });
+        return Object.entries(c).sort((a,b) => b[1] - a[1]);
+    }
+
+    function renderSatisfaction(data) {
+      const m = [
+        {c:16, l:'อยากเข้าศึกษาต่อ', ic:'fi-sr-graduation-cap'}, 
+        {c:17, l:'สนใจร่วม Open House', ic:'fi-sr-building'}, 
+        {c:24, l:'สื่อแนะแนวภายในกิจกรรม', ic:'fi-sr-book-open-cover'}, 
+        {c:23, l:'การ PR เพจออนไลน์', ic:'fi-sr-megaphone'},
+        {c:18, l:'ภาพรวมกิจกรรม', ic:'fi-sr-star'}
+      ];
+      document.getElementById('satisfactionContainer').innerHTML = m.map(item => {
+        let sum = 0, validC = 0;
+        data.forEach(r => { let v = r[item.c]; if(v){ let n = parseFloat(v); if(!isNaN(n)){ sum += n; validC++; } } });
+        let avg = validC ? preciseRound(sum/validC, 2).toFixed(2) : "0.00";
+        let pct = preciseRound((parseFloat(avg)/5)*100, 2).toFixed(2);
+        return `<div class="bg-white p-5 rounded-2xl border border-gray-100 flex flex-col shadow-sm hover:-translate-y-1 transition-transform"><div class="flex justify-between items-start mb-4"><span class="text-sm font-bold text-gray-600 flex items-start gap-2"><i class="fi ${item.ic} text-yellow-500 mt-0.5"></i> ${item.l}</span><div class="flex flex-col items-end"><span class="text-2xl font-black text-gray-800">${avg}<span class="text-sm text-gray-400 font-medium">/5</span></span></div></div><div class="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden mt-auto"><div class="bg-gradient-to-r from-yellow-400 to-orange-500 h-full rounded-full" style="width:${pct}%"></div></div></div>`;
+      }).join('');
+    }
+
+    // 🌟 เอา % ออก และเป็น ทศนิยม 2 ตำแหน่ง 🌟
+    function renderRankingTable(containerId, data, total, showBar = false) {
+      const medals = [
+          '<div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center mx-auto shadow-sm border border-yellow-200"><i class="fi fi-sr-medal text-xl text-yellow-500 mt-1"></i></div>', 
+          '<div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center mx-auto shadow-sm border border-gray-200"><i class="fi fi-sr-medal text-xl text-gray-400 mt-1"></i></div>', 
+          '<div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center mx-auto shadow-sm border border-orange-200"><i class="fi fi-sr-medal text-xl text-orange-500 mt-1"></i></div>'
+      ];
+      
+      document.getElementById(containerId).innerHTML = data.map((it, i) => {
+        let p = preciseRound(it[1]*100/total, 2).toFixed(2); // 2 Decimals
+        let icon = i < 3 ? medals[i] : `<span class="font-black text-gray-400 text-lg">${i+1}</span>`;
+        let rs = i===0 ? "bg-orange-50/60" : (i===1 ? "bg-gray-50/60" : (i===2 ? "bg-amber-50/30" : ""));
+        
+        return `<tr class="${rs} hover:bg-green-50 transition-colors"> 
+            <td class="p-3 text-center align-middle">${icon}</td> 
+            <td class="p-3 font-bold text-gray-700">${it[0]}</td> 
+            <td class="p-3 text-right font-black text-cra-primary text-lg">${it[1]}</td> 
+            <td class="p-3 text-right text-gray-500 font-bold">${p}</td> 
+            ${showBar ? `<td class="p-3 no-print"><div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden"><div class="bg-cra-secondary h-2 rounded-full" style="width:${p}%"></div></div></td>` : ''}
+        </tr>`;
+      }).join('');
+    }
+
+    function renderPieSections(data, total) {
+      const container = document.getElementById('pieCardContainer'); container.innerHTML = '';
+      const items = [
+        { id: 'G', col: 2, title: 'เพศ', ic: 'fi-sr-venus-mars' }, 
+        { id: 'T', col: 1, title: 'ประเภทผู้เข้าร่วม', ic: 'fi-sr-users' }, 
+        { id: 'K', col: 9, title: 'รู้จัก CRA มาก่อนหรือไม่', ic: 'fi-sr-comment-question' }
+      ];
+      items.forEach(p => {
+        const div = document.createElement('div'); div.className = "glass-card p-6 flex flex-col";
+        div.innerHTML = `<div class="flex justify-between items-center mb-6"><h3 class="font-bold text-gray-700 flex items-center gap-2"><i class="fi ${p.ic} text-orange-500"></i> ${p.title}</h3><div class="flex bg-gray-100 rounded-lg p-1 no-print"><button onclick="toggleV('${p.id}','table')" id="btn${p.id}Table" class="px-2 py-1 rounded bg-white shadow text-cra-primary transition"><i class="fi fi-sr-apps-sort"></i></button><button onclick="toggleV('${p.id}','chart')" id="btn${p.id}Chart" class="px-2 py-1 rounded text-gray-400 hover:text-gray-600 transition"><i class="fi fi-sr-chart-pie-alt"></i></button></div></div><div id="v${p.id}Chart" class="h-48 chart-container hidden"><canvas id="c${p.id}"></canvas></div><div id="v${p.id}Table" class="table-container">${renderTableHTML(getCounts(data, p.col), total, p.title)}</div>`;
+        container.appendChild(div); renderChart(`c${p.id}`, 'pie', getCounts(data, p.col), total);
+      });
+    }
+
+    // 🌟 เอา % ออก และเป็น ทศนิยม 2 ตำแหน่ง 🌟
+    function renderTableHTML(data, total, header) { 
+        return `<table class="w-full text-sm border-collapse"><thead class="bg-gray-50 font-bold text-gray-500"><tr><th class="p-3 text-left rounded-tl-lg">${header}</th><th class="p-3 text-right">จำนวน</th><th class="p-3 text-right rounded-tr-lg">ร้อยละ</th></tr></thead><tbody class="divide-y divide-gray-100">${data.map(i => `<tr><td class="p-3 text-gray-700 font-medium">${i[0]}</td><td class="p-3 text-right font-black text-cra-primary">${i[1]}</td><td class="p-3 text-right font-bold text-gray-400">${preciseRound(i[1]*100/total, 2).toFixed(2)}</td></tr>`).join('')}</tbody></table>`; 
+    }
+    
+    function renderSplitTables(data, total) {
+        document.getElementById('sourceTableContainer').innerHTML = `
+            <div><h4 class="font-bold text-gray-600 mb-3"><i class="fi fi-sr-marker text-rose-400"></i> ช่องทางที่รู้จัก</h4>${renderTableHTML(getCounts(data, 10, true), total, 'ช่องทาง')}</div>
+            <div><h4 class="font-bold text-gray-600 mb-3"><i class="fi fi-sr-share text-blue-400"></i> สื่อโซเชียลที่ใช้ติดตาม</h4>${renderTableHTML(getCounts(data, 11, true), total, 'สื่อ')}</div>
+        `;
+    }
+
+    function toggleV(id, m) { 
+        const isT=m==='table'; 
+        document.getElementById(`v${id}Table`).classList.toggle('hidden',!isT); 
+        document.getElementById(`v${id}Chart`).classList.toggle('hidden',isT); 
+        document.getElementById(`btn${id}Table`).className=isT?"px-2 py-1 rounded bg-white shadow text-cra-primary transition":"px-2 py-1 rounded text-gray-400 hover:text-gray-600 transition"; 
+        document.getElementById(`btn${id}Chart`).className=!isT?"px-2 py-1 rounded bg-white shadow text-cra-primary transition":"px-2 py-1 rounded text-gray-400 hover:text-gray-600 transition"; 
+    }
+    
+    function getCounts(data, idx, multi) { 
+        let c={}; 
+        data.forEach(r => { 
+            let val = r[idx];
+            if(!val) return;
+            let arr=multi?val.toString().split(/,\s*/):[val.toString().trim()]; 
+            arr.forEach(x=>{if(x && x!=="-")c[x]=(c[x]||0)+1;}); 
+        }); 
+        return Object.entries(c).sort((a,b)=>b[1]-a[1]); 
+    }
+
+    function renderChart(id, type, data, total) { 
+        new Chart(document.getElementById(id),{
+            type:type,
+            data:{
+                labels:data.map(d=>d[0]),
+                datasets:[{
+                    data:data.map(d=>d[1]),
+                    backgroundColor:['#f57c00','#8bc34a','#3b82f6','#eab308','#f43f5e', '#8b5cf6', '#14b8a6', '#f97316'],
+                    borderWidth: type==='pie'? 2 : 0, borderColor: '#fff', borderRadius: type==='bar'? 4 : 0
+                }]
+            },
+            options:{
+                maintainAspectRatio:false,
+                plugins:{
+                    datalabels:{color:'#fff',font:{family:'"Noto Sans Thai"', weight: 'bold'},formatter:(v)=>`${v}`},
+                    legend:{display: type==='pie', position:'right',labels:{font:{family:'"Noto Sans Thai"',size:11},boxWidth:12, padding: 10}}
+                },
+                scales: type==='bar' ? { y: { beginAtZero: true, grid: { borderDash: [4, 4] } }, x: { grid: { display: false } } } : {}
+            }
+        }); 
+    }
+
+    function openFilterModal() {
+      document.getElementById('mHeader').innerHTML = `<i class="fi fi-sr-filter text-cra-primary"></i> กรองข้อมูล`;
+      document.getElementById('mBody').innerHTML = `
+        <div class="space-y-6">
+            <div>
+                <label class="block font-bold text-gray-700 mb-2">เลือกวันที่</label>
+                <select id="selFilterDate" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 outline-none font-bold text-gray-600">
+                    <option value="All" ${filterDate==="All"?'selected':''}>ทั้งหมด (2 วัน)</option>
+                    <option value="Day 1" ${filterDate==="Day 1"?'selected':''}>Day 1 (25 เม.ย.)</option>
+                    <option value="Day 2" ${filterDate==="Day 2"?'selected':''}>Day 2 (26 เม.ย.)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block font-bold text-gray-700 mb-2">ประเภทผู้เข้าร่วม</label>
+                <select id="selFilterType" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 outline-none font-bold text-gray-600">
+                    <option value="All" ${filterType==="All"?'selected':''}>ทุกคน</option>
+                    <option value="นักเรียน" ${filterType==="นักเรียน"?'selected':''}>นักเรียน</option>
+                    <option value="ผู้ปกครอง" ${filterType==="ผู้ปกครอง"?'selected':''}>ผู้ปกครอง</option>
+                    <option value="ครู / อาจารย์" ${filterType==="ครู / อาจารย์"?'selected':''}>ครู / อาจารย์</option>
+                </select>
+            </div>
+        </div>
+      `;
+      document.getElementById('mFooter').innerHTML = `<button onclick="applyFilter()" class="w-full bg-cra-primary text-white py-3.5 rounded-xl font-bold text-lg shadow-md hover:bg-orange-600 transition">ยืนยันการกรองข้อมูล</button>`;
+      document.getElementById('modalBase').classList.remove('hidden');
+    }
+
+    function applyFilter() {
+        filterDate = document.getElementById('selFilterDate').value;
+        filterType = document.getElementById('selFilterType').value;
+        closeModal();
+        renderDashboard();
+    }
+
+    function openCustomModal(type) {
+      let data = RAW_DATA;
+      if(filterDate !== "All") { let expectedStr = filterDate === "Day 1" ? "25 เมษายน 2569" : "26 เมษายน 2569"; data = data.filter(r => String(r[20]).trim() === expectedStr); }
+      if(filterType !== "All") { data = data.filter(r => String(r[1]).includes(filterType)); }
+
+      if (type === 'newCurr') {
+          document.getElementById('mHeader').innerHTML = `<i class="fi fi-sr-add text-orange-500"></i> อันดับหลักสูตรใหม่ที่อยากให้เปิด`;
+          const list = getCounts(data, 26, false); // 🌟 คอลัมน์ 26 คือ AA 🌟
+          document.getElementById('mBody').innerHTML = `<table class="w-full text-sm border-collapse"><thead class="bg-gray-100 uppercase font-bold text-slate-600"><tr><th class="p-3 w-20 text-center rounded-tl-lg">อันดับ</th><th class="p-3 text-left">หลักสูตร</th><th class="p-3 text-right">จำนวน</th><th class="p-3 text-right rounded-tr-lg">ร้อยละ</th></tr></thead><tbody id="modalRankBody" class="divide-y divide-gray-100"></tbody></table>`;
+          renderRankingTable('modalRankBody', list, data.length, false);
+      } else {
+          document.getElementById('mHeader').innerHTML = `<i class="fi fi-sr-comment-alt text-blue-500"></i> ข้อเสนอแนะเพิ่มเติม`;
+          const list = [...new Set(data.map(r => r[19]))].filter(v => v && v.toString().trim() !== "-" && v.toString().length > 2);
+          document.getElementById('mBody').innerHTML = list.length ? `<ul class="space-y-3">${list.map(v => `<li class="p-4 bg-blue-50/50 rounded-xl border border-blue-100 flex items-start gap-3 text-sm text-slate-700 font-medium"><i class="fi fi-sr-quote-right text-blue-400 mt-0.5"></i> <span class="leading-relaxed">${v}</span></li>`).join('')}</ul>` : '<p class="text-center text-gray-400 py-10 font-bold">ไม่มีข้อเสนอแนะในเงื่อนไขนี้</p>';
+      }
+      
+      document.getElementById('mFooter').innerHTML = ''; 
+      document.getElementById('modalBase').classList.remove('hidden');
+    }
+
+    function closeModal() { document.getElementById('modalBase').classList.add('hidden'); }
+
+    function renderPrintData(data) {
+      const sg = [...new Set(data.map(r => r[19]))].filter(v => v && v.toString().trim() !== "-" && v.toString().length > 2);
+      document.getElementById('printSuggestContainer').innerHTML = sg.length ? `<ul class="list-disc pl-8 space-y-1 text-sm">${sg.map(v => `<li class="text-slate-700">${v}</li>`).join('')}</ul>` : 'ไม่มีข้อมูล';
+    }
+  </script>
+</body>
+</html>
