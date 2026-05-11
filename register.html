@@ -145,7 +145,6 @@
                     </div>
                     
                     <div class="grid grid-cols-12 gap-x-5 gap-y-4">
-                      
                       <div class="col-span-12 sm:col-span-3 input-wrapper mb-0">
                         <label class="input-label">คำนำหน้า<span class="req">*</span></label>
                         <div class="c-select-container" id="c-prefix">
@@ -170,7 +169,6 @@
                       </div>
                     </div>
                     
-
                     <div class="input-wrapper mt-5">
                       <label class="input-label">อีเมล<span class="req">*</span></label>
                       <input type="email" id="email" class="input-field" placeholder="example@gmail.com" autocomplete="off">
@@ -283,7 +281,7 @@
                    
                    <div class="bg-gradient-to-br from-[#0f172a] to-[#1e3a8a] p-8 rounded-[1.5rem] text-white shadow-2xl mx-auto mb-10 relative overflow-hidden">
                        <div class="absolute -right-4 -top-4 opacity-10"><i class="fi fi-sr-ticket text-8xl"></i></div>
-                       <p class="text-[13px] font-bold text-sky-300 mb-1 tracking-widest uppercase">รหัสประจำตัว STU</p>
+                       <p class="text-[12px] font-bold text-sky-300 mb-1 tracking-widest uppercase">รหัสรับใบประกาศนียบัตร</p>
                        <div class="text-5xl sm:text-6xl font-black tracking-widest text-[#ff6b00] drop-shadow-md" id="displayId">TS-000</div>
                    </div>
 
@@ -298,16 +296,26 @@
   </div>
 
   <script>
-    // API URL สำหรับส่ง/รับข้อมูล (แทนที่การใช้ google.script.run)
+    // API URL สำหรับส่ง/รับข้อมูล
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyp71dcuKxGGUb5Kyv1U1WVyE7K2pQmej51uXyI79VulTioAaSc59KCCRsDaaNzXpiYg/exec";
 
     let schoolData = [];
     const provincesList = ["กรุงเทพมหานคร","กระบี่","กาญจนบุรี","กาฬสินธุ์","กำแพงเพชร","ขอนแก่น","จันทบุรี","ฉะเชิงเทรา","ชลบุรี","ชัยนาท","ชัยภูมิ","ชุมพร","เชียงราย","เชียงใหม่","ตรัง","ตราด","ตาก","นครนายก","นครปฐม","นครพนม","นครราชสีมา","นครศรีธรรมราช","นครสวรรค์","นนทบุรี","นราธิวาส","น่าน","บึงกาฬ","บุรีรัมย์","ปทุมธานี","ประจวบคีรีขันธ์","ปราจีนบุรี","ปัตตานี","พระนครศรีอยุธยา","พะเยา","พังงา","พัทลุง","พิจิตร","พิษณุโลก","เพชรบุรี","เพชรบูรณ์","แพร่","ภูเก็ต","มหาสารคาม","มุกดาหาร","แม่ฮ่องสอน","ยโสธร","ยะลา","ร้อยเอ็ด","ระนอง","ระยอง","ราชบุรี","ลพบุรี","ลำปาง","ลำพูน","เลย","ศรีสะเกษ","สกลนคร","สงขลา","สตูล","สมุทรปราการ","สมุทรสงคราม","สมุทรสาคร","สระแก้ว","สระบุรี","สิงห์บุรี","สุโขทัย","สุพรรณบุรี","สุราษฎร์ธานี","สุรินทร์","หนองคาย","หนองบัวลำภู","อ่างทอง","อำนาจเจริญ","อุดรธานี","อุตรดิตถ์","อุทัยธานี","อุบลราชธานี"];
     const domains = ['@gmail.com', '@cra.ac.th', '@hotmail.com', '@outlook.com'];
-    const sources = ["กิจกรรม CRA Roadshow (ที่โรงเรียน)", "สื่อสังคมออนไลน์ Education CRA", "เว็บไซต์ราชวิทยาลัยจุฬาภรณ์", "เพื่อน / คนรู้จัก / ครูแนะนำ", "แบนเนอร์ประชาสัมพันธ์", "อื่นๆ"];
+    
+    // อัปเดตตัวเลือกกิจกรรมตามที่คุณต้องการ
+    const sources = [
+      "CRA Roadshow (ที่โรงเรียนของท่าน)", 
+      "CRA Open House",
+      "Dek-D's TCAS Fair",
+      "สื่อสังคมออนไลน์ Education CRA", 
+      "เว็บไซต์ราชวิทยาลัยจุฬาภรณ์", 
+      "เพื่อน / คนรู้จัก / ครูแนะนำ", 
+      "แบนเนอร์ประชาสัมพันธ์"
+    ];
 
     window.onload = () => {
-      // ดึงข้อมูลโรงเรียนด้วย fetch API
+      // ดึงข้อมูลโรงเรียน
       fetch(SCRIPT_URL + "?action=getSchools")
         .then(response => response.json())
         .then(data => { schoolData = data; })
@@ -316,13 +324,28 @@
       const provListUI = document.getElementById('provinceList');
       provincesList.forEach(p => { provListUI.innerHTML += `<div class="c-select-option" data-value="${p}">${p}</div>`; });
 
+      // สร้าง Checkbox สำหรับช่องทาง
       const group = document.getElementById('sourceGroup');
       sources.forEach((s) => {
         group.innerHTML += `<label class="custom-checkbox group"><input type="checkbox" name="src" value="${s}"><span>${s}</span></label>`;
       });
+      
+      // สร้างกล่อง "อื่นๆ" แบบมีช่องให้กรอก
+      group.innerHTML += `
+        <div class="flex flex-col w-full">
+          <label class="custom-checkbox group">
+            <input type="checkbox" id="chkOtherSource" onchange="toggleOtherSource()">
+            <span>อื่นๆ (โปรดระบุ)</span>
+          </label>
+          <div id="wrapOtherSource" class="hidden pl-[3.25rem] pr-2 pb-2 mt-1 transition-all">
+             <input type="text" id="otherSourceInput" class="input-field !py-2.5 !text-[15px]" placeholder="พิมพ์ระบุช่องทาง...">
+          </div>
+        </div>
+      `;
 
       setupCustomSelects();
 
+      // Email Suggestion
       const emailInput = document.getElementById('email');
       const emailDrop = document.getElementById('emailDropdown');
       emailInput.addEventListener('input', (e) => {
@@ -332,6 +355,19 @@
         emailDrop.style.display = 'block';
       });
     };
+
+    // ฟังก์ชันซ่อน/แสดงช่องกรอก "อื่นๆ"
+    function toggleOtherSource() {
+      const wrap = document.getElementById('wrapOtherSource');
+      const inp = document.getElementById('otherSourceInput');
+      if(document.getElementById('chkOtherSource').checked) {
+        wrap.classList.remove('hidden');
+        inp.focus();
+      } else {
+        wrap.classList.add('hidden');
+        inp.value = '';
+      }
+    }
 
     function setupCustomSelects() {
         document.querySelectorAll('.c-select-container').forEach(container => {
@@ -461,10 +497,25 @@
     function prevStep(s) { animateStepChange(s, 'ani-prev'); }
 
     function submitFinal() {
+      // ตรวจสอบข้อมูลแบบสำรวจ
       const srcNodes = document.querySelectorAll('input[name="src"]:checked');
+      let selectedSources = Array.from(srcNodes).map(n => n.value);
+      
+      // เช็คกรณีติ๊ก "อื่นๆ"
+      const chkOther = document.getElementById('chkOtherSource');
+      const otherInput = document.getElementById('otherSourceInput').value.trim();
+      if(chkOther && chkOther.checked) {
+         if(!otherInput) {
+             Swal.fire({icon: 'warning', title: 'ข้อมูลไม่ครบ', text: 'กรุณาระบุช่องทางอื่นๆ ที่ท่านรู้จักเรา', confirmButtonColor: '#0f172a'}); 
+             return;
+         }
+         selectedSources.push("อื่นๆ: " + otherInput);
+      }
+
       const followPage = document.getElementById('followPage').value;
       const followPlatform = document.getElementById('followPlatform').value;
-      if(srcNodes.length === 0) { Swal.fire({icon: 'warning', title: 'ข้อมูลไม่ครบ', text: 'กรุณาเลือกช่องทางที่ท่านทราบข่าวอย่างน้อย 1 ข้อ', confirmButtonColor: '#0f172a'}); return; }
+
+      if(selectedSources.length === 0) { Swal.fire({icon: 'warning', title: 'ข้อมูลไม่ครบ', text: 'กรุณาเลือกช่องทางที่ท่านทราบข่าวอย่างน้อย 1 ข้อ', confirmButtonColor: '#0f172a'}); return; }
       if(!followPage) { Swal.fire({icon: 'warning', title: 'ข้อมูลไม่ครบ', text: 'กรุณาเลือกว่าท่านติดตามเพจ Education CRA หรือไม่', confirmButtonColor: '#0f172a'}); return; }
       if(followPage === 'ติดตาม' && !followPlatform) { Swal.fire({icon: 'warning', title: 'ข้อมูลไม่ครบ', text: 'กรุณาเลือกแพลตฟอร์มที่ติดตามเพจ', confirmButtonColor: '#0f172a'}); return; }
 
@@ -481,12 +532,12 @@
         school: document.getElementById('schoolSearch').value.trim(),
         province: document.getElementById('province').value,
         grade: document.getElementById('grade').value,
-        source: Array.from(srcNodes).map(n => n.value).join(', '),
+        source: selectedSources.join(', '), // รวมค่าที่เลือกทั้งหมด (รวม อื่นๆ: xxx)
         followPage: followPage,
         followPlatform: followPage === 'ไม่ได้ติดตาม' ? '-' : followPlatform
       };
 
-      // ยิงข้อมูลผ่าน API POST
+      // ส่งข้อมูลเข้า API
       fetch(SCRIPT_URL, {
         method: 'POST',
         body: JSON.stringify(payload)
