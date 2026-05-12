@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ตรวจสอบรายชื่อ - CRA Think Share 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+
+  <style>
+    body { font-family: 'Noto Sans Thai', sans-serif; background-color: #f8fafc; }
+    
+    .search-input {
+      width: 100%; padding: 1.2rem 1.5rem 1.2rem 3.5rem; border-radius: 1rem;
+      border: 2px solid transparent; background: #ffffff;
+      outline: none; transition: all 0.25s ease;
+      font-weight: 600; color: #0f172a; font-size: 1rem;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+    }
+    .search-input:focus { border-color: #0ea5e9; box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.15); }
+    
+    .list-card {
+      background: #ffffff; border-radius: 1rem; padding: 1.25rem;
+      display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      border: 1px solid #f1f5f9; transition: transform 0.2s;
+    }
+    .list-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); border-color: #e2e8f0; }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col items-center p-5 md:p-10">
+
+  <div class="fixed top-0 left-0 w-full h-2 bg-gradient-to-r from-[#0a2240] via-[#0ea5e9] to-[#ff6b00] z-50"></div>
+
+  <div class="w-full max-w-3xl flex flex-col mt-4">
+    
+    <div class="flex justify-between items-center mb-8">
+       <a href="index.html" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-[#0f172a] font-bold transition-colors no-underline bg-white px-4 py-2 rounded-full shadow-sm border border-slate-100">
+         <i class="fi fi-sr-arrow-small-left mt-0.5 text-lg"></i> กลับหน้าหลัก
+       </a>
+       <img src="https://s.imgz.io/2026/04/08/image-119644b2a1df1904f.png" alt="CRA Logo" class="h-8 sm:h-10 opacity-90">
+    </div>
+
+    <div class="text-center mb-10">
+       <h1 class="text-3xl md:text-4xl font-black text-[#0f172a] tracking-tight mb-2">ตรวจสอบรายชื่อ</h1>
+       <p class="text-slate-500 font-medium">ค้นหาจากชื่อ-นามสกุล ของท่านเพื่อดูรหัสประจำตัว (STU)</p>
+    </div>
+
+    <div class="relative mb-8 max-w-xl mx-auto w-full">
+      <i class="fi fi-sr-search absolute left-5 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg"></i>
+      <input type="text" id="searchInput" class="search-input" placeholder="พิมพ์ชื่อ หรือ นามสกุล เพื่อค้นหา..." autocomplete="off">
+    </div>
+
+    <div id="loadingState" class="text-center py-10">
+      <i class="fi fi-sr-spinner animate-spin text-4xl text-[#0ea5e9]"></i>
+      <p class="text-slate-500 font-bold mt-4">กำลังดึงข้อมูลรายชื่อ...</p>
+    </div>
+
+    <div id="resultCount" class="text-sm font-bold text-slate-400 mb-4 hidden">พบ 0 รายการ</div>
+
+    <div id="resultsContainer" class="space-y-3 pb-10 hidden">
+      </div>
+
+  </div>
+
+  <script>
+    // ⚠️ นำลิงก์ Web App URL ตัวล่าสุดของคุณมาใส่ที่นี่
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyp71dcuKxGGUb5Kyv1U1WVyE7K2pQmej51uXyI79VulTioAaSc59KCCRsDaaNzXpiYg/exec";
+    
+    let allParticipants = []; // เก็บรายชื่อทั้งหมด
+    const searchInput = document.getElementById('searchInput');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const loadingState = document.getElementById('loadingState');
+    const resultCount = document.getElementById('resultCount');
+
+    window.onload = () => {
+      // ดึงรายชื่อจาก API
+      fetch(SCRIPT_URL + "?action=getRegisteredList")
+        .then(response => response.json())
+        .then(data => {
+          allParticipants = data;
+          loadingState.classList.add('hidden');
+          resultsContainer.classList.remove('hidden');
+          resultCount.classList.remove('hidden');
+          
+          // เรียงลำดับตาม ID รหัสใหม่ล่าสุดขึ้นก่อน
+          allParticipants.sort((a, b) => b.id.localeCompare(a.id));
+          
+          renderList(allParticipants); // แสดงผลทั้งหมดตอนเริ่มต้น
+        })
+        .catch(error => {
+          loadingState.innerHTML = `<i class="fi fi-sr-exclamation text-4xl text-red-500"></i><p class="text-slate-500 font-bold mt-4">ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่</p>`;
+        });
+
+      // ระบบค้นหา Real-time เมื่อพิมพ์
+      searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        
+        // กรองข้อมูลที่ชื่อมีคำที่ค้นหาอยู่ (ใช้ Includes)
+        const filteredData = allParticipants.filter(person => 
+          person.name.toLowerCase().includes(searchTerm)
+        );
+        
+        renderList(filteredData);
+      });
+    };
+
+    // ฟังก์ชันสร้าง UI รายชื่อ
+    function renderList(dataArray) {
+      resultCount.innerText = `พบ ${dataArray.length} รายการ`;
+      
+      if (dataArray.length === 0) {
+        resultsContainer.innerHTML = `
+          <div class="text-center py-10 bg-white rounded-2xl border border-slate-100 shadow-sm">
+            <i class="fi fi-sr-document-signed text-4xl text-slate-300 mb-3 block"></i>
+            <p class="text-slate-500 font-bold">ไม่พบรายชื่อที่ค้นหา</p>
+          </div>`;
+        return;
+      }
+
+      // วนลูปสร้างการ์ดรายชื่อ
+      const htmlString = dataArray.map(person => `
+        <div class="list-card">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+              <i class="fi fi-sr-user mt-1"></i>
+            </div>
+            <div class="font-bold text-[#0f172a] text-[16px]">${person.name}</div>
+          </div>
+          <div class="bg-gradient-to-r from-[#ff6b00] to-[#ea580c] px-4 py-1.5 rounded-lg text-white font-black tracking-widest text-sm shadow-md">
+            ${person.id}
+          </div>
+        </div>
+      `).join('');
+
+      resultsContainer.innerHTML = htmlString;
+    }
+  </script>
+</body>
+</html>
