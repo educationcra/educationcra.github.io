@@ -28,108 +28,49 @@
     }
     .list-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); border-color: #e2e8f0; }
 
-    /* ซ่อน Scrollbar แต่ยังเลื่อนได้ */
     .hide-scroll::-webkit-scrollbar { display: none; }
     .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
     /* =========================================
-       สไตล์ Tabs จาก Uiverse (ปรับให้ Responsive)
+       สไตล์ Tabs จาก Uiverse (แสดงเฉพาะ Desktop)
        ========================================= */
     .tabs {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding: 1.5rem 0.5rem 2.5rem 0.5rem; /* เผื่อพื้นที่ให้เงาและจุด Dot */
-      width: 100%;
-      justify-content: flex-start;
-    }
-    
-    /* ตรงกลางจอเมื่ออยู่ในหน้าจอคอม */
-    @media (min-width: 768px) {
-      .tabs { justify-content: center; }
+      display: flex; gap: 12px; overflow-x: auto;
+      padding: 1.5rem 0.5rem 2.5rem 0.5rem; width: 100%;
+      justify-content: center;
     }
 
-    .tab-group input {
-      display: none; /* ซ่อน radio แบบเด็ดขาด */
-    }
+    .tab-group input { display: none; }
 
     .tab-group label {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
-      flex-shrink: 0; /* ป้องกันปุ่มบีบตัวในมือถือ */
-      line-height: 1.6;
-      border: 2px solid #e2e8f0;
-      border-radius: 14px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 1.1rem;
-      position: relative;
-      background-color: #ffffff;
-      color: #64748b;
+      display: flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; flex-shrink: 0; line-height: 1.6;
+      border: 2px solid #e2e8f0; border-radius: 14px;
+      cursor: pointer; font-weight: 700; font-size: 1.1rem;
+      position: relative; background-color: #ffffff; color: #64748b;
       transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
     }
 
     .tab-group label::after {
-      content: "";
-      position: absolute;
-      bottom: -32px;
-      left: 50%;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: #0f172a; /* เปลี่ยนเป็นสีกรมท่า CRA */
-      transform: translateX(-50%);
-      transform-origin: 0 0;
-      scale: 0;
-      opacity: 0;
-      z-index: 10;
+      content: ""; position: absolute; bottom: -32px; left: 50%;
+      width: 8px; height: 8px; border-radius: 50%;
+      background-color: #0f172a; transform: translateX(-50%);
+      transform-origin: 0 0; scale: 0; opacity: 0; z-index: 10;
       transition: all 0.48s 0.2s cubic-bezier(0.23, 1, 0.32, 1);
     }
 
     .tab-group label::before {
-      content: "";
-      position: absolute;
-      top: -24px;
-      left: 50%;
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background-color: #0f172a; /* เปลี่ยนเป็นสีกรมท่า CRA */
-      transform: translate(-50%, -50%);
-      z-index: -1;
-      opacity: 0;
-      scale: 0;
-      transform-origin: 0 0;
+      content: ""; position: absolute; top: -24px; left: 50%;
+      width: 48px; height: 48px; border-radius: 14px;
+      background-color: #0f172a; transform: translate(-50%, -50%);
+      z-index: -1; opacity: 0; scale: 0; transform-origin: 0 0;
       transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
     }
 
-    .tab-group label:hover {
-      border-color: #0f172a;
-      color: #0f172a;
-    }
-
-    .tab-group input:checked + label {
-      border-color: transparent;
-      color: #ffffff;
-      scale: 1.1;
-    }
-
-    .tab-group input:checked + label::after {
-      bottom: -16px;
-      opacity: 1;
-      scale: 1;
-      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.3);
-    }
-
-    .tab-group input:checked + label::before {
-      opacity: 1;
-      scale: 1;
-      top: 50%;
-      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.4);
-    }
+    .tab-group label:hover { border-color: #0f172a; color: #0f172a; }
+    .tab-group input:checked + label { border-color: transparent; color: #ffffff; scale: 1.1; }
+    .tab-group input:checked + label::after { bottom: -16px; opacity: 1; scale: 1; box-shadow: 0 10px 20px rgba(15, 23, 42, 0.3); }
+    .tab-group input:checked + label::before { opacity: 1; scale: 1; top: 50%; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.4); }
   </style>
 </head>
 <body class="min-h-screen text-slate-800 flex flex-col items-center p-5 md:p-10">
@@ -155,15 +96,29 @@
       <input type="text" id="searchInput" class="search-input" placeholder="พิมพ์ชื่อ หรือ นามสกุล เพื่อค้นหา..." autocomplete="off">
     </div>
 
-    <div id="paginationTabs" class="tabs hide-scroll hidden">
+    <div id="paginationWrapper" class="w-full max-w-xl mx-auto hidden">
+      
+      <div id="mobilePagination" class="flex md:hidden items-center justify-between mt-4 mb-6 bg-white px-4 py-2 rounded-2xl border border-slate-100 shadow-sm">
+        <button id="btnPrev" onclick="prevPage()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-600 hover:bg-slate-200 active:bg-slate-300 disabled:opacity-30 disabled:pointer-events-none transition-all">
+          <i class="fi fi-sr-angle-left mt-1"></i>
+        </button>
+        <div id="pageIndicator" class="font-bold text-slate-700 text-sm tracking-wide">หน้า 1 / 10</div>
+        <button id="btnNext" onclick="nextPage()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-600 hover:bg-slate-200 active:bg-slate-300 disabled:opacity-30 disabled:pointer-events-none transition-all">
+          <i class="fi fi-sr-angle-right mt-1"></i>
+        </button>
       </div>
+
+      <div id="desktopPagination" class="hidden md:flex tabs hide-scroll">
+        </div>
+
+    </div>
 
     <div id="loadingState" class="text-center py-10">
       <i class="fi fi-sr-spinner animate-spin text-4xl text-[#0ea5e9]"></i>
       <p class="text-slate-500 font-bold mt-4">กำลังดึงข้อมูลรายชื่อ...</p>
     </div>
 
-    <div id="resultCount" class="text-sm font-bold text-slate-500 mb-4 hidden pl-2"></div>
+    <div id="resultCount" class="text-sm font-bold text-slate-500 mb-3 hidden pl-2"></div>
 
     <div id="resultsContainer" class="space-y-3 pb-10 hidden">
       </div>
@@ -175,14 +130,15 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxb95U9rbflq0JreqtjUyYSYtYcpOtc3F4y7IGJI0ek0X4XcUEl4nicEPtTyRyPanpJcg/exec";
     
     let allParticipants = []; 
-    const itemsPerPage = 20; // 20 รายชื่อต่อ 1 หน้า
+    const itemsPerPage = 20;
     let currentPage = 1;
 
     const searchInput = document.getElementById('searchInput');
     const resultsContainer = document.getElementById('resultsContainer');
     const loadingState = document.getElementById('loadingState');
     const resultCount = document.getElementById('resultCount');
-    const paginationTabs = document.getElementById('paginationTabs');
+    const paginationWrapper = document.getElementById('paginationWrapper');
+    const desktopPagination = document.getElementById('desktopPagination');
 
     window.onload = () => {
       fetch(SCRIPT_URL + "?action=getRegisteredList")
@@ -193,7 +149,6 @@
           resultsContainer.classList.remove('hidden');
           resultCount.classList.remove('hidden');
           
-          // เรียงรหัสจาก TS-001 ขึ้นก่อน
           allParticipants.sort((a, b) => a.id.localeCompare(b.id));
           
           if(allParticipants.length > 0) {
@@ -207,34 +162,32 @@
           loadingState.innerHTML = `<i class="fi fi-sr-exclamation text-4xl text-red-500"></i><p class="text-slate-500 font-bold mt-4">ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่</p>`;
         });
 
-      // ระบบค้นหาอัจฉริยะ (Real-time)
       searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase().trim();
         
         if(searchTerm.length > 0) {
-           paginationTabs.classList.add('hidden'); // ซ่อนแท็กหน้าชั่วคราวเวลาค้นหา
+           paginationWrapper.classList.add('hidden'); // ซ่อนปุ่มเปลี่ยนหน้าตอนค้นหา
            const filteredData = allParticipants.filter(person => 
              person.name.toLowerCase().includes(searchTerm)
            );
            renderList(filteredData, true);
         } else {
-           renderPagination(); // นำแท็กหน้ากลับมา
+           renderPagination(); // นำปุ่มเปลี่ยนหน้ากลับมา
            goToPage(currentPage);
         }
       });
     };
 
-    // ฟังก์ชันสร้างปุ่มแท็กตามโค้ด UIverse
     function renderPagination() {
       if(allParticipants.length === 0) return;
-      paginationTabs.classList.remove('hidden');
+      paginationWrapper.classList.remove('hidden');
       
       const totalPages = Math.ceil(allParticipants.length / itemsPerPage);
-      let html = '';
       
+      // อัปเดต Desktop (แท็กตัวเลข)
+      let html = '';
       for(let i = 1; i <= totalPages; i++) {
          const isChecked = (i === currentPage) ? 'checked' : '';
-         // สร้างโครงสร้าง <div class="tab-group"> พร้อม input radio
          html += `
            <div class="tab-group">
              <input id="tab${i}" name="tab" value="${i}" type="radio" onchange="goToPage(${i})" ${isChecked} />
@@ -244,7 +197,21 @@
            </div>
          `;
       }
-      paginationTabs.innerHTML = html;
+      desktopPagination.innerHTML = html;
+
+      // อัปเดต Mobile (ปุ่มลูกศร)
+      document.getElementById('pageIndicator').innerText = `หน้า ${currentPage} / ${totalPages}`;
+      document.getElementById('btnPrev').disabled = (currentPage === 1);
+      document.getElementById('btnNext').disabled = (currentPage === totalPages);
+    }
+
+    function prevPage() {
+      if(currentPage > 1) goToPage(currentPage - 1);
+    }
+
+    function nextPage() {
+      const totalPages = Math.ceil(allParticipants.length / itemsPerPage);
+      if(currentPage < totalPages) goToPage(currentPage + 1);
     }
 
     function goToPage(page) {
@@ -254,6 +221,7 @@
       const pageData = allParticipants.slice(start, end);
       
       renderList(pageData, false);
+      renderPagination(); // รีเฟรชปุ่มให้ Active ถูกต้อง
     }
 
     function renderList(dataArray, isSearching = false) {
@@ -274,15 +242,18 @@
         return;
       }
 
+      // ปรับขนาดฟอนต์ให้เล็กในมือถือ (text-[13.5px]) และตัดคำ (truncate) หากชื่อยาวเกินไป
       const htmlString = dataArray.map(person => `
-        <div class="list-card">
-          <div class="flex items-center gap-4">
-            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+        <div class="list-card gap-2">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 shrink-0">
               <i class="fi fi-sr-user mt-1"></i>
             </div>
-            <div class="font-bold text-[#0f172a] text-[16px]">${person.name}</div>
+            <div class="font-bold text-[#0f172a] text-[13.5px] sm:text-[15px] md:text-[16px] truncate" title="${person.name}">
+              ${person.name}
+            </div>
           </div>
-          <div class="bg-gradient-to-r from-[#ff6b00] to-[#ea580c] px-4 py-1.5 rounded-lg text-white font-black tracking-widest text-sm shadow-md">
+          <div class="bg-gradient-to-r from-[#ff6b00] to-[#ea580c] px-3 md:px-4 py-1.5 rounded-lg text-white font-black tracking-widest text-xs md:text-sm shadow-md shrink-0">
             ${person.id}
           </div>
         </div>
