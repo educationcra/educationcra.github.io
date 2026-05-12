@@ -32,11 +32,14 @@
     .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
     /* =========================================
-       สไตล์ Tabs จาก Uiverse (แสดงเฉพาะ Desktop)
+       สไตล์ Tabs จาก Uiverse (ปรับให้ไม่โดนตัดขอบ)
        ========================================= */
     .tabs {
-      display: flex; gap: 12px; overflow-x: auto;
-      padding: 1.5rem 0.5rem 2.5rem 0.5rem; width: 100%;
+      display: flex; 
+      gap: 12px; 
+      flex-wrap: wrap; /* เพิ่มบรรทัดนี้เพื่อป้องกันการโดนตัดขอบ ถ้าพื้นที่ไม่พอจะปัดลงมาบรรทัดใหม่ */
+      padding: 1.5rem 0.5rem 2.5rem 0.5rem; 
+      width: 100%;
       justify-content: center;
     }
 
@@ -102,7 +105,7 @@
       <input type="text" id="searchInput" class="search-input" placeholder="พิมพ์ชื่อ หรือ นามสกุล เพื่อค้นหา..." autocomplete="off">
     </div>
 
-    <div id="paginationWrapper" class="w-full max-w-xl mx-auto hidden">
+    <div id="paginationWrapper" class="w-full max-w-3xl mx-auto hidden">
       
       <div id="mobilePagination" class="flex md:hidden items-center justify-between mt-4 mb-6 bg-white px-4 py-2 rounded-2xl border border-slate-100 shadow-sm">
         <button id="btnPrev" onclick="prevPage()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-600 hover:bg-slate-200 active:bg-slate-300 disabled:opacity-30 disabled:pointer-events-none transition-all">
@@ -124,15 +127,17 @@
       <p class="text-slate-500 font-bold mt-4">กำลังดึงข้อมูลรายชื่อ...</p>
     </div>
 
-    <div id="resultCount" class="text-sm font-bold text-slate-500 mb-3 hidden pl-2"></div>
-
-    <div id="resultsContainer" class="space-y-3 pb-10 hidden">
-      </div>
+    <div class="max-w-xl mx-auto w-full">
+      <div id="resultCount" class="text-sm font-bold text-slate-500 mb-3 hidden pl-2"></div>
+      
+      <div id="resultsContainer" class="space-y-3 pb-10 hidden">
+        </div>
+    </div>
 
   </div>
 
   <script>
-    // ⚠️ นำลิงก์ Web App URL จาก Apps Script มาวางที่นี่
+    // อัปเดต API URL ตัวใหม่ล่าสุดของคุณแล้วครับ
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxb95U9rbflq0JreqtjUyYSYtYcpOtc3F4y7IGJI0ek0X4XcUEl4nicEPtTyRyPanpJcg/exec";
     
     let allParticipants = []; 
@@ -172,13 +177,13 @@
         const searchTerm = e.target.value.toLowerCase().trim();
         
         if(searchTerm.length > 0) {
-           paginationWrapper.classList.add('hidden'); // ซ่อนปุ่มเปลี่ยนหน้าตอนค้นหา
+           paginationWrapper.classList.add('hidden'); 
            const filteredData = allParticipants.filter(person => 
              person.name.toLowerCase().includes(searchTerm)
            );
            renderList(filteredData, true);
         } else {
-           renderPagination(); // นำปุ่มเปลี่ยนหน้ากลับมา
+           renderPagination(); 
            goToPage(currentPage);
         }
       });
@@ -190,7 +195,6 @@
       
       const totalPages = Math.ceil(allParticipants.length / itemsPerPage);
       
-      // อัปเดต Desktop (แท็กตัวเลข)
       let html = '';
       for(let i = 1; i <= totalPages; i++) {
          const isChecked = (i === currentPage) ? 'checked' : '';
@@ -205,7 +209,6 @@
       }
       desktopPagination.innerHTML = html;
 
-      // อัปเดต Mobile (ปุ่มลูกศร)
       document.getElementById('pageIndicator').innerText = `หน้า ${currentPage} / ${totalPages}`;
       document.getElementById('btnPrev').disabled = (currentPage === 1);
       document.getElementById('btnNext').disabled = (currentPage === totalPages);
@@ -227,7 +230,7 @@
       const pageData = allParticipants.slice(start, end);
       
       renderList(pageData, false);
-      renderPagination(); // รีเฟรชปุ่มให้ Active ถูกต้อง
+      renderPagination(); 
     }
 
     function renderList(dataArray, isSearching = false) {
@@ -248,7 +251,6 @@
         return;
       }
 
-      // ปรับขนาดฟอนต์ให้เล็กในมือถือ และตัดคำ (truncate) หากชื่อยาวเกินไป
       const htmlString = dataArray.map(person => `
         <div class="list-card gap-2">
           <div class="flex items-center gap-3 flex-1 min-w-0">
