@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แจ้งปัญหา / แก้ไขข้อมูล - CRA Think Share 2026</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+
+  <style>
+    body { font-family: 'Noto Sans Thai', sans-serif; background-color: #ffffff; }
+    .input-field { 
+        width: 100%; padding: 1.125rem 1.25rem; border-radius: 0.85rem; 
+        border: 2px solid transparent; background: #f8fafc; 
+        outline: none; transition: all 0.25s ease; font-weight: 600; color: #0f172a; 
+    }
+    .input-field:focus { background: #ffffff; border-color: #0f172a; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08); }
+    .input-label { display: block; font-size: 0.875rem; font-weight: 700; color: #334155; margin-bottom: 0.5rem; }
+    .btn-dark { background: #0f172a; color: white; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.4); }
+    .btn-dark:hover { background: #1e293b; transform: translateY(-3px); }
+    .btn-dark:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-5 md:p-10">
+
+  <div class="fixed top-0 left-0 w-full h-2 bg-gradient-to-r from-[#0a2240] via-[#0ea5e9] to-[#ff6b00] z-50"></div>
+
+  <div class="w-full max-w-xl mt-4">
+    
+    <div class="flex justify-between items-center mb-8">
+       <a href="index.html" class="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-[#0f172a] font-bold transition-colors no-underline">
+         <i class="fi fi-sr-arrow-small-left mt-0.5 text-xl"></i> กลับหน้าหลัก
+       </a>
+       <img src="https://s.imgz.io/2026/04/08/image-119644b2a1df1904f.png" alt="CRA Logo" class="h-8 sm:h-10">
+    </div>
+
+    <div class="bg-white p-2">
+       <h1 class="text-3xl font-black text-[#0f172a] tracking-tight mb-2">แจ้งปัญหา / แก้ไขข้อมูล</h1>
+       <p class="text-slate-500 font-medium mb-10">กรณีต้องการเปลี่ยนชื่อ นามสกุล อีเมล หรือสละสิทธิ์</p>
+
+       <form id="reportForm" class="space-y-6">
+         
+         <div class="grid grid-cols-12 gap-4">
+            <div class="col-span-4">
+                <label class="input-label">รหัส TS (3 หลัก)</label>
+                <input type="tel" id="tsCode" maxlength="3" class="input-field text-center text-xl tracking-[0.3em]" placeholder="000" oninput="checkTS(this.value)">
+            </div>
+            <div class="col-span-8">
+                <label class="input-label">ชื่อ-นามสกุล (ดึงอัตโนมัติ)</label>
+                <input type="text" id="fullName" class="input-field bg-slate-100 cursor-not-allowed text-slate-400" placeholder="กรอกรหัสเพื่อค้นหา..." readonly>
+            </div>
+         </div>
+
+         <div>
+            <label class="input-label">รายละเอียดที่ต้องการแจ้ง <span class="text-red-500">*</span></label>
+            <textarea id="issue" rows="4" class="input-field" placeholder="ตัวอย่าง: ขอเปลี่ยนชื่อจริงจาก สมชาย เป็น สมโภชน์ / ขอยกเลิกการลงทะเบียนเนื่องจากติดธุระด่วน"></textarea>
+         </div>
+
+         <div class="pt-4">
+            <button type="button" id="submitBtn" onclick="submitReport()" class="w-full btn-dark py-4 rounded-[1rem] font-bold text-[17px] flex items-center justify-center gap-2" disabled>
+               ส่งข้อมูลแจ้งปัญหา <i class="fi fi-sr-paper-plane mt-0.5"></i>
+            </button>
+         </div>
+       </form>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxb95U9rbflq0JreqtjUyYSYtYcpOtc3F4y7IGJI0ek0X4XcUEl4nicEPtTyRyPanpJcg/exec";
+
+    function checkTS(val) {
+      const nameInput = document.getElementById('fullName');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      // เมื่อกรอกครบ 3 ตัว
+      if (val.length === 3) {
+        nameInput.value = "กำลังค้นหา...";
+        nameInput.classList.add('animate-pulse');
+        
+        fetch(SCRIPT_URL + "?action=getUserByTS&code=" + val)
+          .then(res => response = res.json())
+          .then(data => {
+            nameInput.classList.remove('animate-pulse');
+            if (data.status === 'success') {
+              nameInput.value = data.name;
+              nameInput.classList.replace('text-slate-400', 'text-emerald-600');
+              submitBtn.disabled = false;
+            } else {
+              nameInput.value = "ไม่พบรหัสนี้ในระบบ";
+              nameInput.classList.replace('text-slate-400', 'text-red-500');
+              submitBtn.disabled = true;
+            }
+          });
+      } else {
+        nameInput.value = "";
+        nameInput.className = "input-field bg-slate-100 cursor-not-allowed text-slate-400";
+        submitBtn.disabled = true;
+      }
+    }
+
+    function submitReport() {
+      const tsCode = document.getElementById('tsCode').value;
+      const fullName = document.getElementById('fullName').value;
+      const issue = document.getElementById('issue').value.trim();
+      const btn = document.getElementById('submitBtn');
+
+      if (!issue) {
+        Swal.fire({ icon: 'warning', title: 'กรุณากรอกรายละเอียด', text: 'ระบุปัญหาที่ท่านต้องการให้เราแก้ไข', confirmButtonColor: '#0f172a' });
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fi fi-sr-spinner animate-spin"></i> กำลังส่งข้อมูล...';
+
+      const payload = {
+        formType: 'reportProblem',
+        tsCode: tsCode,
+        fullName: fullName,
+        issue: issue
+      };
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if(res.status === 'success') {
+          Swal.fire({
+            icon: 'success',
+            title: 'ส่งข้อมูลสำเร็จ',
+            text: 'แอดมินได้รับเรื่องแล้ว จะดำเนินการตรวจสอบให้โดยเร็วที่สุด',
+            confirmButtonColor: '#0f172a'
+          }).then(() => {
+            window.location.href = "index.html";
+          });
+        } else {
+          Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: res.message });
+          btn.disabled = false;
+          btn.innerHTML = 'ส่งข้อมูลแจ้งปัญหา <i class="fi fi-sr-paper-plane mt-0.5"></i>';
+        }
+      })
+      .catch(err => {
+        Swal.fire({ icon: 'error', title: 'ระบบขัดข้อง', text: 'ไม่สามารถติดต่อเซิร์ฟเวอร์ได้' });
+        btn.disabled = false;
+      });
+    }
+  </script>
+</body>
+</html>
