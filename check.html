@@ -28,9 +28,108 @@
     }
     .list-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); border-color: #e2e8f0; }
 
-    /* Custom Scrollbar สำหรับโซนปุ่มแท็ก */
+    /* ซ่อน Scrollbar แต่ยังเลื่อนได้ */
     .hide-scroll::-webkit-scrollbar { display: none; }
     .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* =========================================
+       สไตล์ Tabs จาก Uiverse (ปรับให้ Responsive)
+       ========================================= */
+    .tabs {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 1.5rem 0.5rem 2.5rem 0.5rem; /* เผื่อพื้นที่ให้เงาและจุด Dot */
+      width: 100%;
+      justify-content: flex-start;
+    }
+    
+    /* ตรงกลางจอเมื่ออยู่ในหน้าจอคอม */
+    @media (min-width: 768px) {
+      .tabs { justify-content: center; }
+    }
+
+    .tab-group input {
+      display: none; /* ซ่อน radio แบบเด็ดขาด */
+    }
+
+    .tab-group label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0; /* ป้องกันปุ่มบีบตัวในมือถือ */
+      line-height: 1.6;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 1.1rem;
+      position: relative;
+      background-color: #ffffff;
+      color: #64748b;
+      transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .tab-group label::after {
+      content: "";
+      position: absolute;
+      bottom: -32px;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #0f172a; /* เปลี่ยนเป็นสีกรมท่า CRA */
+      transform: translateX(-50%);
+      transform-origin: 0 0;
+      scale: 0;
+      opacity: 0;
+      z-index: 10;
+      transition: all 0.48s 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .tab-group label::before {
+      content: "";
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background-color: #0f172a; /* เปลี่ยนเป็นสีกรมท่า CRA */
+      transform: translate(-50%, -50%);
+      z-index: -1;
+      opacity: 0;
+      scale: 0;
+      transform-origin: 0 0;
+      transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .tab-group label:hover {
+      border-color: #0f172a;
+      color: #0f172a;
+    }
+
+    .tab-group input:checked + label {
+      border-color: transparent;
+      color: #ffffff;
+      scale: 1.1;
+    }
+
+    .tab-group input:checked + label::after {
+      bottom: -16px;
+      opacity: 1;
+      scale: 1;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.3);
+    }
+
+    .tab-group input:checked + label::before {
+      opacity: 1;
+      scale: 1;
+      top: 50%;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.4);
+    }
   </style>
 </head>
 <body class="min-h-screen text-slate-800 flex flex-col items-center p-5 md:p-10">
@@ -46,17 +145,17 @@
        <img src="https://s.imgz.io/2026/04/08/image-119644b2a1df1904f.png" alt="CRA Logo" class="h-8 sm:h-10 opacity-90">
     </div>
 
-    <div class="text-center mb-10">
+    <div class="text-center mb-8">
        <h1 class="text-3xl md:text-4xl font-black text-[#0f172a] tracking-tight mb-2">ตรวจสอบรายชื่อ</h1>
        <p class="text-slate-500 font-medium">ค้นหาจากชื่อ-นามสกุล ของท่านเพื่อดูรหัสประจำตัว</p>
     </div>
 
-    <div class="relative mb-6 max-w-xl mx-auto w-full">
+    <div class="relative mb-2 max-w-xl mx-auto w-full">
       <i class="fi fi-sr-search absolute left-5 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg"></i>
       <input type="text" id="searchInput" class="search-input" placeholder="พิมพ์ชื่อ หรือ นามสกุล เพื่อค้นหา..." autocomplete="off">
     </div>
 
-    <div id="paginationTabs" class="flex overflow-x-auto hide-scroll gap-2 mb-6 pb-2 max-w-2xl mx-auto w-full justify-start md:justify-center hidden">
+    <div id="paginationTabs" class="tabs hide-scroll hidden">
       </div>
 
     <div id="loadingState" class="text-center py-10">
@@ -64,7 +163,7 @@
       <p class="text-slate-500 font-bold mt-4">กำลังดึงข้อมูลรายชื่อ...</p>
     </div>
 
-    <div id="resultCount" class="text-sm font-bold text-slate-400 mb-4 hidden"></div>
+    <div id="resultCount" class="text-sm font-bold text-slate-500 mb-4 hidden pl-2"></div>
 
     <div id="resultsContainer" class="space-y-3 pb-10 hidden">
       </div>
@@ -72,10 +171,11 @@
   </div>
 
   <script>
+    // ⚠️ นำลิงก์ Web App URL จาก Apps Script มาวางที่นี่
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxb95U9rbflq0JreqtjUyYSYtYcpOtc3F4y7IGJI0ek0X4XcUEl4nicEPtTyRyPanpJcg/exec";
     
     let allParticipants = []; 
-    const itemsPerPage = 20;
+    const itemsPerPage = 20; // 20 รายชื่อต่อ 1 หน้า
     let currentPage = 1;
 
     const searchInput = document.getElementById('searchInput');
@@ -93,40 +193,38 @@
           resultsContainer.classList.remove('hidden');
           resultCount.classList.remove('hidden');
           
-          // เปลี่ยนการเรียงจากน้อยไปมาก (001 -> 200)
+          // เรียงรหัสจาก TS-001 ขึ้นก่อน
           allParticipants.sort((a, b) => a.id.localeCompare(b.id));
           
           if(allParticipants.length > 0) {
              renderPagination();
-             goToPage(1); // โชว์ 20 คนแรก
+             goToPage(1);
           } else {
-             renderList([]); // ไม่พบคนลงทะเบียน
+             renderList([]); 
           }
         })
         .catch(error => {
           loadingState.innerHTML = `<i class="fi fi-sr-exclamation text-4xl text-red-500"></i><p class="text-slate-500 font-bold mt-4">ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่</p>`;
         });
 
-      // ระบบค้นหา
+      // ระบบค้นหาอัจฉริยะ (Real-time)
       searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase().trim();
         
         if(searchTerm.length > 0) {
-           // ถ้ามีการค้นหา ให้ซ่อนปุ่มแท็ก และค้นหาจากทั้งหมด
-           paginationTabs.classList.add('hidden');
+           paginationTabs.classList.add('hidden'); // ซ่อนแท็กหน้าชั่วคราวเวลาค้นหา
            const filteredData = allParticipants.filter(person => 
              person.name.toLowerCase().includes(searchTerm)
            );
-           renderList(filteredData, true); // แสดงผลทั้งหมดที่ค้นเจอ
+           renderList(filteredData, true);
         } else {
-           // ถ้าลบคำค้นหาทิ้ง ให้กลับไปโชว์แท็ก และโชว์หน้าล่าสุด
-           renderPagination();
+           renderPagination(); // นำแท็กหน้ากลับมา
            goToPage(currentPage);
         }
       });
     };
 
-    // ฟังก์ชันสร้างปุ่มแท็ก
+    // ฟังก์ชันสร้างปุ่มแท็กตามโค้ด UIverse
     function renderPagination() {
       if(allParticipants.length === 0) return;
       paginationTabs.classList.remove('hidden');
@@ -135,21 +233,20 @@
       let html = '';
       
       for(let i = 1; i <= totalPages; i++) {
-         const startNum = ((i - 1) * itemsPerPage) + 1;
-         const endNum = Math.min(i * itemsPerPage, allParticipants.length);
-         
-         const activeClass = (i === currentPage) 
-            ? 'bg-[#0f172a] text-white border-[#0f172a]' 
-            : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50';
-         
-         html += `<button onclick="goToPage(${i})" class="px-4 py-2 rounded-full border text-sm font-bold whitespace-nowrap transition-colors flex-shrink-0 ${activeClass}">
-                    ${startNum} - ${endNum}
-                  </button>`;
+         const isChecked = (i === currentPage) ? 'checked' : '';
+         // สร้างโครงสร้าง <div class="tab-group"> พร้อม input radio
+         html += `
+           <div class="tab-group">
+             <input id="tab${i}" name="tab" value="${i}" type="radio" onchange="goToPage(${i})" ${isChecked} />
+             <label for="tab${i}">
+               <span>${i}</span>
+             </label>
+           </div>
+         `;
       }
       paginationTabs.innerHTML = html;
     }
 
-    // ฟังก์ชันเปลี่ยนหน้า
     function goToPage(page) {
       currentPage = page;
       const start = (page - 1) * itemsPerPage;
@@ -157,13 +254,11 @@
       const pageData = allParticipants.slice(start, end);
       
       renderList(pageData, false);
-      renderPagination(); // อัปเดตสีของปุ่มแท็กที่ถูกกด
     }
 
-    // ฟังก์ชันสร้าง UI รายชื่อ
     function renderList(dataArray, isSearching = false) {
       if(isSearching) {
-         resultCount.innerText = `ผลการค้นหา: พบ ${dataArray.length} รายการ`;
+         resultCount.innerHTML = `<i class="fi fi-sr-search text-orange-500 mr-1"></i> ผลการค้นหา: พบ <b>${dataArray.length}</b> รายการ`;
       } else {
          const startNum = ((currentPage - 1) * itemsPerPage) + 1;
          const endNum = startNum + dataArray.length - 1;
