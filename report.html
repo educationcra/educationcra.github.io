@@ -43,13 +43,13 @@
        <form id="reportForm" class="space-y-6">
          
          <div class="grid grid-cols-12 gap-4">
-            <div class="col-span-4">
+            <div class="col-span-5 sm:col-span-4">
                 <label class="input-label">รหัส TS (3 หลัก)</label>
-                <input type="tel" id="tsCode" maxlength="3" class="input-field text-center text-xl tracking-[0.3em]" placeholder="000" oninput="checkTS(this.value)">
+                <input type="text" inputmode="numeric" id="tsCode" maxlength="3" class="input-field text-center text-xl tracking-[0.3em]" placeholder="000" oninput="checkTS(this)">
             </div>
-            <div class="col-span-8">
+            <div class="col-span-7 sm:col-span-8">
                 <label class="input-label">ชื่อ-นามสกุล (ดึงอัตโนมัติ)</label>
-                <input type="text" id="fullName" class="input-field bg-slate-100 cursor-not-allowed text-slate-400" placeholder="กรอกรหัสเพื่อค้นหา..." readonly>
+                <input type="text" id="fullName" class="input-field bg-slate-100 cursor-not-allowed text-slate-400 text-sm sm:text-base" placeholder="กรอกรหัสเพื่อค้นหา..." readonly>
             </div>
          </div>
 
@@ -68,34 +68,51 @@
   </div>
 
   <script>
+    // API URL ล่าสุดของคุณ
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxb95U9rbflq0JreqtjUyYSYtYcpOtc3F4y7IGJI0ek0X4XcUEl4nicEPtTyRyPanpJcg/exec";
 
-    function checkTS(val) {
+    function checkTS(el) {
+      // 1. บังคับพิมพ์ได้เฉพาะ "ตัวเลข" เท่านั้น (ลบตัวอักษรทิ้งทันที)
+      el.value = el.value.replace(/[^0-9]/g, '');
+      const val = el.value;
+
       const nameInput = document.getElementById('fullName');
       const submitBtn = document.getElementById('submitBtn');
       
-      // เมื่อกรอกครบ 3 ตัว
+      // 2. ล้างคลาสสีเก่าออกก่อน
+      nameInput.classList.remove('text-emerald-600', 'text-red-500', 'text-slate-400');
+      
+      // 3. เมื่อกรอกครบ 3 ตัวเป๊ะๆ ให้วิ่งไปหาข้อมูล
       if (val.length === 3) {
-        nameInput.value = "กำลังค้นหา...";
-        nameInput.classList.add('animate-pulse');
+        nameInput.value = "กำลังค้นหาข้อมูล...";
+        nameInput.classList.add('animate-pulse', 'text-slate-400');
         
         fetch(SCRIPT_URL + "?action=getUserByTS&code=" + val)
-          .then(res => response = res.json())
+          .then(res => res.json())
           .then(data => {
-            nameInput.classList.remove('animate-pulse');
+            nameInput.classList.remove('animate-pulse', 'text-slate-400');
             if (data.status === 'success') {
+              // ถ้าเจอชื่อ
               nameInput.value = data.name;
-              nameInput.classList.replace('text-slate-400', 'text-emerald-600');
+              nameInput.classList.add('text-emerald-600'); // สีเขียว = สำเร็จ
               submitBtn.disabled = false;
             } else {
+              // ถ้าไม่เจอ
               nameInput.value = "ไม่พบรหัสนี้ในระบบ";
-              nameInput.classList.replace('text-slate-400', 'text-red-500');
+              nameInput.classList.add('text-red-500'); // สีแดง = ผิดพลาด
               submitBtn.disabled = true;
             }
+          })
+          .catch(err => {
+              nameInput.classList.remove('animate-pulse', 'text-slate-400');
+              nameInput.value = "เกิดข้อผิดพลาด กรุณาลองใหม่";
+              nameInput.classList.add('text-red-500');
+              submitBtn.disabled = true;
           });
       } else {
+        // ถ้ายาวไม่ถึง 3 หลัก หรือลบเลขออก ให้รีเซ็ตกลับเป็นสถานะเดิม
         nameInput.value = "";
-        nameInput.className = "input-field bg-slate-100 cursor-not-allowed text-slate-400";
+        nameInput.className = "input-field bg-slate-100 cursor-not-allowed text-slate-400 text-sm sm:text-base";
         submitBtn.disabled = true;
       }
     }
@@ -107,7 +124,7 @@
       const btn = document.getElementById('submitBtn');
 
       if (!issue) {
-        Swal.fire({ icon: 'warning', title: 'กรุณากรอกรายละเอียด', text: 'ระบุปัญหาที่ท่านต้องการให้เราแก้ไข', confirmButtonColor: '#0f172a' });
+        Swal.fire({ icon: 'warning', title: 'กรุณากรอกรายละเอียด', text: 'โปรดระบุปัญหาที่ท่านต้องการให้เราแก้ไข', confirmButtonColor: '#0f172a' });
         return;
       }
 
@@ -134,7 +151,7 @@
             text: 'แอดมินได้รับเรื่องแล้ว จะดำเนินการตรวจสอบให้โดยเร็วที่สุด',
             confirmButtonColor: '#0f172a'
           }).then(() => {
-            window.location.href = "index.html";
+            window.location.href = "index.html"; // กลับไปหน้าแรก
           });
         } else {
           Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: res.message });
@@ -143,8 +160,9 @@
         }
       })
       .catch(err => {
-        Swal.fire({ icon: 'error', title: 'ระบบขัดข้อง', text: 'ไม่สามารถติดต่อเซิร์ฟเวอร์ได้' });
+        Swal.fire({ icon: 'error', title: 'ระบบขัดข้อง', text: 'ไม่สามารถติดต่อเซิร์ฟเวอร์ได้ กรุณาลองใหม่อีกครั้ง' });
         btn.disabled = false;
+        btn.innerHTML = 'ส่งข้อมูลแจ้งปัญหา <i class="fi fi-sr-paper-plane mt-0.5"></i>';
       });
     }
   </script>
